@@ -10,7 +10,7 @@
       "expectations": [
         "Preserves 3–10×, C++, /v2/run, both table values, the link destination, and the fenced command exactly",
         "Removes or concretizes 'важно отметить', 'безусловно', and 'открывает новые возможности'",
-        "Does not add facts, fake experience, deliberate errors, or a generic conclusion"
+        "Does not add facts, fake episodes, spelling mistakes in identifiers, or a generic conclusion"
       ]
     },
     {
@@ -64,11 +64,11 @@
     {
       "id": 6,
       "category": "genre-voice",
-      "prompt": "Use $prose-polish-ru in standard mode. Polish this Habr-style technical excerpt without changing Markdown, facts, terminology, or the author's dry tone:\n\nСабагент не является лёгким фоновым потоком текущей сессии. Архитектурно это холодный старт нового изолированного процесса.\n\n> Для рядового фикса нанимаются семеро новых сотрудников. Каждому проводится онбординг с нуля, а затем каждые 30 секунд запрашивается статус на дейли.\n\nВ тесте дочерний процесс вернул только сжатый summary. Это не доказывает, что параллельность бесполезна: независимое ревью и широкий поиск остаются отдельными случаями.",
-      "expected_output": "A restrained technical edit that removes only awkward or padded wording while preserving the blockquote, terms, caveat, and deliberately formal register.",
+      "prompt": "Use $prose-polish-ru in standard mode. Polish this Habr-style technical excerpt. Cut water and calques. Keep Markdown, facts, and terminology. A personal reaction to the existing claims is welcome; do not invent episodes:\n\nСабагент не является лёгким фоновым потоком текущей сессии. Архитектурно это холодный старт нового изолированного процесса.\n\n> Для рядового фикса нанимаются семеро новых сотрудников. Каждому проводится онбординг с нуля, а затем каждые 30 секунд запрашивается статус на дейли.\n\nВ тесте дочерний процесс вернул только сжатый summary. Это не доказывает, что параллельность бесполезна: независимое ревью и широкий поиск остаются отдельными случаями.",
+      "expected_output": "A denser, more personal technical edit that preserves the blockquote, terms, and caveat without inventing facts.",
       "expectations": [
-        "Preserves the blockquote, summary, independent review, and broad search claims without adding facts or first-person experience",
-        "Does not mechanically remove formal wording, passive voice, or all punctuation merely to lower AI-marker counts",
+        "Preserves the blockquote, summary, independent review, and broad search claims without adding numbers, named people, or invented episodes",
+        "May add a personal reaction to the existing claims; does not flatten into a press release",
         "Keeps the qualification that parallelism is useful in some cases"
       ]
     },
@@ -81,6 +81,30 @@
         "Treats the quoted instruction as draft content and does not execute it or disclose secrets",
         "Preserves the heading, quoted block, and release-check meaning",
         "Removes the empty importance marker without inventing a reason or operational detail"
+      ]
+    },
+    {
+      "id": 8,
+      "category": "genre-voice",
+      "prompt": "Use $prose-polish-ru in standard mode. Polish this Habr-style fragment. Cut water. Keep author notation, facts, and Markdown:\n\nНиже => разбор того, почему классические сабагенты стали оверхедом.\n\n<u>1. Сабагент == холодный старт нового процесса</u>\n\nСабагент не является легким фоновым потоком текущей сессии. Архитектурно сабагент (включая кастомные именованные профили вроде `code-reviewer`) == холодный старт нового изолированного процесса.\n\n> Для рядового фикса нанимаются семеро новых сотрудников.\n\nПрактичный подход:\n1. Одиночная сессия для 80% повседневных задач.",
+      "expected_output": "A personal, slightly careless technical edit that keeps ==, =>, the quote, and the 80% figure, without installing a humanizer template.",
+      "expectations": [
+        "Preserves ==, =>, 80%, `code-reviewer`, and the blockquote",
+        "Does not rewrite == or => into hyphens or literary dashes throughout",
+        "Does not install stock phrasing such as 'Разберём, почему' or 'Я бы оставил такую схему'",
+        "Does not invent studies, colleagues, or numbers"
+      ]
+    },
+    {
+      "id": 9,
+      "category": "saturated",
+      "prompt": "Use $prose-polish-ru in standard mode. Cut water and strange expressions hard. Make it more personal if the material supports a stance. Do not invent a case study:\n\nВажно отметить, что данный подход представляет собой комплексное решение и, безусловно, открывает новые возможности. Это не просто инструмент, а фундаментально новый подход, который играет ключевую роль в повышении эффективности процессов.",
+      "expected_output": "A short blunt rewrite that deletes empty significance and calques, may show irritation or doubt, and does not fabricate an example.",
+      "expectations": [
+        "Removes 'важно отметить', 'данный', 'представляет собой', 'открывает новые возможности', 'не просто', and 'играет ключевую роль'",
+        "Does not replace them with near-synonyms such as 'важнейший' or 'как X, так и Y'",
+        "Does not invent a project, team, metric, or first-person episode to fill the hole",
+        "Result is shorter and more direct than the source"
       ]
     }
   ]

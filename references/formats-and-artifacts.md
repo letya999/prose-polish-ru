@@ -71,7 +71,8 @@ Common AI artifacts:
 - duplicated verbs and sentence endings;
 - invented completeness: `Вот полный список`.
 
-Do not remove useful list parallelism merely to create irregularity.
+Do not remove useful list parallelism merely to create irregularity. Do not
+add a missing item or complete a tidy outline just to look finished.
 
 ## 3. Tables
 
@@ -299,8 +300,9 @@ Check:
 - decimal separators match locale and source;
 - units retain spacing and capitalization;
 - slash, plus, ampersand, arrows, and equality signs remain when meaningful;
-- notation such as `==`, `=>`, `->` is changed only if it is prose shorthand,
-  not code, formula, diagram, or established author notation;
+- notation such as `==`, `=>`, `->`, `vs` is protected author operator when it
+  marks identity, implication, or comparison in technical prose; do not rewrite
+  it into a hyphen, `это`, or a literary dash;
 - Unicode normalization does not alter identifiers;
 - percentages and basis points are not confused.
 
@@ -311,12 +313,15 @@ clean lint report.
 
 ### Expert article / Habr
 
-- prioritize evidence, mechanism, limitations, and navigation;
-- allow technical notation, tables, figures, and longer explanations;
+- prioritize evidence, mechanism, limitations, and a visible personal stance;
+- allow technical notation, author operators, tables, figures, and longer
+  explanations;
+- allow unequal sections, an aside, and a slightly crooked sentence;
 - avoid Telegram-style line fragmentation and engagement bait;
 - keep sources close to claims;
 - inspect title strength without manufacturing controversy;
-- conclusion should state implication or boundary, not generic future promise.
+- conclusion should state implication or boundary, not generic future promise
+  and not a stock `Я бы оставил такую схему`.
 
 ### Telegram expert post
 

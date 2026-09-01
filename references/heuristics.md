@@ -86,8 +86,10 @@ problem only when it harms meaning, evidence, pacing, genre, or voice.
 66. Make the center of gravity visible through evidence and space.
 67. Use transitions when direction changes, not between every paragraph.
 68. Let adjacent paragraphs connect implicitly when the relation is obvious.
-69. Keep digressions only when they change understanding or voice meaningfully.
-70. End when the argument lands; do not append a universal moral.
+69. Keep asides, jumps, and returns when they change understanding or attitude;
+    delete them only if they add neither.
+70. End when the argument lands; do not append a universal moral or a stock
+    closer such as `Я бы оставил такую схему`.
 
 ## E. Paragraph function
 
@@ -131,7 +133,9 @@ problem only when it harms meaning, evidence, pacing, genre, or voice.
 
 ## G. Sentence-level clarity
 
-101. Prefer a visible actor when agency matters.
+101. Prefer a visible actor when agency matters. Inanimate nouns should not
+     perform human verbs: a complaint does not become a fix, data does not
+     tell, a decision does not emerge.
 102. Use passive voice when actor is unknown, irrelevant, or intentionally
      backgrounded.
 103. Replace stacked verbal nouns with verbs where possible.
@@ -188,9 +192,11 @@ problem only when it harms meaning, evidence, pacing, genre, or voice.
 142. Avoid euphemisms that hide failure or responsibility.
 143. Avoid consultant abstractions with no operational definition.
 144. Avoid accidental grandiosity.
-145. Avoid fake intimacy with readers.
+145. Cut fake intimacy (`мы с тобой наверняка`) that carries no claim; keep a
+     personal reaction to the actual material.
 146. Avoid slang inserted only to appear human.
-147. Preserve the author's natural sharpness, caution, humor, or dryness.
+147. Preserve sharpness, irritation, doubt, humor, or dryness; in article/post
+     register prefer a visible stance over a dry briefing.
 148. Do not normalize every unusual but intelligible phrase.
 149. Do not upgrade ordinary words to prestige synonyms.
 150. Use terminology consistently; do not vary technical terms for style.
@@ -204,7 +210,9 @@ problem only when it harms meaning, evidence, pacing, genre, or voice.
 155. Match relationship to examples: personal, operational, hypothetical, or
      sourced.
 156. Do not copy an exemplar's exact hook, metaphor, cadence, or ending.
-157. Do not reproduce characteristic errors intentionally.
+157. Leave one or two informal slips (spoken syntax, a slightly crooked
+     agreement, a trailing sentence). Do not sprinkle spelling mistakes into
+     names, numbers, code, or links, and do not invent a new error style.
 158. Do not invent biography-informed anecdotes.
 159. Do not force greetings, jokes, questions, CTA, or `P.S.` because they occur
      in other publications.
@@ -214,8 +222,7 @@ problem only when it harms meaning, evidence, pacing, genre, or voice.
 163. Distinguish voice from opinion: polishing must not change the author's
      position silently.
 164. Distinguish voice from structure: samples do not override requested form.
-165. Preserve meaningful roughness; remove accidental roughness that blocks
-     understanding.
+165. Preserve meaningful roughness; remove only roughness that hides the claim.
 
 ## K. Introductions and endings
 
@@ -248,3 +255,8 @@ problem only when it harms meaning, evidence, pacing, genre, or voice.
 188. Did the edit introduce a new AI pattern while removing another?
 189. Can any remaining block be deleted without loss?
 190. Would restoring any original phrase improve voice or precision?
+191. Did water and calques get deleted, or only renamed (`ключевой` → `важнейший`)?
+192. Could this opening or closer sit on any other article after a humanizer pass?
+193. Did `==`, `=>`, `->`, or `vs` survive when they marked identity or implication?
+194. In article/post register, is a stance visible without a fabricated episode?
+195. Is the outline still a bit uneven, or was it combed into symmetry?

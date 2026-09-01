@@ -33,6 +33,8 @@ Usually fix unless quoted or intentionally documented:
 - malformed Unicode, repeated replacement characters, smart-quote mismatch;
 - dangling footnote markers, orphan reference definitions, empty links;
 - UTM parameters identifying assistant tools where not intentionally retained;
+- chatbot copy-paste residue: `grok_card://`, `utm_source=chatgpt.com`,
+  `[cite: N]`, `<think>`, `vertexaisearch` grounding redirects;
 - hallucinated DOI, ISBN, quote, author, publication, or broken URL;
 - impossible timestamps, future citations, or mismatched access dates;
 - copied system/developer instructions or file-path dumps.
@@ -166,7 +168,9 @@ Treatment: keep natural triples. Change count only when content demands it.
 - same number of paragraphs under each heading;
 - repeated mini-conclusions and `практический вывод` labels.
 
-Treatment: rebuild emphasis and paragraph function. Do not randomly vary layout.
+Treatment: rebuild emphasis and paragraph function. Do not randomly vary
+layout, and do not complete a missing outline to look finished. A jump that
+carries the argument is not a defect.
 
 ## 9. Rhythm and sentence-shape markers
 
@@ -197,8 +201,8 @@ Russian marker families rather than immutable banned words:
 - `посредством`, `в рамках`, `в части`, `с точки зрения` overuse;
 - `представляет собой` repeated;
 - `имеет место`, `носит характер`, `обладает потенциалом`;
-- literal calques: `делает смысл`, `принимать действие`, `драйвить результат`
-  where not accepted jargon;
+- literal calques: `делает смысл`, `принимать действие`, `драйвить результат`,
+  `адресовать проблему`, `доставить ценность` where not accepted jargon;
 - unexplained English words when a stable Russian term exists;
 - inconsistent variation of one technical term for style;
 - prestige vocabulary replacing ordinary precise words;
@@ -214,25 +218,35 @@ domain-standard jargon.
 
 ## 11. Fake personality and synthetic texture
 
-- invented first-person anecdotes;
+Cut invented texture. Keep a real stance.
+
+Cut:
+
+- invented first-person anecdotes, colleagues, interviews, studies;
 - generic `из моего опыта` with no event or constraint;
-- decorative childhood memory unrelated to claim;
-- random food, weather, or sensory detail inserted to appear human;
+- decorative childhood memory, food, weather, or sensory detail inserted to
+  appear human;
 - slang sprinkled into otherwise formal prose;
 - calculated profanity without established voice;
 - self-deprecation repeated as a persona prop;
-- rhetorical doubt added after confident unsupported claims;
 - fake corrections: `точнее`, `хотя нет`, `ладно` performed mechanically;
-- forced digressions and unfinished thoughts;
-- emotional swings unrelated to content;
+- emotional swings unrelated to the claim;
 - jokes that explain themselves;
-- metaphors stacked or extended beyond usefulness;
-- direct reader address in every paragraph;
 - mandatory greeting or `P.S.` copied from samples;
-- imitation of author typos and punctuation mistakes.
+- spelling mistakes sprinkled into names, numbers, code, or links;
+- stock humanizer phrasing: `Разберём, почему`, `Я бы оставил такую схему`,
+  a generic `После последних…` rewrite of every opening.
 
-Treatment: remove unsupported texture. Use only supplied experience or genuine
-voice already present in the draft.
+Keep in article/post register:
+
+- a personal reaction to material already in the draft;
+- irritation, doubt, preference attached to the actual claim;
+- an aside, a return, an uneven section;
+- one or two informal slips: spoken syntax, a slightly crooked agreement,
+  a sentence that trails.
+
+Treatment: remove unsupported texture. Do not comb the remaining voice into
+neutrality, and do not replace it with a humanizer template.
 
 ## 12. Excessive neutrality and assistant politeness
 

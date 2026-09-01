@@ -34,6 +34,11 @@ PHRASES: dict[str, tuple[str, str, str]] = {
     r"\bна сегодняшний день\b": ("W05", "water", "Disposable time framing"),
     r"\bв современном (?:мире|обществе)\b": ("W06", "water", "Generic opening"),
     r"\bниже (?:мы )?(?:рассмотрим|разбер[её]м)\b": ("W07", "water", "Prose table of contents"),
+    r"\bдавайте (?:разберёмся|посмотрим|нырнём|погрузимся)\b": ("W08", "water", "Chatbot announcement"),
+    r"\bподводя итог\b": ("W09", "water", "Formulaic closer"),
+    r"\bв заключение можно сказать\b": ("W10", "water", "Formulaic closer"),
+    r"\bадресовать проблем": ("K01", "calque", "Translated collocation"),
+    r"\bдоставить ценность\b": ("K02", "calque", "Translated collocation"),
     r"\bтаким образом\b": ("T01", "transition", "Check whether inference is earned"),
     r"\bболее того\b": ("T02", "transition", "Check whether escalation is real"),
     r"\bпомимо этого\b": ("T03", "transition", "Formulaic additive transition"),
@@ -63,7 +68,17 @@ PLACEHOLDERS = re.compile(
     r"\{\{[^}]+\}\}|<(?:NAME|URL|TODO|PLACEHOLDER)>)",
     re.IGNORECASE,
 )
-LEAKS = re.compile(r"\b(?:turn\d+(?:search|view|fetch)\d+|oaicite|oai_citation)\b", re.I)
+LEAKS = re.compile(
+    r"(?:"
+    r"\b(?:turn\d+(?:search|view|fetch|file|image|news|video|ref)\d+|oaicite|oai_citation|citeturn)\b|"
+    r":contentReference\[oaicite:\d+\]|"
+    r"grok_card://|grok_render_citation_card_json|"
+    r"utm_source=(?:chatgpt|copilot)\.com|"
+    r"\[cite_start\]|\[cite:\s*\d+|"
+    r"</?think>"
+    r")",
+    re.I,
+)
 URL_RE = re.compile(r"https?://[^\s)>\]]+")
 MD_LINK_RE = re.compile(r"(!?)\[([^\]]*)\]\(([^)]+)\)")
 INLINE_CODE_RE = re.compile(r"`[^`\n]+`")
@@ -235,7 +250,7 @@ def scan_prose(lines: list[str], mode: str) -> list[Finding]:
         leak = LEAKS.search(raw)
         if leak:
             add(findings, "A02", "critical", "artifact", line_no,
-                "Leaked generation or citation token", raw)
+                "Leaked chatbot or citation artifact", raw)
         mixed = MIXED_SCRIPT_RE.findall(text)
         for token in mixed:
             # Common technical hybrids are allowed when separated by punctuation;
@@ -329,7 +344,8 @@ def self_test() -> None:
 - **Третье**: эффективно.
 
 [здесь](https://example.com)
-`важно отметить` не считается.
+`важно отметить` не считается. Сабагент == холодный старт, путь => разбор.
+oaicite leftover.
 
 ```python
 print("важно отметить")
@@ -340,7 +356,9 @@ print("важно отметить")
     assert "W01" in codes, codes
     assert "F11" in codes, codes
     assert "F32" in codes, codes
+    assert "A02" in codes, codes
     assert all("print" not in item.evidence for item in findings)
+    assert all("==" not in item.evidence and "=>" not in item.evidence for item in findings)
     print("self-test: ok")
 
 
