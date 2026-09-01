@@ -1,0 +1,15 @@
+# Optional context template. Copy beside a draft and fill only useful fields.
+mode: standard
+language: ru
+genre: null
+platform: null
+audience: null
+goal: null
+structure: preserve
+tone: null
+author_context: null
+style_samples: []
+protected: []
+must_keep: []
+must_remove: []
+notes: null

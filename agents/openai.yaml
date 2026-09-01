@@ -1,0 +1,6 @@
+interface:
+  display_name: "Prose Polish RU"
+  short_description: "Убирает воду, нейрослоп и логический мусор"
+  default_prompt: "Use $prose-polish-ru to polish this Russian draft while preserving its facts, structure, links, code, and authorial voice."
+policy:
+  allow_implicit_invocation: false
