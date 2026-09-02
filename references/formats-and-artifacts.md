@@ -3,7 +3,9 @@
 AI slop is not limited to sentences. Models often damage information design:
 they invent rows, duplicate prose in tables, turn everything into bullets,
 fabricate links, over-format headings, and alter code while polishing. Review
-each artifact by its function.
+each artifact by its function. When iterating the skill, this file owns
+Markdown, tables, lists, links, citations, images, and code — not `§N`
+prose-marker classes.
 
 ## 1. Headings
 
@@ -38,6 +40,8 @@ Common AI artifacts:
 
 Use a list when readers need scanning, comparison, sequence, inventory, options,
 or independent conditions. Use prose when items form one developing argument.
+In article/post register, default to paragraphs. Do not turn a cluster of
+related sentences into bullets because that looks tidy.
 
 Check:
 
@@ -294,7 +298,9 @@ Common AI artifacts:
 Check:
 
 - mathematical operators remain exact;
-- hyphen, minus, en dash, em dash, and range dash retain their roles;
+- hyphen, minus, en dash, em dash, and range dash retain their roles in
+  code, ranges, and identifiers; in article/post prose do not *install* em
+  dashes the source did not use;
 - multiplication sign `×` is not rewritten as letter `x`;
 - inequalities remain correct;
 - decimal separators match locale and source;
@@ -330,7 +336,9 @@ clean lint report.
 - use lists only when they outperform compact prose;
 - links may need visible URLs depending on publishing workflow;
 - hashtags, greeting, question, emoji, and `P.S.` are optional conventions;
-- do not force a hook or CTA when the message already lands.
+- do not force a hook or CTA when the message already lands;
+- if the channel already uses a greeting slot, hashtag taxonomy, or `P.S.`,
+  KEEP that frame. Diagnose the fill, not the house style.
 
 ### Tutorial
 

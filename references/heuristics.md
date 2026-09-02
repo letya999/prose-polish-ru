@@ -2,6 +2,8 @@
 
 Use this as a review map, not a list of automatic bans. A feature becomes a
 problem only when it harms meaning, evidence, pacing, genre, or voice.
+When iterating the skill, this file owns argument, structure, rhythm,
+diction, and voice questions — not KEEP examples and not `§N` marker classes.
 
 ## A. Purpose and reader value
 
@@ -249,8 +251,10 @@ problem only when it harms meaning, evidence, pacing, genre, or voice.
 182. Did uncertainty survive?
 183. Did a mild claim become dramatic?
 184. Did a technical term become less precise?
-185. Did correct typography become typewriter punctuation?
-186. Did a valid list become awkward prose?
+185. In article/post, did the edit install `«ёлочки»`, decorative em dashes,
+     chopped mini-sentences, or a list that used to be one thought? In
+     academic/legal, did source book typography get flattened?
+186. Did a useful checklist become a paragraph, or did a fake list survive?
 187. Did a useful table become duplicated in prose?
 188. Did the edit introduce a new AI pattern while removing another?
 189. Can any remaining block be deleted without loss?

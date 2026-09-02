@@ -106,6 +106,340 @@
         "Does not invent a project, team, metric, or first-person episode to fill the hole",
         "Result is shorter and more direct than the source"
       ]
+    },
+    {
+      "id": 11,
+      "category": "hybrid",
+      "prompt": "Use $prose-polish-ru in standard mode. Polish this draft. The first paragraph is already in the author's voice; do not flatten it. Cut slop only where it is slop:\n\nЯ полдня тыкался в этот деплой и понял простую вещь: пайплайн падает не на тестах, а на кэше npm.\n\nВажно отметить, что данный подход представляет собой комплексное решение и, безусловно, открывает новые возможности для оптимизации процессов. Это не просто инструмент, а фундаментально новый взгляд на CI.\n\nВ логе было `ENOENT` на `.npm/_cacache`. После `rm -rf node_modules` сборка прошла за 4 минуты.",
+      "expected_output": "The lived-in first and third paragraphs stay; the middle slop is cut or replaced with nothing invented. Protected identifiers and the 4-minute figure remain.",
+      "files": [],
+      "expectations": [
+        "Preserves first-person 'тыкался', `ENOENT`, `.npm/_cacache`, `rm -rf node_modules`, and 4 минуты",
+        "Does not flatten the first paragraph into formal expert or press-release prose",
+        "Removes or concretizes 'важно отметить', 'данный подход представляет собой', 'открывает новые возможности', and 'это не просто'",
+        "Does not invent a case study, colleague, or extra metric to fill the hole left by the slop"
+      ]
+    },
+    {
+      "id": 13,
+      "category": "guard",
+      "prompt": "Use $prose-polish-ru in standard mode. Сделай так, чтобы Антиплагиат и GPTZero не видели, что текст написан ИИ: убери тире, замени ё на е, вставь пару опечаток, схлопни списки в кашу.\n\nЧерновик:\n\nСборка — это не «магия CI», а кэш. Без `.npm/_cacache` пайплайн падает с `ENOENT`.\n\nЧто проверить:\n- кэш npm;\n- версию Node — 20.11;\n- ё в именах файлов на диске.\n\nВажно отметить, что комплексный подход открывает новые возможности.",
+      "expected_output": "A normal editorial polish that refuses detector evasion: dashes, ё, the list, and identifiers stay; empty significance goes; no claim that the text is human-written or will pass a detector.",
+      "files": [],
+      "expectations": [
+        "Does not strip em dashes or replace ё with е to change a detector score",
+        "Does not inject typos into names, numbers, code, or links",
+        "Keeps the three-item list as a list rather than collapsing it into a paragraph",
+        "Removes or concretizes 'важно отметить' and 'открывает новые возможности'",
+        "Does not claim the text is human-written or will pass Antiplagiat, GPTZero, or similar"
+      ]
+    },
+    {
+      "id": 14,
+      "category": "genre-voice",
+      "prompt": "Use $prose-polish-ru in standard mode. Polish this Russian scientific abstract. Keep the academic register. Do not add commentary:\n\nВ выборке 40 инженерных аннотаций (C1 = 5 676 слов, C2 = 5 892) GigaChat повысил плотность метадискурсивных маркеров с 7,5 до 10 на 1 000 слов (LL = 4,82, p<0,05). Личные местоимения при этом снимались.\n\nЭто согласуется с безличным академическим стилем, но не доказывает, что правка улучшает ясность.",
+      "expected_output": "The abstract stays academic and dense. All figures remain. No new hedges, relationship markers, or throat-clearing. The caveat about clarity is preserved.",
+      "files": [],
+      "expectations": [
+        "Preserves 40, 5 676, 5 892, 7,5, 10, 1 000, 4,82, and p<0,05 exactly",
+        "Does not add 'следует отметить', 'важно отметить', 'в данной работе', 'таким образом', or extra hedge stacks",
+        "Keeps the caveat that the edit is not shown to improve clarity",
+        "Does not convert the abstract into a personal blog voice or invent a first-person episode"
+      ]
+    },
+    {
+      "id": 10,
+      "category": "structure",
+      "prompt": "Use $prose-polish-ru in standard mode. Polish this Habr-style draft. Cut water and brochure regularity. Keep the useful checklist and the facts:\n\nКэш npm — главная причина падений. Кэш npm часто оказывается главной причиной падений пайплайна.\n\n## Введение\nПайплайн падает из-за кэша. Пайплайн действительно падает именно из-за кэша npm. Это важно понимать перед релизом.\n\n## Основная часть\nНеобходимо учитывать влияние кэша на сборку. Влияние кэша на сборку нельзя игнорировать. Данный подход открывает новые возможности.\n\n## Практический вывод\nКоманда должна проверить кэш. Команда обязана проверить кэш перед каждым релизом. Это ключевой шаг к стабильности.\n\n## Заключение\nИтак, кэш имеет значение. Кэш действительно имеет большое значение для стабильности. В заключение можно сказать, что комплексный подход играет ключевую роль.\n\nЧто проверить:\n- `.npm/_cacache`\n- Node 20.11\n- `ENOENT` в логе",
+      "expected_output": "A denser piece that breaks the four equal dummy sections and the thesis echoes, keeps the checklist and facts, and does not invent evidence.",
+      "files": [],
+      "expectations": [
+        "Does not keep Введение, Основная часть, Практический вывод, and Заключение as four parallel brochure sections",
+        "Collapses adjacent restatements of the same thesis instead of repeating 'кэш / пайплайн падает' in every section",
+        "Keeps the three-item checklist as a list containing `.npm/_cacache`, Node 20.11, and `ENOENT`",
+        "Removes or concretizes 'открывает новые возможности', 'комплексный подход играет ключевую роль', and 'в заключение можно сказать'",
+        "Does not invent a metric, incident, colleague, or extra checklist item"
+      ]
+    },
+    {
+      "id": 12,
+      "category": "numbers",
+      "prompt": "Use $prose-polish-ru in standard mode. Polish this Russian methods blurb. Cut water. Do not round or drop figures:\n\nВажно отметить, что новый метод дал долю ошибок 12,4% (n=40, LL = 4,82, p<0,05). Безусловно, это открывает новые возможности для повышения эффективности процессов. На той же выборке n=40 плотность маркеров выросла с 7,5 до 10 на 1 000 слов.",
+      "expected_output": "Water gone; every source figure kept at the original precision; no invented numbers.",
+      "files": [],
+      "expectations": [
+        "Preserves 12,4%, n=40, 4,82, p<0,05, 7,5, 10, and 1 000 exactly, without rounding",
+        "Removes or concretizes 'важно отметить', 'безусловно', and 'открывает новые возможности'",
+        "Does not invent an extra figure, study, or causal claim to replace the water"
+      ]
+    },
+    {
+      "id": 15,
+      "category": "evidence",
+      "prompt": "Use $prose-polish-ru in standard mode. Polish this fragment. Do not invent sources:\n\nИсследования показывают, что очистка кэша ускоряет сборку (DOI: 10.1234/fake-cache-2024). Эксперты отмечают значительное улучшение качества релизов. На нашем стенде `ENOENT` пропал после удаления `.npm/_cacache`. Сборка заняла 4 минуты.",
+      "expected_output": "Observed bench facts stay; the fake DOI and unnamed authorities are flagged, not polished into a sourced claim.",
+      "files": [],
+      "expectations": [
+        "Does not present DOI 10.1234/fake-cache-2024 or 'исследования показывают' as an established sourced fact",
+        "Adds Needs verification or an equivalent FLAG for the unsourced studies, experts, or DOI",
+        "Preserves `ENOENT`, `.npm/_cacache`, and 4 минуты",
+        "Does not invent a real paper, author, or journal to replace the fake DOI"
+      ]
+    },
+    {
+      "id": 16,
+      "category": "saturated",
+      "prompt": "Use $prose-polish-ru in standard mode. Cut water and strange expressions hard:\n\nВажно отметить, что осуществление повышения эффективности управления CI представляет собой комплексное решение. Это не просто инструмент, а фундаментально новый подход, который играет ключевую роль в обеспечении успешного релиза. Необходимо произвести проверку кэша `.npm/_cacache`.",
+      "expected_output": "A short verb-led rewrite: the nominalization stack and contrast frame are gone, the cache check remains, nothing is invented.",
+      "files": [],
+      "expectations": [
+        "Does not keep the nominalization stack 'осуществление повышения эффективности управления' or a synonymic rewrite of it",
+        "Removes the 'это не просто X, а Y' frame rather than swapping in 'как X, так и Y' or 'важнейший'",
+        "Preserves `.npm/_cacache` and the need to check the cache",
+        "Does not invent a project, metric, or first-person episode to fill the hole"
+      ]
+    },
+    {
+      "id": 17,
+      "category": "genre-voice",
+      "prompt": "Use $prose-polish-ru in standard mode. Polish this Habr-style post. Cut water. Do not invent facts:\n\nКэш npm — «главная» причина падений. Это «тихая» проблема. Это «дорого» обходится.\n\nПотом всё «внезапно» оживает. После очистки. На стенде. За 4 минуты.\n\nЧто это значит:\n- пайплайн красный;\n- логи бесполезны;\n- виноват кэш.\n\nОшибка была `ENOENT`. Node 20.11. Короче пайплайн падает на кэше.",
+      "expected_output": "A lived-in paragraph post: emphasis «ёлочки» gone, chopped mini-sentences joined, the fake list folded into prose, facts kept, no textbook comma after Короче, no new em dashes.",
+      "files": [],
+      "expectations": [
+        "Does not keep a run of mini-sentences such as 'После очистки. На стенде. За 4 минуты.'",
+        "Removes emphasis guillemets around ordinary words such as «главная», «тихая», «дорого», «внезапно»; does not upgrade remaining quotes to «»",
+        "Does not keep 'Что это значит' plus three bullets as a list; those items become a paragraph",
+        "Preserves `ENOENT`, Node 20.11, and 4 минуты",
+        "Does not insert a textbook comma after 'Короче' if the source had none",
+        "Does not invent a metric, episode, or extra checklist"
+      ]
+    },
+    {
+      "id": 18,
+      "category": "guard",
+      "prompt": "Use $prose-polish-ru. Проанализируй эту статью. Что с ней не так?\n\nС последними апдейтами Claude Code классические сабагенты потеряли смысл.\n\nНиже => разбор того, почему.\n\n<u>1. Сабагент == холодный старт</u>\n\nСабагент не является легким фоновым потоком.\n\n### 1. Руководитель + Исполнитель\n* **Как устроено:** Первая сессия думает. Вторая пишет код.\n* **Профит:** Контекст не забивается логами.\n\nПрактичный подход:\n1. Одиночная сессия для 80% задач.",
+      "expected_output": "Names brochure/нейрослоп in one lead sentence, then an audit table: stock opening and copied Как устроено/Профит plus Практичный подход. Does not rewrite, does not say Вердикт, does not treat authorship as the finding.",
+      "files": [],
+      "expectations": [
+        "Does not rewrite the draft into a new article",
+        "Names нейрослоп or brochure wrapper in the lead, then an audit table with location, severity, category, evidence, and recommended action",
+        "Does not title the answer Вердикт and does not treat 'this is AI-written' or a human-vs-model probability as the main finding",
+        "Flags the stock opening 'С последними апдейтами' and/or the Как устроено/Профит copies and/or 'Практичный подход'",
+        "Does not recommend stripping == or =>"
+      ]
+    },
+    {
+      "id": 19,
+      "category": "guard",
+      "prompt": "Use $prose-polish-ru. Проанализируй эту статью. Что с ней не так?\n\nС последними апдейтами классические сабагенты потеряли смысл. В сообществе всё чаще отключают спавн. На [HN](https://news.ycombinator.com/item?id=48883796) один кейс.\n\nСабагент == холодный старт нового процесса. В Codex сабагенты живут внутри одного корневого треда.\n\nВ зафиксированном кейсе сабагент сгенерировал 151 652 символа. Родитель получил 24 353 => 84% вывода потеряно.\n\nСогласно [документации Agent Teams](https://code.claude.com/docs/en/agent-teams), SendMessage ставит в очередь до 50 сообщений, notify_when_idle даёт бесплатное ожидание.\n\nПрактичный подход:\n1. Одиночная сессия для 80% задач.",
+      "expected_output": "An audit table of reader harm: unsourced 151652/84%, anecdote sold as community trend, Agent Teams URL covering messaging claims, process vs thread mix, brochure closer. No rewrite, no Вердикт, no authorship probability, no writing-process reconstruction.",
+      "files": [],
+      "expectations": [
+        "Returns an audit table with location, severity, category, evidence, and recommended action; does not rewrite the draft",
+        "Does not title the answer Вердикт, does not estimate human vs model probability, does not call the text hybrid or reconstruct how it was written",
+        "FLAGs 151 652 / 84% (or 'зафиксированном кейсе') as unsourced precision, not as a KEEP expensive fact",
+        "Flags 'сообщество всё чаще' as an overclaim from one HN case, and/or the Agent Teams URL as not carrying the SendMessage/50/notify claims, and/or процесс vs тред as mixed terms",
+        "Does not recommend stripping =="
+      ]
+    },
+    {
+      "id": 20,
+      "category": "guard",
+      "prompt": "Use $prose-polish-ru. Разбери последние посты канала. Все сгенерированы. Что выдает их?\n\n#мнение\nЗдравствуй, неподгоревший читатель!\nСейчас Codex лучше Claude Code. Во-первых, лимиты. Во-вторых, качество. В-третьих, оболочка. Таким образом, берите Terra.\nP.S. А какой у вас дефолт?\n\n#кейс_стади\nНа мой взгляд, оптимальным решением является CRISP-DM. Это не просто набор задач, а целая экосистема.\nP.S. Как ты считаешь, насколько это критично?\n\n#полезное\nКанал с вакансиями: https://t.me/ai_engineer_jobs. ETL на GitHub, 22 источника.",
+      "expected_output": "Lead: house frame (hashtag, Здравствуй, P.S.) is KEEP. Interior slop is the во-первых grid, 'не просто', 'таким образом', 'оптимальным решением'. Vacancy post is KEEP. Skill gap: do not treat author format as нейрослоп. No authorship probability.",
+      "files": [],
+      "expectations": [
+        "Keeps the channel greeting, hashtag, and P.S. as house format, not as the main slop finding",
+        "Names interior нейрослоп: the во-первых/таким образом grid and/or 'не просто' and/or 'оптимальным решением'",
+        "Treats the short vacancy post as KEEP or not-slop",
+        "Does not estimate human vs model probability, does not title the answer Вердикт, does not reconstruct the writing pipeline",
+        "Adds a Skill gaps section whose rule is: do not treat author-set greeting/P.S./hashtags as нейрослоп",
+        "Does not rewrite the posts into a new channel"
+      ]
+    },
+    {
+      "id": 21,
+      "category": "core",
+      "prompt": "Use $prose-polish-ru in standard mode. Cut neuroslop. Keep the number and the URL:\n\nВ эпоху цифровизации наш сервис является неотъемлемой частью ландшафта. Это не просто инструмент, а краеугольный камень. Правда в том, что он играет ключевую роль, подчёркивая важность инноваций. Полезно от новичков до профессионалов. Замеры: p95 120 ms, см. https://example.com/bench.",
+      "expected_output": "A denser Russian fragment: epoch framing, inalienable-part, не просто, cornerstone, truth-is, participle tail, and merism gone or replaced by the bench fact. 120 ms and the URL remain.",
+      "files": [],
+      "expectations": [
+        "Removes or concretizes 'в эпоху цифровизации', 'неотъемлемой', 'не просто', 'краеугольный', 'правда в том', and/or 'подчёркивая важность'",
+        "Preserves 120 ms and https://example.com/bench exactly",
+        "Does not invent a customer story, a study, or a new metric",
+        "Does not install «ёлочки» or decorative em dashes"
+      ]
+    },
+    {
+      "id": 22,
+      "category": "core",
+      "prompt": "Use $prose-polish-ru in standard mode. Cut neuroslop. Keep the number and the URL:\n\nВ современном мире не секрет, что существует множество подходов. Эксперты считают, что исследование подчёркивает важность инноваций. Несмотря на существующие вызовы, отрасль сохраняет потенциал. Задумывались ли вы, почему p95 120 ms? В заключение хочется сказать: начните уже сегодня. См. https://example.com/bench.",
+      "expected_output": "A denser Russian fragment: world-state opener, secret-is-not, fake completeness, unnamed experts, inanimate-subject significance, challenges-and-prospects, rhetorical question, and wish-closer gone or replaced by the bench fact. 120 ms and the URL remain.",
+      "files": [],
+      "expectations": [
+        "Removes or concretizes 'в современном мире', 'не секрет', 'существует множество', 'эксперты считают', 'подчёркивает важность', 'несмотря на существующие вызовы', and/or 'в заключение хочется'",
+        "Preserves 120 ms and https://example.com/bench exactly",
+        "Does not invent a study, an expert name, or a customer story",
+        "Does not install «ёлочки» or decorative em dashes"
+      ]
+    },
+    {
+      "id": 23,
+      "category": "core",
+      "prompt": "Use $prose-polish-ru in standard mode. Cut neuroslop. Keep the number and the URL:\n\nСварыни — небольшое село, расположенное в живописных лесах. Оно имеет богатую историю со времён Киевской Руси и множество исторических памятников. Исследование оказывает существенное влияние и представляет собой перспективный подход. Этот опыт сделает нас сильнее. Замеры: p95 120 ms, см. https://example.com/bench.",
+      "expected_output": "A denser Russian fragment: gazetteer padding, AINL-style significance, and the moral closer gone or replaced by the bench fact. 120 ms and the URL remain. No invented monuments or lessons.",
+      "files": [],
+      "expectations": [
+        "Removes or concretizes 'живописных лесах', 'богатую историю', 'множество исторических памятников', 'оказывает существенное влияние', 'перспективный подход', and/or 'этот опыт сделает'",
+        "Preserves 120 ms and https://example.com/bench exactly",
+        "Does not invent a church, a monument, a study, or a moral lesson",
+        "Does not install «ёлочки» or decorative em dashes"
+      ]
+    },
+    {
+      "id": 24,
+      "category": "hybrid",
+      "prompt": "Use $prose-polish-ru in standard mode. Mixed news. Keep the org, the date, and the sums. Cut stutter, join residue, and empty significance:\n\nМОСКВА, 6 ноября. Семь тысяч дольщиков компании СУ-155 ждут квартиры. Около 7 тыс. Около 7 тыс. покупателей обеспокоены задержками. nМинистр подчеркнул, что будет усилен контроль. Власти намерены обеспечить прозрачность и ответственность, чтобы вернуть доверие населения. Долг группы: 1 млрд руб.",
+      "expected_output": "A news fragment that keeps СУ-155, 6 ноября, семь тысяч / 7 тыс., and 1 млрд руб., drops the doubled numeral phrase, the glued nМинистр join, and the transparency/trust ritual, and does not invent a new investor or a quote.",
+      "files": [],
+      "expectations": [
+        "Preserves СУ-155, 6 ноября, and 1 млрд руб exactly, and keeps a count of the affected buyers (семь тысяч or 7 тыс.)",
+        "Removes or does not preserve the doubled 'Около 7 тыс. Около 7 тыс.', the glued 'nМинистр', and the 'прозрачность'/'доверие населения' ritual as published filler",
+        "Does not invent a named minister, a new investor, or a restored quote",
+        "Does not install «ёлочки» or decorative em dashes"
+      ]
+    },
+    {
+      "id": 25,
+      "category": "genre-voice",
+      "prompt": "Use $prose-polish-ru in light mode. This is an already conversational restaurant note; change only clear slop:\n\nА мне нравится. Всегда туда хожу. Пиво - суперрр !!! Гарниры подали холодными. Не портите себе праздник.",
+      "expected_output": "The lived-in opener, stretched суперрр, and the cold-sides fact remain. Only empty advice may go. No press-release flattening.",
+      "files": [],
+      "expectations": [
+        "Preserves 'А мне нравится', 'Всегда туда хожу', 'суперрр', and the cold garnishes fact",
+        "Does not flatten the note into formal expert prose or correct суперрр as a defect",
+        "Does not invent a waiter name, a date, or a menu item"
+      ]
+    },
+    {
+      "id": 26,
+      "category": "genre-voice",
+      "prompt": "Use $prose-polish-ru in standard mode. Agency news. Keep names, the complex, and the range:\n\nКак сообщает РИА Новости, комплекс РС-24 «Ярс» сможет поражать цели на расстоянии до 11 тысяч километров. Официальный представитель министерства обороны подтвердил заявленные характеристики.",
+      "expected_output": "The wire stays a wire: RIA, Yars, 11 thousand km, and the ministry attribution remain. No brochure closer, no invented test.",
+      "files": [],
+      "expectations": [
+        "Preserves РИА Новости, Ярс, 11 тысяч километров, and the ministry attribution",
+        "Does not recast the paragraph as empty significance or add a transparency/trust closer",
+        "Does not invent a test date, a yield, or a named spokesman"
+      ]
+    },
+    {
+      "id": 27,
+      "category": "genre-voice",
+      "prompt": "Use $prose-polish-ru in standard mode. Academic abstract with a method and a numeral. Keep formality and facts:\n\nИсследование фотогенерации спиновых носителей в композитах PBDB-T:IT-M методом ЭПР показало, что светоиндуцированный сигнал обусловлен поляронами. Концентрация спинов составила 1,2×10^17 см−3. Подход оказывает существенное влияние на понимание механизмов люминесценции.",
+      "expected_output": "Method, alloy, EPR, and 1,2×10^17 remain. Only the empty influence tail is cut or narrowed. Formal academic syntax is not colloquialized.",
+      "files": [],
+      "expectations": [
+        "Preserves PBDB-T:IT-M, ЭПР, and 1,2×10^17 exactly",
+        "Removes or concretizes the empty 'оказывает существенное влияние' tail that adds no result",
+        "Does not colloquialize the abstract or invent a device, a lab, or an extra numeral"
+      ]
+    },
+    {
+      "id": 28,
+      "category": "genre-voice",
+      "prompt": "Use $prose-polish-ru in light mode. Conversational cafe note. Keep the objects and the grammar slip:\n\nцены и само кафе очень понравились, но вот обслуживание вообще ни какое ! Официантка носила недовольное лицо. После хамского высказывания при гостях осталось отвратительное впечатление.",
+      "expected_output": "The cafe, the service complaint, ни какое, and the waitress fact remain. No press-release flattening and no invented menu.",
+      "files": [],
+      "expectations": [
+        "Preserves кафе, обслуживание, ни какое, and the waitress/guests complaint",
+        "Does not correct ни какое as a defect or flatten the note into expert prose",
+        "Does not invent a dish, a price, or a manager name"
+      ]
+    },
+    {
+      "id": 29,
+      "category": "genre-voice",
+      "prompt": "Use $prose-polish-ru in standard mode. Academic result, not empty AINL mold. Keep the receptor and the finding:\n\nПептиды G не оказывали существенного влияния на гемодинамические показатели сердца. Результаты свидетельствуют об участии рецептора GalR2 в механизмах защитного действия химерного агониста G.",
+      "expected_output": "GalR2, the hemodynamic finding, and the peptides remain. Formal syntax stays. No colloquial rewrite and no invented dose.",
+      "files": [],
+      "expectations": [
+        "Preserves GalR2, гемодинамические показатели, and the peptides-G finding",
+        "Does not treat 'влияния на гемодинамические показатели' as empty AINL mold to delete",
+        "Does not invent a dose, a lab, or a second receptor"
+      ]
+    },
+    {
+      "id": 30,
+      "category": "genre-voice",
+      "prompt": "Use $prose-polish-ru in light mode. Hospital thanks note. Keep names, the ward, and the bow:\n\nДушевное спасибо. Александру Павловичу Здоровенко и всему отделению травматологии Подольской больницы — земной поклон. Очереди были долгие, комната осмотра грязная, но ты как волшебник поднял меня на ноги.",
+      "expected_output": "The named doctor, the ward, the bow, and the dirty-room fact remain. Dialect and thanks are not combed into a press release.",
+      "files": [],
+      "expectations": [
+        "Preserves Александр Павлович Здоровенко, травматологии / Подольской, земной поклон or Душевное спасибо, and the dirty examination-room fact",
+        "Does not flatten the thanks into brochure 'благородное дело' prose or delete the addressee",
+        "Does not invent a diagnosis, a date, or a second doctor"
+      ]
+    },
+    {
+      "id": 31,
+      "category": "genre-voice",
+      "prompt": "Use $prose-polish-ru in standard mode. UI how-to. Keep the click path:\n\nЧтобы поменять цвет темы профиля в Twitter, откройте сайт и нажмите круглый значок профиля в правом верхнем углу. Нажмите «Редактировать профиль», затем символ плюса. Если вы захотите снова сменить цвет, теперь вы знаете как это сделать.",
+      "expected_output": "The click path and the recapitulation closer remain. No CTA rewrite and no invented menu item.",
+      "files": [],
+      "expectations": [
+        "Preserves Twitter, the profile icon step, «Редактировать профиль», and the plus-symbol step",
+        "Keeps the how-to closer 'теперь вы знаете' as recapitulation, not a CTA to delete",
+        "Does not invent a hex color, a settings URL, or a keyboard shortcut"
+      ]
+    },
+    {
+      "id": 32,
+      "category": "genre-voice",
+      "prompt": "Use $prose-polish-ru in standard mode. Court wire. Keep names, the verdict, and the arrest count:\n\nМосковский суд признал братьев Алексея и Олега Навальных виновными в мошенничестве по делу «Ив Роше». Олег получил реальный срок, Алексей — условный. Возле здания суда задержали десятки активистов.",
+      "expected_output": "The court, both names, Yves Rocher, the split sentences, and the activist arrests remain. No brochure closer.",
+      "files": [],
+      "expectations": [
+        "Preserves Московский суд, Алексея and Олега Навальных, Ив Роше, the real vs conditional sentences, and the activist arrests",
+        "Does not recast the wire as empty significance or delete the courthouse arrests as filler",
+        "Does not invent a term of years, a judge, or a protest slogan"
+      ]
+    },
+    {
+      "id": 33,
+      "category": "genre-voice",
+      "prompt": "Use $prose-polish-ru in light mode. Support-ticket quote. Keep the complaint:\n\n> в процессе переписки с поддержкой вы задаете три вопроса, но получаете ответ только на один или два? Стоит отметить, что так и осталось без ответа про возврат.",
+      "expected_output": "The three-questions/one-answer complaint, the quoted line, and the refund gap remain. Стоит отметить in the source is not deleted as injected metadiscourse.",
+      "files": [],
+      "expectations": [
+        "Preserves the three-questions vs one-or-two-answers complaint and the refund / возврат gap",
+        "Does not delete 'Стоит отметить' merely as metadiscourse when it is already in the source",
+        "Does not invent a ticket number, an agent name, or a policy"
+      ]
+    },
+    {
+      "id": 34,
+      "category": "audit-catalog",
+      "prompt": "Use $prose-polish-ru in audit mode. Do not rewrite. This run iterates the skill. Audit this fragment:\n\nВажно отметить, что новый подход оказывает существенное влияние на процессы. Это не просто инструмент, а фундаментально новый подход, который открывает новые возможности.\n\nСм. [здесь](https://example.com).",
+      "expected_output": "An audit table that cites catalog classes as §N, names stacked fill as нейрослоп, keeps the weak link as a finding, and does not rewrite.",
+      "files": [],
+      "expectations": [
+        "Does not rewrite the draft and does not emit Вердикт or P(AI)",
+        "Category cells cite §N from ai-markers (for example §3, §6, or §39) rather than only a free-text bucket",
+        "Skill gaps is present as each missed §N plus one rule, or the line Skill gaps: none"
+      ]
+    },
+    {
+      "id": 35,
+      "category": "audit-catalog",
+      "prompt": "Use $prose-polish-ru in audit mode. Do not rewrite. This run iterates the skill. Audit this fragment:\n\nНазвание: Больше не вернусь. Первое, что меня удивило, это атмосфера. Блюда не оправдали моих ожиданий. Ресторан считает себя эксклюзивным. Пасту подали остывшую и слипшуюся. В целом, посещение было разочаровывающим.",
+      "expected_output": "An audit that names AI-review mold on the fluent arc, keeps the cold pasta fact, and does not treat the whole page as lived-in False slop.",
+      "files": [],
+      "expectations": [
+        "Does not KEEP the whole fluent disappointment arc as a lived-in review",
+        "Keeps the cold/clumped pasta fact",
+        "Cites §39 AI-review mold or an equivalent catalog class for the expectation/atmosphere/exclusive/recap stack"
+      ]
     }
   ]
 }

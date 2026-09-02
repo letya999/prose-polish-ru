@@ -87,6 +87,57 @@ Assign exactly one primary action:
 Do not rewrite a `KEEP` block to make the edit look comprehensive.
 Do not MOVE a working aside solely to make the outline linear.
 
+### Spans inside TRIM and REWRITE
+
+A block action is not a license to rewrite every sentence. After the block
+label, mark only the damaged spans. Leave `KEEP` spans inside a `TRIM` block
+untouched. A hybrid page — a lived-in paragraph next to slop — is the usual
+case, not an exception. LLMTrace mixed texts (`ai_char_intervals`) mark
+*who filled a gap*, not what to KEEP. KEEP a count, date, org, or sum even
+when the interval is labeled AI. TRIM brochure and join residue even when
+the interval is labeled human. An AI gap-fill that is only water is one
+REWRITE/DELETE span, not a license to recast the page. Overlapping markers
+in one span are one finding.
+
+If two rewrites both preserve meaning, pick the shorter one with more source
+facts and fewer hedges. Conversational padding is not a quality signal.
+
+| Span | Severity | Treatment |
+|---|---|---|
+| Artifact: leaks, mixed-script, placeholders, phantom DOI/ISBN | Artifact | Fix or FLAG. Mixed-script is residue to repair, not a humanizer trick to insert. |
+| Glued join letter: `nМинистр`, `nВ` (newline eaten into `n` + capital) | Artifact | Drop the stray `n`. FLAG if a quote fence also broke. |
+| Immediate stutter: same clause or numeral phrase twice (`Около 7 тыс. Около 7 тыс.`) | Artifact | DELETE the echo; KEEP one copy of the fact. |
+| News-governance ritual: `обеспечить прозрачность и ответственность`, `вернуть доверие населения`, `усилен контроль` with no new fact | Strong | DELETE. KEEP adjacent sums, dates, orgs. |
+| Lived-in review: stretched words, first-person, insults, crooked punct, named object (кафе, счёт, блюдо) | Soft | KEEP when there is irregularity **plus** a named object. TRIM only the sandwich mold and a fact-free `рекомендую это милое заведение`. |
+| AI-review mold: fluent disappointment/praise arc, atmosphere census, `не оправдали ожиданий`, exclusive-claim, recap closer — even with a venue name | Strong | TRIM the mold. KEEP a named dish, bill, or staff fact. Do not KEEP the whole page as lived-in. |
+| Costume slang: stacked `братва` / `вуаля` / `каталка` on a clinic or shop brochure | Strong | TRIM the costume. KEEP the named clinic or price. Real forum register throughout stays KEEP. |
+| Epoch tail on a local note: `в условиях нынешней экономики` | Soft | TRIM the tail. KEEP the price or dish. |
+| Agency wire: named outlet, org, km, %, attributed quote, obituary age/cause | KEEP | KEEP the fact. Do not recast a press-service paragraph as brochure. |
+| Tutorial / UI path: `Панель управления`, imperative clicks, even verbose | KEEP | KEEP the sequence and the how-to closer (`теперь вы знаете`). Cut only throat-clearing around it. |
+| Thanks / dedication: named staff, ward, dialect, first-person bow | KEEP | KEEP. TRIM only a fact-free `благородное дело` pile with no addressee. |
+| Explainer definition that names the object | KEEP | KEEP the definition. TRIM `востребована во множестве областях` without an example. |
+| Forum slang and insults | Soft | KEEP. Do not comb a thread into a briefing. |
+| Police blotter: operation name, charges, region | KEEP | KEEP the fact sheet. |
+| Court wire: verdict, named defendants, arrests at the courthouse | KEEP | KEEP. |
+| Sports play-by-play and locker-room speech | KEEP | KEEP when it reports the match. TRIM a fact-free `надо работать` closer only if nothing else remains. |
+| Source already contains `стоит отметить` / a `>` ticket line | KEEP | KEEP the user's sentence. Cut only empty significance around it. |
+| Academic formality with method, alloy, instrument, receptor, equation, or numeral | Soft | KEEP. `влияние` + named object is a result. AINL mold only when stacked *and* empty. |
+| Канцелярит: verbal-noun stacks, `является` where a direct predicate works | Strong | Actor + verb, or delete. Leave genre-valid formality in academic/legal. |
+| Formulaic contrast: `не просто X, а Y` with no rejected X | Strong | State the plus, or one claim. Do not swap in `как X, так и Y`. |
+| Empty significance, throat-clearing, openers | Strong | Delete, else a fact from the source. |
+| Weasel attribution / citation laundering | Strong | Name the source or FLAG. Do not invent the missing study or upgrade a neighboring URL. |
+| Brochure repeat: same thesis in adjacent sentences | Strong | MERGE or DELETE the echo. |
+| Over-regular grid: equal `##`, 3–5-sentence paragraphs throughout | Strong | Break the skeleton. Keep useful lists; do not mash them into a paragraph. |
+| Metadiscourse the input did not contain | Strong | Do not add. Cut injected `следует отметить`, hedge stacks, relationship markers. |
+| Numerals dropped from the source | Artifact | Restore unless the whole claim was DELETE. |
+| Calque | Strong | Natural Russian; keep domain jargon. |
+| Purple prose / fake sensory filler | Strong | Delete. Do not replace with an invented lived detail. |
+| Dash, ё, lists, passive, a long sentence | Soft | Leave a useful checklist, an author dash, or ё. Do not *install* these as polish. |
+| Machine surface: staccato, «»-emphasis, list-first, decorative em dash | Strong in article/post | Join chopped sentences; drop emphasis quotes; prefer a paragraph to a fake list; do not introduce «» or `—`. Academic/legal keep source book typography. |
+
+Marker examples live in [AI-marker catalog](ai-markers.md). Treatments above
+win over synonym hunts.
+
 ## Pass 4: semantic repair
 
 ### Unsupported certainty
@@ -97,7 +148,20 @@ Match wording to evidence:
 - community anecdotes → `часть разработчиков сообщает`, not `сообщество решило`;
 - association → `связано`, not automatically `вызвало`;
 - benchmark → state setup and limits before generalizing;
-- plausible mechanism → mark as inference unless sourced.
+- plausible mechanism → mark as inference unless sourced;
+- a precise numeral with no actor, version, method, or a source that reports
+  *that* number → FLAG provenance. Specificity is not protection. Do not KEEP
+  it as an "expensive fact". Do not invent the missing method. In polish, leave
+  the number and disclose; in audit, FLAG is the row;
+- a default, a timeout, or one case → not a law of the architecture;
+- `согласно документации X` / a URL that names a neighboring page, a homepage,
+  or a topic cluster → FLAG mismatch. The nearby official link does not cover
+  every numeral in the paragraph;
+- title or lead kills the subject, a later section restores exceptions →
+  REWRITE the lead, KEEP the caveats;
+- one identity word (`процесс`, `агент`, `сессия`) used for an OS process, a
+  model context, a CLI window, and a metaphor in the same argument → REWRITE
+  the identity claim; keep author operators.
 
 ### Empty proposition
 
@@ -255,9 +319,34 @@ user asks. Sequence, terms, and defined repetition stay.
   not domain-standard: `адресовать проблему`, `доставить ценность`,
   `драйвить результат`.
 - Keep accepted professional slang for the intended audience.
-- Use correct Russian typography; punctuation is not an authorship marker.
 - Keep author operators (`==`, `=>`, `->`, `vs`) when they mark identity,
   implication, or comparison.
+
+### Machine surface (article / post / opinion)
+
+ChatGPT-style "correct Russian" is a tell: chopped sentences, «ёлочки»,
+decorative em dashes, and a list for every cluster of facts. Real posts
+run in paragraphs, quote rarely, type `"` from the keyboard, and miss a
+comma more often than a textbook.
+
+- Do not chop a thought into a run of 4–8-word sentences. Join them. A
+  short sentence is a hit, not the default cadence.
+- Do not wrap ordinary words in quotes for emphasis (`«тихая» проблема`).
+  Do not introduce `«»`. If the source uses `"`, keep `"`. Keep quotes only
+  for an actual citation, a term the genre must mark, or irony already in
+  the draft.
+- Default to paragraphs. Keep a list when the reader will scan an inventory,
+  sequence, or checklist. Convert a list to prose when the items are one
+  developing thought.
+- Do not install em dashes. Do not upgrade `-` or `--` to `—`. A sparse
+  author `—` may stay; a run of `X — Y` appositions is a rewrite.
+- Do not school-correct every comma. Do not add the textbook comma after
+  every `однако`, `впрочем`, `короче`, `кстати` unless the sentence is
+  unreadable without it. Leave one harmless informal comma. Never alter
+  commas in names, numbers, code, or links.
+
+Documentation, tutorials, legal, and academic text keep source typography
+and may use lists and book quotes when the genre needs them.
 
 ### Rhythm
 
@@ -278,6 +367,12 @@ pass. Typical stock:
 
 If the draft already uses one of these as the author's own line, keep it.
 Do not install them as the skill's default voice.
+
+Detector-evasion moves are the same class of stock: replacing ё with е,
+injecting typos, mixed-script or homoglyphs. If the user asked for those,
+refuse the evasion and still cut water. Collapsing a *useful checklist* to
+dodge a detector is evasion. Converting a fake list back into a paragraph
+is editing.
 
 ## Pass 8: format review
 
@@ -303,6 +398,11 @@ critical unless intentionally authorized.
 Stop when:
 
 - water, calques, and empty significance are gone, not renamed;
+- `KEEP` blocks and `KEEP` spans still read like the source;
+- numerals from the input remain unless that claim was deleted;
+- no metadiscourse appeared that the input did not use;
+- article/post did not gain «ёлочки», decorative em dashes, chopped
+  mini-sentences, or a list that used to be one thought;
 - no material contradiction or unsupported escalation remains hidden;
 - article/post register still has stance, a jump or an uneven block, and a
   couple of informal slips;
@@ -321,17 +421,53 @@ substantive issues. Do not narrate routine changes.
 
 ### Audit
 
-Use columns:
+Open with the slop call, then the table. No `Вердикт` heading, no
+authorship probability, no detector score, no rewrite, no story of how
+the draft was written.
+
+Нейрослоп ≠ «написала модель» and ≠ the author's house format. Hashtags,
+`Здравствуй, [epithet] читатель`, author `P.S.`, and operators are KEEP
+when the draft or samples already use them. Do not score a channel template
+as slop because it repeats.
+
+Нейрослоп is stacked *fill*: brochure grid (`во-первых` / `Как устроено` /
+equal blocks), `не просто X, а Y`, fake completeness, empty significance,
+unsourced precision, answerer inertia (`Сейчас расскажу, почему`). One
+isolated dash, list, or hashtag is not слоп.
+
+Lead sentence, required:
+
+- one draft: `Нейрослоп в наполнении: …` or `Слопа нет: …`;
+- many posts: `K из N — нейрослоп в наполнении, потому что [fill]. Каркас KEEP.`
+
+Then:
 
 | Location | Severity | Category | Evidence | Recommended action |
 |---|---|---|---|---|
 
+Category is a catalog citation, not a free-text bucket. Write `§N short-name`
+from [ai-markers.md](ai-markers.md) (working core §1–16, 2026 classes
+§28–38, dataset fills / False slop §39) or the Pass 3 span name
+(`Lived-in review`, `News-governance ritual`, `Glued join letter`). Stacked
+markers in one span are still one row: cite the strongest `§N`. Do not write
+`нейрослоп` or `вода` as the category.
+
 Severity:
 
 - critical: factual corruption, contradiction, fabricated evidence;
-- high: unsupported conclusion, missing thesis, broken artifact;
-- medium: repetition, structural monotony, unclear paragraph;
+- high: unsupported conclusion, missing thesis, broken artifact,
+  unsourced precision sold as measurement, stacked brochure fill;
+- medium: repetition, structural monotony, unclear paragraph,
+  citation that supports a neighboring topic;
 - low: local wording or rhythm opportunity.
+
+Sort high → low. Stacked markers in one span are one row. Pass 4 is the
+treatment.
+
+`Skill gaps` after the table only when the user asked what gives the text
+away, said this skill failed, or is iterating the skill. Each gap is one
+missed `§N` (or a new class to add) and one rule, not a diary. If the
+catalogs covered the fill, write `Skill gaps: none`.
 
 ### File edit
 

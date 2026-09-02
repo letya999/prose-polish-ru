@@ -61,6 +61,77 @@ PHRASES: dict[str, tuple[str, str, str]] = {
     r"\b[пП]о моему опыту\b": ("V01", "voice", "Verify that concrete experience follows"),
     r"\bисследования показывают\b": ("E01", "evidence", "Citation may be required"),
     r"\bэксперты (?:считают|отмечают|говорят)\b": ("E02", "evidence", "Unnamed authority"),
+    r"\bв эпоху цифровизации\b": ("W11", "water", "Epoch framing"),
+    r"\bлюбопытно, что\b": ("W12", "water", "Duty evaluation"),
+    r"\bпримечательно, что\b": ("W13", "water", "Duty evaluation"),
+    r"\bявляется неотъемлемой\b": ("S05", "significance", "Inalienable-part cliché"),
+    r"\bкраеугольн(?:ый|ым) камн": ("S06", "significance", "Cornerstone metaphor"),
+    r"\bглубокое погружение\b": ("K03", "calque", "Delve calque"),
+    r"\bраскрыть потенциал\b": ("S07", "significance", "Unlock-potential calque"),
+    r"\bвывести на новый уровень\b": ("S08", "significance", "Next-level calque"),
+    r"\b(?:правда|реальность) (?:в том|такова)\b": ("M01", "metadiscourse", "Truth-is announcement"),
+    r"\bбуду(?: с вами)? честен\b": ("M02", "metadiscourse", "Performative honesty"),
+    r"\bподч[её]ркивая важность\b": ("S09", "significance", "Participle significance tail"),
+    r"\bот новичков до\b": ("C04", "contrast", "Fake-coverage merism"),
+    r"\bв высшей степени\b": ("L05", "diction", "GPT-Russian booster"),
+    r"\bне секрет, что\b": ("W14", "water", "Secret-is-not throat-clearing"),
+    r"\bодним из ключевых аспектов\b": ("S12", "significance", "Key-aspect framing"),
+    r"\bсуществует множество (?:способов|подходов|вариантов)\b": (
+        "A04", "abstraction", "Fake completeness",
+    ),
+    r"\bоднозначного ответа не существует\b": (
+        "A05", "abstraction", "Fake nuance",
+    ),
+    r"\bнельзя не отметить\b": ("W15", "water", "Litotes emphasis"),
+    r"\bзадумывались ли вы\b": ("W16", "water", "Rhetorical opener"),
+    r"\bмало кто знает\b": ("M03", "metadiscourse", "Faux-insight drumroll"),
+    r"\bнесмотря на (?:эти |существующие )?вызовы\b": (
+        "S13", "significance", "Challenge-redemption coda",
+    ),
+    r"\bтем самым способствуя\b": ("S14", "significance", "Participle significance tail"),
+    r"\bкак показывает практика\b": ("E03", "evidence", "Practice-without-practice"),
+    r"\bв заключение хочется\b": ("W17", "water", "Formulaic closer"),
+    r"\bначните уже сегодня\b": ("W18", "water", "CTA closer"),
+    r"\bимеет богатую историю\b": ("S15", "significance", "Gazetteer history padding"),
+    r"\bоказывает существенное влияние\b": (
+        "S16", "significance", "AINL-style influence claim",
+    ),
+    r"\bперспективн(?:ый|ого|ым) (?:подход|метод|направление)\b": (
+        "S17", "significance", "Prospect-without-result",
+    ),
+    r"\bсцена разворачивается\b": ("A06", "abstraction", "Vision-captionese"),
+    r"\bэтот опыт сделает\b": ("M04", "metadiscourse", "Expand-task moral closer"),
+    r"\bне оправдал(?:и|а|о)?(?: моих)? ожиданий\b": (
+        "S19", "significance", "AI-review expectation template",
+    ),
+    r"\bв условиях нынешней экономики\b": (
+        "S20", "significance", "Epoch tail on a local note",
+    ),
+    r"\bмогут быть использованы для\b": (
+        "S21", "significance", "AINL utility tail without a parameter",
+    ),
+    r"\bвостребована во множестве\b": (
+        "S22", "significance", "Textbook demand padding",
+    ),
+    r"\bне стал исключением\b": ("W19", "water", "News-exception opener"),
+    r"\bпервое, что меня (?:удивило|поразило)\b": (
+        "W20", "water", "Review atmosphere opener",
+    ),
+    r"\bв целом, посещение\b": ("W21", "water", "Review recap closer"),
+    r"\bсчитает себя эксклюзив": (
+        "S23", "significance", "Exclusive-claim without a price",
+    ),
+}
+
+# High-precision fills: fire on the first hit. Common канцелярит still
+# needs density (count >= 2) so a single `таким образом` is not a finding.
+ONCE_CODES = {
+    "S02", "S03", "S15", "S16", "S17", "S18", "S19", "S20", "S21", "S22",
+    "S23",
+    "M03", "M04",
+    "A04", "A05", "A06",
+    "C01",
+    "W06", "W08", "W14", "W16", "W18", "W19", "W20", "W21",
 }
 
 PLACEHOLDERS = re.compile(
@@ -73,9 +144,11 @@ LEAKS = re.compile(
     r"\b(?:turn\d+(?:search|view|fetch|file|image|news|video|ref)\d+|oaicite|oai_citation|citeturn)\b|"
     r":contentReference\[oaicite:\d+\]|"
     r"grok_card://|grok_render_citation_card_json|"
-    r"utm_source=(?:chatgpt|copilot)\.com|"
+    r"utm_source=(?:chatgpt|copilot|openai)\.com|"
     r"\[cite_start\]|\[cite:\s*\d+|"
-    r"</?think>"
+    r"</?think>|"
+    r"по состоянию на момент (?:моего|последнего)|"
+    r"as of my last knowledge"
     r")",
     re.I,
 )
@@ -84,6 +157,10 @@ MD_LINK_RE = re.compile(r"(!?)\[([^\]]*)\]\(([^)]+)\)")
 INLINE_CODE_RE = re.compile(r"`[^`\n]+`")
 SENTENCE_RE = re.compile(r"(?<=[.!?…])\s+(?=[А-ЯA-ZЁ])")
 WORD_RE = re.compile(r"[A-Za-zА-Яа-яЁё0-9-]+")
+GENERIC_HEADINGS = {
+    "введение", "основная часть", "заключение", "вывод", "итоги",
+    "практический вывод",
+}
 MIXED_SCRIPT_RE = re.compile(
     r"\b(?=[A-Za-zА-Яа-яЁё]*[A-Za-z])(?=[A-Za-zА-Яа-яЁё]*[А-Яа-яЁё])[A-Za-zА-Яа-яЁё]+\b"
 )
@@ -135,8 +212,13 @@ def add(findings: list[Finding], code: str, severity: str, category: str,
     findings.append(Finding(code, severity, category, line, message, evidence(text)))
 
 
+def content_tokens(text: str) -> set[str]:
+    return {w.lower() for w in WORD_RE.findall(text) if len(w) >= 4}
+
+
 def scan_markdown(lines: list[str], findings: list[Finding]) -> None:
     heading_texts: Counter[str] = Counter()
+    headings_by_level: dict[int, list[tuple[str, int]]] = {}
     url_counts: Counter[str] = Counter()
     list_run: list[tuple[int, str]] = []
     table_rows: list[tuple[int, str]] = []
@@ -179,11 +261,13 @@ def scan_markdown(lines: list[str], findings: list[Finding]) -> None:
         else:
             flush_list()
 
-        heading = re.match(r"^\s{0,3}#{1,6}\s+(.+?)\s*#*\s*$", line)
+        heading = re.match(r"^\s{0,3}(#{1,6})\s+(.+?)\s*#*\s*$", line)
         if heading:
-            title = re.sub(r"[*_`]+", "", heading.group(1)).strip().lower()
+            level = len(heading.group(1))
+            title = re.sub(r"[*_`]+", "", heading.group(2)).strip().lower()
             heading_texts[title] += 1
-            if title in {"введение", "основная часть", "заключение", "вывод", "итоги"}:
+            headings_by_level.setdefault(level, []).append((title, line_no))
+            if title in GENERIC_HEADINGS:
                 add(findings, "F01", "low", "heading", line_no,
                     "Generic heading; keep only if the genre requires it", line)
 
@@ -208,6 +292,14 @@ def scan_markdown(lines: list[str], findings: list[Finding]) -> None:
 
     flush_list()
     flush_table()
+    for level, items in headings_by_level.items():
+        if len(items) >= 4:
+            generic = sum(1 for title, _ in items if title in GENERIC_HEADINGS)
+            if generic >= 2:
+                add(findings, "S11", "medium", "structure", items[0][1],
+                    "Brochure heading grid: several same-level generic sections",
+                    ", ".join(title for title, _ in items))
+                break
     for title, count in heading_texts.items():
         if title and count > 1:
             add(findings, "F02", "medium", "heading", 1,
@@ -223,7 +315,7 @@ def scan_prose(lines: list[str], mode: str) -> list[Finding]:
     masked, fenced = mask_fences(lines)
     scan_markdown(masked, findings)
 
-    prose_lines: list[tuple[int, str]] = []
+    prose_lines: list[tuple[int, str, bool]] = []
     phrase_hits: Counter[str] = Counter()
     phrase_first_line: dict[str, int] = {}
 
@@ -233,14 +325,14 @@ def scan_prose(lines: list[str], mode: str) -> list[Finding]:
         text = prose_only(raw)
         if not text.strip():
             continue
-        prose_lines.append((line_no, text))
+        prose_lines.append((line_no, text, bool(re.match(r"^\s{0,3}#{1,6}\s+", raw))))
 
         for pattern, (code, category, message) in PHRASES.items():
             matches = list(re.finditer(pattern, text, re.I | re.S))
             if matches:
                 phrase_hits[code] += len(matches)
                 phrase_first_line.setdefault(code, line_no)
-                if category in {"evidence", "voice"}:
+                if category in {"evidence", "voice"} or code in ONCE_CODES:
                     add(findings, code, "medium", category, line_no, message, raw)
 
         placeholder = PLACEHOLDERS.search(raw)
@@ -263,16 +355,43 @@ def scan_prose(lines: list[str], mode: str) -> list[Finding]:
         if re.search(r"\b(?:поэтому|следовательно|это доказывает)\b", text, re.I):
             add(findings, "L12", "low", "logic", line_no,
                 "Inspect causal or inferential step", raw)
+        if re.search(r"(?:^|[\s.,;:!?])n[А-ЯЁ]", text):
+            add(findings, "A07", "high", "artifact", line_no,
+                "Glued join letter: Latin n before a capital Cyrillic word", raw)
+        if re.search(
+            r"обеспечить прозрачность|вернуть доверие населения|будет усилен контроль",
+            text,
+            re.I,
+        ):
+            add(findings, "S18", "medium", "significance", line_no,
+                "News-governance ritual without a new fact", raw)
 
     for pattern, (code, category, message) in PHRASES.items():
         count = phrase_hits[code]
-        if count >= 2 and category not in {"evidence", "voice"}:
+        if code in ONCE_CODES or category in {"evidence", "voice"}:
+            continue
+        if count >= 2:
             severity = "medium" if count >= 3 else "low"
             add(findings, code, severity, category, phrase_first_line[code],
                 f"{message}; occurs {count} times", pattern)
 
-    full_prose = "\n".join(text for _, text in prose_lines)
+    full_prose = "\n".join(text for _, text, is_heading in prose_lines if not is_heading)
+    stutter = re.search(r"(.{12,80}?)\s+\1", full_prose)
+    if stutter:
+        add(findings, "A08", "high", "artifact", 1,
+            "Immediate stutter: the same clause or numeral phrase twice",
+            stutter.group(1))
     sentences = [s.strip() for s in SENTENCE_RE.split(full_prose) if len(WORD_RE.findall(s)) >= 3]
+    for idx in range(len(sentences) - 1):
+        left = content_tokens(sentences[idx])
+        right = content_tokens(sentences[idx + 1])
+        shared = left & right
+        smaller = min(len(left), len(right))
+        if len(left) >= 3 and len(right) >= 3 and smaller and len(shared) / smaller >= 0.5:
+            add(findings, "S10", "medium", "structure", 1,
+                "Adjacent sentences restate the same thesis; inspect for brochure echo",
+                f"{sentences[idx][:80]} | {sentences[idx + 1][:80]}")
+            break
     lengths = [len(WORD_RE.findall(s)) for s in sentences]
     if len(lengths) >= 6:
         for start in range(len(lengths) - 5):
@@ -304,10 +423,29 @@ def scan_prose(lines: list[str], mode: str) -> list[Finding]:
             f"{question_count} questions / {word_count} words")
 
     em_dashes = full_prose.count("—")
-    if word_count >= 100 and em_dashes / word_count * 1000 > 12:
+    dash_heavy = (
+        (mode == "article" and em_dashes >= 4)
+        or (word_count >= 100 and em_dashes / max(word_count, 1) * 1000 > 12)
+    )
+    if dash_heavy:
         add(findings, "R04", "low", "punctuation", 1,
-            "High em-dash density; inspect repetition, do not replace mechanically",
+            "High em-dash density; in article/post inspect decorative apposition",
             f"{em_dashes} em dashes / {word_count} words")
+
+    if len(lengths) >= 4:
+        for start in range(len(lengths) - 3):
+            window = lengths[start : start + 4]
+            if all(n <= 8 for n in window):
+                add(findings, "R05", "medium", "rhythm", 1,
+                    "Four consecutive short sentences; join unless each is a real hit",
+                    ", ".join(map(str, window)))
+                break
+
+    guillemets = min(full_prose.count("«"), full_prose.count("»"))
+    if mode == "article" and guillemets >= 3:
+        add(findings, "R07", "medium", "punctuation", 1,
+            "Guillemet density is high for article/post; drop emphasis quotes",
+            f"{guillemets} «» pairs")
 
     bold_labels = sum(
         1 for _, raw in enumerate(masked, start=1)
@@ -357,8 +495,68 @@ print("важно отметить")
     assert "F11" in codes, codes
     assert "F32" in codes, codes
     assert "A02" in codes, codes
+    assert "S10" in codes, codes
     assert all("print" not in item.evidence for item in findings)
     assert all("==" not in item.evidence and "=>" not in item.evidence for item in findings)
+    brochure = """## Введение
+Пайплайн падает из-за кэша. Пайплайн действительно падает именно из-за кэша npm.
+
+## Основная часть
+Кэш влияет на сборку.
+
+## Практический вывод
+Команда должна проверить кэш.
+
+## Заключение
+Кэш имеет значение.
+"""
+    brochure_codes = {item.code for item in scan_prose(brochure.splitlines(), "article")}
+    assert "S10" in brochure_codes, brochure_codes
+    assert "S11" in brochure_codes, brochure_codes
+    assert "F01" in brochure_codes, brochure_codes
+    surface = """Кэш — «тихая» проблема. Это «дорого». Это «важно». Пайплайн — «зелёный».
+Кэш это тихая проблема. Это очень дорого выходит. Это снова падает ночью. Это уже всех достало.
+"""
+    surface_codes = {item.code for item in scan_prose(surface.splitlines(), "article")}
+    assert "R05" in surface_codes, surface_codes
+    assert "R07" in surface_codes, surface_codes
+    cluster = """Не секрет, что существует множество подходов.
+Не секрет, что эксперты считают иначе.
+По состоянию на момент моего обучения данных мало.
+"""
+    cluster_codes = {item.code for item in scan_prose(cluster.splitlines(), "generic")}
+    assert "W14" in cluster_codes, cluster_codes
+    assert "A02" in cluster_codes, cluster_codes
+    ds = """Село имеет богатую историю. Исследование оказывает существенное влияние.
+Село имеет богатую историю и оказывает существенное влияние.
+"""
+    ds_codes = {item.code for item in scan_prose(ds.splitlines(), "generic")}
+    assert "S15" in ds_codes, ds_codes
+    assert "S16" in ds_codes, ds_codes
+    news = (
+        "Около 7 тыс. Около 7 тыс. покупателей ждут квартиры. "
+        "nМинистр подчеркнул контроль. "
+        "Власти намерены обеспечить прозрачность и вернуть доверие населения."
+    )
+    news_codes = {item.code for item in scan_prose(news.splitlines(), "generic")}
+    assert "A07" in news_codes, news_codes
+    assert "A08" in news_codes, news_codes
+    assert "S18" in news_codes, news_codes
+    once = (
+        "Село имеет богатую историю. Блюда не оправдали ожиданий. "
+        "Сайт nbc.com не стал исключением. Первое, что меня удивило, это атмосфера. "
+        "В целом, посещение ресторана было пустым. Клиника считает себя эксклюзивной. "
+        "Раздел востребована во множестве областях. Результаты могут быть использованы для оптимизации."
+    )
+    once_codes = {item.code for item in scan_prose(once.splitlines(), "generic")}
+    assert "S15" in once_codes, once_codes
+    assert "S19" in once_codes, once_codes
+    assert "W19" in once_codes, once_codes
+    assert "W20" in once_codes, once_codes
+    assert "W21" in once_codes, once_codes
+    assert "S23" in once_codes, once_codes
+    assert "S22" in once_codes, once_codes
+    assert "S21" in once_codes, once_codes
     print("self-test: ok")
 
 
