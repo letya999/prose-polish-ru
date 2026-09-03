@@ -1025,9 +1025,13 @@ sentence. FLAG a quote that lost its opener after a join.
 - support ticket: quoted `>` lines, `три вопроса — ответ на один`;
 - medical wiki: named syndrome + mutation; TRIM only an unanswered
   `Узнайте, что означает термин`;
-- academic clause that names a receptor, equation, RMSE, tissue, or alloy
-  (`GalR2`, `уравнение Гендерсона`, `0,871`). Stacked AINL mold without
-  an object remains TRIM;
+- academic clause that names a receptor, equation, RMSE, tissue, reagent,
+  year, or sample (`GalR2`, `хитозан`, `1983 г`, `образцов целлюлозы`).
+  KEEP `Целью работы было исследование [named X]`. TRIM only a fact-free
+  wrapper (`интерес среди исследователей`, `обосновывают целесообразность`);
+  stacked AINL mold with no object remains TRIM;
+- agency-wire `является` that names org/sum/date (`транзит газа`, `ТАСС`);
+  glued `nРоссия-24n` remains §1;
 - channel `Во-первых` / `Во-вторых` block that names a fact (`PSM I`,
   `15–20 часов`); empty `Во-первых, важно понимать` remains TRIM;
 - numbered persona grid that *is* the post (`ПМ не управляет бюджетом`

@@ -180,8 +180,9 @@ Register:
 - news / agency wire: KEEP named source, org, km, %, attributed quotes
   (`сказал Фортов`), obituary facts (age, cause, named person), police
   blotter, court wire (verdict, charges, arrests at the courthouse).
-  TRIM only the trust/control ritual and empty `гибкость / конкуренты`
-  openers;
+  KEEP press-service `является` that names a sum or org. TRIM only the
+  trust/control ritual and empty `гибкость / конкуренты` openers.
+  Glued `n` is still an artifact;
 - sports match report: KEEP locker-room speech and the table
   (`бились от ножа`, `отступать некуда`) when it is play-by-play, not
   a brochure closer;
@@ -201,9 +202,12 @@ Register:
   отметить` already in the source is the user's sentence, not injected
   metadiscourse. Do not comb a thread into a briefing;
 - academic / legal / quoted: KEEP formality when a method, alloy,
-  instrument, receptor, equation, or numeral is on the page. `влияние`
-  attached to GalR2 / гемодинамика / RMSE is a result, not AINL mold.
-  Stacked `оказывает существенное влияние` with no object is still TRIM.
+  instrument, receptor, equation, reagent, year, or numeral is on the
+  page. KEEP `Целью работы было исследование [named X]`. TRIM only the
+  empty AINL tail (`целесообразность`, `интерес среди исследователей`),
+  not the whole sentence. `влияние` attached to GalR2 / гемодинамика /
+  RMSE is a result, not AINL mold. Stacked `оказывает существенное
+  влияние` with no object is still TRIM.
 
 Do not manufacture biography, interviews, or sensory filler. Do not rewrite
 author operators into literary punctuation.

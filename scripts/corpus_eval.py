@@ -11,6 +11,8 @@ sample  — 80 RU posts/articles: LLMTrace article, story, short_form, factual
           with per-type quotas; skips wiki-continue, gazetteer ledes, poetry,
           abstracts, and (by default) AINL. Optional house posts from the
           channel dump (no authorship gold — treatments only).
+          --mix-public: 100 each from LLMTrace detection, classification,
+          AINL abstracts, CoAT, and Ru-hard (essay/news/science).
 run     — send each text to cliproxy with the skill *pack* stuffed into the
           system prompt (not SKILL.md alone). Model returns an audit table
           plus char-offset spans.
@@ -43,7 +45,7 @@ import urllib.request
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-DEFAULT_OUT = ROOT / "prose-polish-ru-workspace" / "corpus-eval-13"
+DEFAULT_OUT = ROOT / "prose-polish-ru-workspace" / "corpus-eval-14"
 REFS = ROOT / "references"
 PACK_CHOICES = ("map", "audit", "full", "auto")
 POST_TYPES = {"article", "story", "short_form", "factual"}
@@ -81,7 +83,23 @@ HF_ROWS = "https://datasets-server.huggingface.co/rows"
 DET = "iitolstykh/LLMTrace_detection"
 CLF = "iitolstykh/LLMTrace_classification"
 AINL = "iis-research-team/AINL-Eval-2025"
+COAT = "RussianNLP/coat"
+RUHARD_RAW = (
+    "https://raw.githubusercontent.com/CoffeBank/Ru-hard-detection-dataset/main/"
+)
+RUHARD_FILES = (
+    ("essay", "human", "main/essay/original_essay.json"),
+    ("essay", "ai", "main/essay/generated_essays.json"),
+    ("essay", "ai+rew", "main/essay/paraphrased_essays.json"),
+    ("news", "human", "main/news/original_news.json"),
+    ("news", "ai", "main/news/generated_news.json"),
+    ("news", "ai+rew", "main/news/paraphrased_news.json"),
+    ("scientific", "human", "main/scientific_texts/orig_scientific.json"),
+    ("scientific", "ai", "main/scientific_texts/generated_scientific.json"),
+    ("scientific", "ai+rew", "main/scientific_texts/paraphrased_scientific.json"),
+)
 HF_SPLIT = "test"
+MIX_PER_SOURCE = 100
 DATA_TYPES = POST_TYPES
 MIN_CHARS = 400
 MAX_CHARS = 2500
@@ -352,17 +370,27 @@ def sample_house(
     return out
 
 
-def sample_ainl(rng: random.Random) -> list[dict]:
+def sample_ainl(
+    rng: random.Random, quota: dict[str, int] | None = None
+) -> list[dict]:
+    quota = quota or QUOTA_AINL
     try:
         from huggingface_hub import hf_hub_download
     except ImportError:
         print("huggingface_hub missing; skip AINL", file=sys.stderr)
         return []
+    filename = "train.csv" if max(quota.values()) > 16 else "dev_full.csv"
     path = Path(
-        hf_hub_download(repo_id=AINL, filename="dev_full.csv", repo_type="dataset")
+        hf_hub_download(
+            repo_id=AINL,
+            filename=filename,
+            repo_type="dataset",
+            cache_dir=str(HF_CACHE),
+        )
     )
     import csv
 
+    oversample = max(quota.values()) * 8
     buckets: dict[str, list[dict]] = {"human": [], "ai": []}
     with path.open(encoding="utf-8", newline="") as fh:
         reader = csv.DictReader(fh)
@@ -377,7 +405,7 @@ def sample_ainl(rng: random.Random) -> list[dict]:
                 continue
             else:
                 kind = "ai"
-            if len(buckets[kind]) >= QUOTA_AINL[kind] * 8:
+            if len(buckets[kind]) >= oversample:
                 continue
             buckets[kind].append(
                 {
@@ -387,10 +415,10 @@ def sample_ainl(rng: random.Random) -> list[dict]:
                     "label": kind,
                 }
             )
-            if all(len(buckets[k]) >= QUOTA_AINL[k] * 8 for k in QUOTA_AINL):
+            if all(len(buckets[k]) >= oversample for k in buckets):
                 break
     out: list[dict] = []
-    for kind, need in QUOTA_AINL.items():
+    for kind, need in quota.items():
         pool = buckets[kind]
         rng.shuffle(pool)
         for i, row in enumerate(pool[:need], 1):
@@ -405,7 +433,106 @@ def sample_ainl(rng: random.Random) -> list[dict]:
                     text,
                     kind,
                     intervals,
-                    extra={"data_type": "abstract", "split": "dev_full"},
+                    extra={"data_type": "abstract", "split": filename},
+                )
+            )
+    return out
+
+
+def sample_coat(rng: random.Random, n: int = MIX_PER_SOURCE) -> list[dict]:
+    try:
+        from huggingface_hub import hf_hub_download
+        import pandas as pd
+    except ImportError as exc:
+        print(f"coat deps missing: {exc}", file=sys.stderr)
+        return []
+    path = Path(
+        hf_hub_download(
+            repo_id=COAT,
+            filename="authorship/validation-00000-of-00001.parquet",
+            repo_type="dataset",
+            cache_dir=str(HF_CACHE),
+        )
+    )
+    frame = pd.read_parquet(path, columns=["text", "label"])
+    need_h, need_a = n // 2, n - n // 2
+    buckets: dict[str, list[tuple[str, str]]] = {"human": [], "ai": []}
+    for text, raw in zip(frame["text"].tolist(), frame["label"].tolist()):
+        text = ("" if text is None else str(text)).strip()
+        if not (40 <= len(text) <= MAX_CHARS):
+            continue
+        kind = "human" if str(raw).lower() == "human" else "ai"
+        buckets[kind].append((text, str(raw)))
+    out: list[dict] = []
+    for kind, need in (("human", need_h), ("ai", need_a)):
+        pool = buckets[kind]
+        pool.sort(key=lambda item: -len(item[0]))
+        pool = pool[: max(need * 3, need)]
+        rng.shuffle(pool)
+        for i, (text, raw) in enumerate(pool[:need], 1):
+            intervals = [] if kind == "human" else [[0, len(text)]]
+            row = {"text": text, "model": None if kind == "human" else raw}
+            out.append(
+                pack_row(
+                    f"coat-{kind}",
+                    i,
+                    COAT,
+                    row,
+                    text,
+                    kind,
+                    intervals,
+                    extra={"data_type": "short_form", "split": "authorship/validation"},
+                )
+            )
+    return out
+
+
+def _download_ruhard(rel: str) -> Path:
+    dest = HF_CACHE / "ruhard" / rel.replace("/", "__")
+    dest.parent.mkdir(parents=True, exist_ok=True)
+    if dest.exists() and dest.stat().st_size > 100:
+        return dest
+    url = RUHARD_RAW + rel
+    req = urllib.request.Request(url, headers={"User-Agent": UA})
+    with urllib.request.urlopen(req, timeout=60) as resp:
+        dest.write_bytes(resp.read())
+    return dest
+
+
+def sample_ruhard(rng: random.Random, n: int = MIX_PER_SOURCE) -> list[dict]:
+    kind_need = {"human": n // 2, "ai": n // 4, "ai+rew": n - n // 2 - n // 4}
+    pools: dict[str, list[tuple[str, dict]]] = {k: [] for k in kind_need}
+    for genre, kind, rel in RUHARD_FILES:
+        try:
+            payload = json.loads(_download_ruhard(rel).read_text(encoding="utf-8"))
+        except (OSError, urllib.error.URLError, json.JSONDecodeError) as exc:
+            print(f"ruhard skip {rel}: {exc}", file=sys.stderr)
+            continue
+        cap = 4000 if genre == "scientific" else MAX_CHARS
+        for item in payload:
+            text = (item.get("text") or "").strip()
+            if 200 <= len(text) <= cap:
+                pools[kind].append((genre, item))
+    out: list[dict] = []
+    for kind, need in kind_need.items():
+        bag = pools[kind]
+        rng.shuffle(bag)
+        gold_label = "human" if kind == "human" else "ai"
+        prefix = f"ruhard-{kind.replace('+', '')}"
+        for i, (genre, item) in enumerate(bag[:need], 1):
+            text = (item.get("text") or "").strip()
+            intervals = [] if gold_label == "human" else [[0, len(text)]]
+            data_type = "article" if genre != "news" else "news"
+            out.append(
+                pack_row(
+                    prefix,
+                    i,
+                    "CoffeBank/Ru-hard-detection-dataset",
+                    {"text": text, "model": item.get("model") or item.get("source")},
+                    text,
+                    gold_label,
+                    intervals,
+                    extra={"data_type": data_type, "split": f"{genre}/{kind}"},
                 )
             )
     return out
@@ -432,6 +559,42 @@ def cmd_sample(args: argparse.Namespace) -> int:
             f"(channel dump, chronological, seed unused, n {n})"
         )
         return 0 if len(rows) >= 20 else 1
+    if args.mix_public:
+        n = args.n or MIX_PER_SOURCE
+        half, quarter = n // 2, n // 4
+        det, n_det = sample_trace(
+            DET,
+            {"mixed": half, "ai": quarter, "human": n - half - quarter},
+            rng,
+            "det",
+            need_intervals=True,
+        )
+        clf, n_clf = sample_trace(
+            CLF,
+            {"ai": n - n // 4, "human": n // 4},
+            rng,
+            "clf",
+            need_intervals=False,
+        )
+        ainl = sample_ainl(rng, {"human": n // 2, "ai": n - n // 2})
+        coat = sample_coat(rng, n)
+        ruhard = sample_ruhard(rng, n)
+        rows = det + clf + ainl + coat + ruhard
+        with slice_path.open("w", encoding="utf-8") as fh:
+            for item in rows:
+                fh.write(json.dumps(item, ensure_ascii=False) + "\n")
+        types = {}
+        sources = {}
+        for item in rows:
+            types[item.get("data_type")] = types.get(item.get("data_type"), 0) + 1
+            sources[item.get("source")] = sources.get(item.get("source"), 0) + 1
+        print(
+            f"wrote {len(rows)} rows → {slice_path} "
+            f"(det {len(det)}/{n_det}, clf {len(clf)}/{n_clf}, "
+            f"ainl {len(ainl)}, coat {len(coat)}, ruhard {len(ruhard)}, "
+            f"sources {sources}, types {types}, seed {args.seed}, n {n})"
+        )
+        return 0 if len(rows) >= n * 3 else 1
     det, n_det = sample_trace(
         DET, QUOTA_DET, rng, "det", need_intervals=True, type_quota=TYPE_QUOTA_DET
     )
@@ -1130,6 +1293,11 @@ def build_parser() -> argparse.ArgumentParser:
         type=Path,
         default=None,
         help="channel dump JSON (default: tg_last100.json)",
+    )
+    sample.add_argument(
+        "--mix-public",
+        action="store_true",
+        help="100 each from LLMTrace det/clf, AINL, CoAT, Ru-hard (no house)",
     )
     sample.set_defaults(func=cmd_sample)
     run = sub.add_parser("run", help="call cliproxy with the skill pack + audit JSON")

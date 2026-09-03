@@ -114,7 +114,7 @@ facts and fewer hedges. Conversational padding is not a quality signal.
 | Wiki-card / answer-card: numbered bold labels (`**История создания**`, `**Авторство**`) that restate the lede or pad empty cells | Strong | MERGE dates/names into a paragraph. DELETE empty cells (`Подписан именем Антон Чехов`). KEEP a first-publication fact. FLAG unnamed critics. |
 | Costume slang: stacked `братва` / `вуаля` / `каталка` on a clinic or shop brochure | Strong | TRIM the costume. KEEP the named clinic or price. Real forum register throughout stays KEEP. |
 | Epoch tail on a local note: `в условиях нынешней экономики` | Soft | TRIM the tail. KEEP the price or dish. |
-| Agency wire: named outlet, org, km, %, attributed quote, obituary age/cause | KEEP | KEEP the fact. Do not recast a press-service paragraph as brochure. |
+| Agency wire: named outlet, org, km, %, attributed quote, obituary age/cause | KEEP | KEEP the fact, including press-service `является` that names org/sum/date (`транзит газа — источник средств`). DELETE glued `n` (`nРоссия-24n`). Do not rewrite the wire as spoken Russian. |
 | Tutorial / UI path: `Панель управления`, imperative clicks, even verbose | KEEP | KEEP the sequence and the how-to closer (`теперь вы знаете`). Cut only throat-clearing around it. |
 | House frame: channel hashtag, greeting slot (`Здравствуй, … читатель`, `Привет, читатель`, `Hello, приятели`), author `P.S.` / `P.P.S.`, operators `==` `=>` `->` | KEEP | KEEP the greeting as its own span. TRIM `Сегодня я хочу поделиться` / `Давайте разберемся` after it — do not mash the greeting into the §28 opener. KEEP the whole `P.S.` paragraph, not only the label. A punchy title after the hashtag (`Agile умирает`) is the hook, not drumroll. TRIM only an empty restatement beside it (`Имя ему — …!`). A `->` deploy chain is an operator, not a closer. |
 | House argument beats: `Во-первых` / `Во-вторых` / `В-третьих` that each carry a fact (exam detail, named tool, hours, price) | KEEP | KEEP the beat and the fact. TRIM only `Во-первых, важно понимать` with no payload. Do not DELETE the labels as §5. |
@@ -127,8 +127,8 @@ facts and fewer hedges. Conversational padding is not a quality signal.
 | Court wire: verdict, named defendants, arrests at the courthouse | KEEP | KEEP. |
 | Sports play-by-play and locker-room speech | KEEP | KEEP when it reports the match. TRIM a fact-free `надо работать` closer only if nothing else remains. |
 | Source already contains `стоит отметить` / a `>` ticket line | KEEP | KEEP the user's sentence. Cut only empty significance around it. |
-| Academic formality with method, alloy, instrument, receptor, equation, or numeral | Soft | KEEP. `влияние` + named object is a result. AINL mold only when stacked *and* empty. |
-| Канцелярит: verbal-noun stacks, `является` where a direct predicate works | Strong | Actor + verb, or delete. Leave genre-valid formality in academic/legal. |
+| Academic formality with method, alloy, instrument, receptor, equation, or numeral | Soft | KEEP the clause that names a method, reagent, year, or sample (`хитозан`, `1983 г`, `образцов целлюлозы`, `Целью работы было исследование генистеина`). TRIM only a fact-free wrapper beside it (`интерес среди исследователей`, `обосновывают целесообразность`). Do not mash the named object into the wrapper. `влияние` + named object is a result. AINL mold only when stacked *and* empty. |
+| Канцелярит: verbal-noun stacks, `является` where a direct predicate works | Strong | Actor + verb, or delete. In academic/wire, `является` + named object stays. |
 | Formulaic contrast: `не просто X, а Y` with no rejected X | Strong | State the plus, or one claim. Do not swap in `как X, так и Y`. |
 | Empty significance, throat-clearing, openers | Strong | Delete, else a fact from the source. |
 | Weasel attribution / citation laundering | Strong | Name the source or FLAG. Do not invent the missing study or upgrade a neighboring URL. |
