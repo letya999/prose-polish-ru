@@ -233,7 +233,8 @@ For `audit`, open with the slop call, then the table. Columns: location,
 severity, category, evidence, recommended action. Category cites a catalog
 class as `§N short-name` from [AI-marker catalog](references/ai-markers.md),
 or a Pass 3 span name from the procedure. Do not invent a free-text bucket
-(`вода`, `нейрослоп`) instead of `§N`. Нейрослоп is a quality call on the
+(`вода`, `нейрослоп`) instead of `§N`. Recommended action is delete, else a
+fact already in the draft, else a simpler rewrite — a synonym is not a fix. Нейрослоп is a quality call on the
 fill: brochure grid, `не просто X, а Y`, empty significance, fake
 completeness, unsourced precision, answerer inertia. It is not the author's
 house frame (hashtag, `Здравствуй, читатель`, `P.S.`, operators) and not an

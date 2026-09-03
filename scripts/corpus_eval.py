@@ -7,7 +7,8 @@ One path, three commands:
     python scripts/corpus_eval.py run --pack audit
     python scripts/corpus_eval.py grade
 
-sample  — 80 RU texts: LLMTrace_detection + classification + AINL-Eval.
+sample  — 80 RU posts/articles: LLMTrace article, story, short_form, factual.
+          Skips wiki-continue, poetry, abstracts, and (by default) AINL.
 run     — send each text to cliproxy with the skill *pack* stuffed into the
           system prompt (not SKILL.md alone). Model returns an audit table
           plus char-offset spans.
@@ -40,9 +41,11 @@ import urllib.request
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-DEFAULT_OUT = ROOT / "prose-polish-ru-workspace" / "corpus-eval-7"
+DEFAULT_OUT = ROOT / "prose-polish-ru-workspace" / "corpus-eval-10"
 REFS = ROOT / "references"
 PACK_CHOICES = ("map", "audit", "full", "auto")
+POST_TYPES = {"article", "story", "short_form", "factual"}
+WIKI_CONTINUE = re.compile(r"^\s*Продолжи текст\s*:", re.I)
 PACK_FILES = {
     "map": ["SKILL.md"],
     "audit": [
@@ -63,11 +66,11 @@ DET = "iitolstykh/LLMTrace_detection"
 CLF = "iitolstykh/LLMTrace_classification"
 AINL = "iis-research-team/AINL-Eval-2025"
 HF_SPLIT = "test"
-DATA_TYPES = {"article", "news", "review"}
-MIN_CHARS = 350
+DATA_TYPES = POST_TYPES
+MIN_CHARS = 400
 MAX_CHARS = 2500
-QUOTA_DET = {"mixed": 24, "ai": 12, "human": 12}
-QUOTA_CLF_AI = 16
+QUOTA_DET = {"mixed": 24, "ai": 8, "human": 8}
+QUOTA_CLF = {"ai": 24, "human": 16}
 QUOTA_AINL = {"human": 8, "ai": 8}
 CLIPROXY_MODEL = "gemini-3.6-flash-high"
 LITELLM_CONTAINER = "ai-stp-litellm-1"
@@ -119,7 +122,8 @@ SPAN_SCHEMA = """\
 - TRIM/REWRITE/DELETE/FLAG = слоп, вода, заикание, n+заглавная, пустая значимость, review-sandwich, AINL-молд без результата — даже если датасет пометил спан human.
 - Не ставь P(AI). Не пиши «Вердикт». Не оценивай авторство.
 - quote — дословный кусок черновика, не длиннее 80 символов.
-- why — кратко, с классом каталога: `§3 empty significance` или `§39 false slop / review`. Не свободный ярлык.
+- why — `§N class; treatment`. Для слопа treatment = delete | source-fact | simpler.
+  Для KEEP = keep. Не свободный ярлык.
 """
 
 
@@ -153,6 +157,9 @@ def usable_trace(row: dict, labels: set[str], min_chars: int = MIN_CHARS) -> boo
     if row.get("label") not in labels:
         return False
     if row.get("data_type") not in DATA_TYPES:
+        return False
+    prompt = (row.get("prompt") or "").strip()
+    if WIKI_CONTINUE.match(prompt):
         return False
     text = row.get("text") or ""
     return min_chars <= len(text) <= MAX_CHARS
@@ -323,10 +330,8 @@ def cmd_sample(args: argparse.Namespace) -> int:
         return 0
     rng = random.Random(args.seed)
     det, n_det = sample_trace(DET, QUOTA_DET, rng, "det", need_intervals=True)
-    clf, n_clf = sample_trace(
-        CLF, {"ai": QUOTA_CLF_AI}, rng, "clf", need_intervals=False
-    )
-    ainl = sample_ainl(rng)
+    clf, n_clf = sample_trace(CLF, QUOTA_CLF, rng, "clf", need_intervals=False)
+    ainl = sample_ainl(rng) if args.ainl else []
     rows = det + clf + ainl
     with slice_path.open("w", encoding="utf-8") as fh:
         for item in rows:
@@ -382,6 +387,8 @@ def skill_system_prompt(pack: str = "audit", text: str = "") -> tuple[str, list[
         + "В колонке Category цитируй класс каталога как `§N` "
         "(номер секции ai-markers) или имя спана из procedure Pass 3.\n"
         + "Не изобретай свободный ярлык вместо §N.\n"
+        + "Recommended action: delete, иначе факт из черновика, иначе проще. "
+        "Синоним не лечение.\n"
     )
     return prompt, files
 
@@ -389,9 +396,11 @@ def skill_system_prompt(pack: str = "audit", text: str = "") -> tuple[str, list[
 def user_prompt(text: str) -> str:
     return (
         "Use $prose-polish-ru in audit mode. Do not rewrite.\n"
-        "This run iterates the skill pack (SKILL.md + catalogs). "
+        "This run iterates the skill pack (SKILL.md + catalogs) on a post/article. "
         "After the table add Skill gaps: each missed class as `§N` plus one rule. "
-        "If nothing missed, write `Skill gaps: none`.\n\n"
+        "If nothing missed, write `Skill gaps: none`.\n"
+        "For each slop row the recommended action is delete, a fact already "
+        "in the draft, or a simpler rewrite — not a synonym.\n\n"
         + SPAN_SCHEMA
         + "\nЧерновик:\n<<<\n"
         + text
@@ -685,7 +694,10 @@ def cmd_grade(args: argparse.Namespace) -> int:
     rows_with_cite = 0
     rows_with_gaps = 0
     rows_with_none_gaps = 0
+    treat_ok = 0
+    treat_total = 0
     lint_mod = load_lint()
+    treat_re = re.compile(r"\b(delete|source-fact|simpler|удали|факт из|проще)\b", re.I)
     for row in rows:
         text = row["text"]
         n = len(text)
@@ -719,10 +731,19 @@ def cmd_grade(args: argparse.Namespace) -> int:
             if re.search(r"(?im)Skill gaps:\s*none\b", audit_raw):
                 rows_with_none_gaps += 1
         lint_mode = (
-            "article" if row.get("data_type") in {"article", "news", "review"} else "generic"
+            "article"
+            if row.get("data_type") in POST_TYPES | {"news", "review"}
+            else "generic"
         )
         lint_findings = lint_mod.scan_prose(text.splitlines(), lint_mode)
         lint_codes = sorted({item.code for item in lint_findings})
+        for span in spans:
+            if str(span.get("action") or "").upper() not in SLOP_ACTIONS:
+                continue
+            treat_total += 1
+            why = str(span.get("why") or "")
+            if treat_re.search(why):
+                treat_ok += 1
         pred = pred_tags(n, spans)
         tp = fp = fn = tn = unc = 0
         kinds: list[str] = []
@@ -817,6 +838,8 @@ def cmd_grade(args: argparse.Namespace) -> int:
                 f"§{n} {sections[n]}" for n in range(1, 17) if cited_counts.get(str(n), 0) == 0
             ],
             "unknown_citations": unknown_cites[:20],
+            "slop_spans": treat_total,
+            "slop_spans_with_treatment": treat_ok,
         },
     }
     usage = summary["catalog"]
@@ -862,6 +885,8 @@ def cmd_grade(args: argparse.Namespace) -> int:
             f"- Skill gaps present: {usage['rows_with_skill_gaps']} "
             f"(explicit none: {usage['rows_with_skill_gaps_none']})",
             f"- unknown `§N`: {len(usage['unknown_citations'])}",
+            f"- slop spans with a treatment (delete / source-fact / simpler): "
+            f"{usage['slop_spans_with_treatment']} / {usage['slop_spans']}",
             "",
             "Cited:",
             *cite_lines,
@@ -895,6 +920,11 @@ def build_parser() -> argparse.ArgumentParser:
     sample.add_argument("--out", type=Path, default=DEFAULT_OUT)
     sample.add_argument("--seed", type=int, default=42)
     sample.add_argument("--force", action="store_true")
+    sample.add_argument(
+        "--ainl",
+        action="store_true",
+        help="also sample AINL scientific abstracts (off by default)",
+    )
     sample.set_defaults(func=cmd_sample)
     run = sub.add_parser("run", help="call cliproxy with the skill pack + audit JSON")
     run.add_argument("--out", type=Path, default=DEFAULT_OUT)
