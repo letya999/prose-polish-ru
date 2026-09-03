@@ -25,7 +25,9 @@ Cite `§N`: 1 artifacts · 2 inertia · 3 empty significance · 4 fog ·
 43 prestige inflation · 44 hyper-cohesion · 45 therapeutic tone ·
 46 compulsive hedging · 47 purple tech · 48 genitive chains ·
 49 paragraph echo · 50 particle deficit · 51 trivial definitions ·
-52 call-and-response.
+52 call-and-response · 53 theme-rheme dislocation · 54 flat surprisal ·
+55 agent deletion · 56 epistemic cowardice · 57 negative parallelism ·
+58 connective inflation.
 
 The lists mix three layers. Do not collapse them:
 
@@ -54,9 +56,11 @@ AINL-Eval abstracts, Reddit cited ranking). 40–47 target frontier reasoning
 and RL-aligned LLMs (pseudo-nuance, reasoning scaffolding leak, sterile
 archetypes, prestige micro-jargon, hyper-cohesion, therapeutic tone,
 compulsive hedging, purple tech). 48–52 target Russian-specific structural
-and syntax distortions (genitive chains, paragraph-level micro-summary /
-hourglass echo, modal particle deficit, trivial definition padding, TED
-call-and-response staging). Corpora links →
+and syntax distortions (genitive chains, paragraph echo, particle deficit,
+trivial definitions, call-and-response). 53–58 target academic stylometric
+and discourse anomalies (RuATD, AINL-Eval, arXiv:2606.04177 284-feature analysis):
+theme-rheme dislocation, flat surprisal, agent deletion, epistemic cowardice,
+negative parallelism, and discourse connective inflation. Corpora links →
 [README](../README.md). Do not treat the extra sections as a second
 banned-word dump. Do not train a detector on these sets.
 
@@ -1204,6 +1208,66 @@ Borrowed English LinkedIn/TED rhetoric translated into Russian: the author repea
 - stacked rhetorical duos where neither question nor answer carries a checkable fact.
 
 Treatment: Delete the question-and-answer charade. Convert to a single direct declarative sentence stating the reality.
+
+## 53. Theme-Rheme dislocation and SVO rigidity (нарушение актуального членения предложения)
+
+Identified in Russian linguistics and MT evaluation (RuATD / Dialog-2022). Russian information structure places the known context (Тема) first and the informational focus / new assertion (Рема) at the end. English-centric models enforce rigid Subject-Verb-Object (SVO) order or rely on clumsy thematic scaffolding:
+
+- thematic crutches: `Что касается [X], то здесь…`, `Если говорить о [Y], то в данном случае…`, `В плане производительности система демонстрирует…`;
+- inverted focus: placing the key informational payload mid-sentence and trailing off into generic verbal noise;
+- inability to use natural Russian inversions to highlight contrast or emphasis.
+
+Treatment: Restore natural Russian topic-comment (Тема-Рема) order. Strip `Что касается X` crutches. Position the decisive fact or consequence at the end of the sentence where Russian naturally holds emphasis.
+
+## 54. Flat surprisal and vocabulary compression (низкая вариативность неожиданности / компрессия словаря)
+
+Empirically proven in arXiv:2606.04177 (284 linguistic features across 27 LLMs) and Information-Theoretic Stylometry. LLM decoding samples high-probability tokens, leading to an artificially flat surprisal landscape and depressed Type-Token Ratio (TTR):
+
+- vocabulary compression: recycling the same safe 300–500 words across an entire essay while human prose introduces bursts of unexpected, domain-specific, concrete terminology;
+- absence of local idioms, concrete tool names, or professional slang;
+- "average-of-the-web" blandness: replacing sharp technical specifics with smooth generalizations (`различные программные компоненты` instead of `демон, сайдкар и редис`).
+
+Treatment: Inject domain-exact terminology, specific tool/library names, and sharp concrete nouns. Do not smooth away accurate technical jargon.
+
+## 55. Agent deletion and reflexive passivization (агентивная редукция и пассивизация)
+
+LLMs avoid assigning responsibility or naming human actors, defaulting to reflexive passive verbs or impersonal constructions:
+
+- bureaucratic impersonal passives: `было принято решение внедрить…`, `разрабатывается комплекс мер`, `создается устойчивое впечатление`, `отмечается тенденция к росту`;
+- unassigned agency: `следует подчеркнуть`, `представляется целесообразным`, `можно констатировать, что…`;
+- depersonalized engineering: `в проекте была произведена замена базы данных` instead of `команда переехала с MySQL на Postgres`.
+
+Treatment: Restore the actor. Who made the decision? Who wrote the code? Replace passive reflexive verbs (`-ся`, `было сделано`) with active personal verbs (`мы переписали`, `архитектор выбрал`, `сервер упал`).
+
+## 56. Epistemic cowardice and hedge cascading (эпистемическая трусость и каскадное хеджирование)
+
+Distinct from simple politeness or honest uncertainty. LLMs trained on safety RLHF compulsively stack 2–3 speculative hedges in a single sentence even when describing a direct observation or verified fact:
+
+- hedge cascade: `потенциально может свидетельствовать о возможной вероятности…`;
+- double conditional hedging: `не исключено, что в определенной степени это способно привести к…`;
+- evasive observation: `можно с достаточной долей уверенности предположить, что…`.
+
+Treatment: Strip the hedge pile. If it is an observed fact, state it directly. If it is genuine uncertainty, use a single clear qualifier (`возможно` or `вероятно`).
+
+## 57. Negative parallelism and false antithesis (отрицательный параллелизм)
+
+Extends §6 into measured 2025–2026 syntactical formulas (Pew Research / WriteHuman): the model compulsively frames points as a negative rhetorical correction before stating the obvious:
+
+- negative parallelism formulas: `Дело не в том, что [X], а в том, что [Y]`;
+- problem-framing antithesis: `Проблема заключается не столько в [X], сколько в [Y]`;
+- existential pivot: `Вопрос не в том, [X ли], а в том, [когда Y]`;
+- false dichotomy where X was never asserted by anyone.
+
+Treatment: Delete the negation of the strawman. State the positive claim Y directly in one sentence.
+
+## 58. Duty transitions and discourse connective inflation (инфляция дискурсивных коннекторов)
+
+Documented in stylometric benchmarks (RuATD / CoAT / DeBERTa-Sentinel). Human writers connect thoughts through meaning and juxtaposition. LLMs mechanically prepend every sentence with an explicit transitional connector:
+
+- connective overload: `Вместе с тем, …`, `Кроме того, …`, `Тем не менее, …`, `Следовательно, …`, `В свою очередь, …`, `Более того, …`, `В этой связи, …`;
+- connective density exceeding 20–25% of all sentence openers in a text.
+
+Treatment: Cut the introductory connector. In 80% of cases, the sentence reads faster, punches harder, and maintains better flow without the connective crutch.
 
 Sources (descriptive, not a detector): Kobak et al. PubMed excess
 vocabulary; Reinhart nominal grammar; Pew 2026 AI-on-the-web;

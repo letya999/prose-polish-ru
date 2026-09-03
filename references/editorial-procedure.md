@@ -208,6 +208,14 @@ ping-pong. State the author's primary recommendation with its single biggest
 concrete trade-off. Do not emit a ceremonial "truth is somewhere in the middle"
 compromise.
 
+### Epistemic cowardice and hedge cascades (§56)
+
+Strip recursive hedge piles (`потенциально может свидетельствовать о возможной вероятности`). If an engineering fact is observed, state it cleanly. If genuine uncertainty exists, use a single clear qualifier (`возможно`).
+
+### Negative parallelism (§57)
+
+Eliminate rhetorical strawman corrections (`Дело не в том, что X, а в том, что Y`, `Вопрос не столько в X, сколько в Y`). State the actual positive proposition directly in one sentence.
+
 ### Texture vs invention
 
 A personal reaction to material already in the draft is allowed: irritation,
@@ -249,6 +257,13 @@ Do not glue every paragraph to the preceding one with ceremonial transitions
 Allow ideas to connect by simple juxtaposition. Delete reasoning scaffolding
 (`Если препарировать этот тезис`, `Здесь возникает развилка`) and jump straight
 to the payload.
+
+### Discourse connective inflation (§58)
+
+Cut ceremonial sentence-opening connectors (`Вместе с тем`, `Кроме того`, `Тем не менее`,
+`Следовательно`, `В свою очередь`, `Более того`). If more than 20% of sentences open with
+transitional crutches, strip them; sentences connect naturally by topical progression and
+juxtaposition.
 
 ### Order
 
@@ -363,6 +378,15 @@ They fail the other way if rewritten into a blog voice.
   (`в целях обеспечения оптимизации процессов…`) into an active verb and subject.
 - Cut trivial definition padding (§51): delete unsolicited encyclopedia/tutorial
   definitions of standard tools (`Git — это распределенная система…`, `API — это…`).
+- Restore Theme-Rheme (актуальное членение) order (§53): strip clumsy topic-crutches
+  (`Что касается X, то...`, `Если говорить о Y, то...`). Position the decisive informational
+  payload (Рема) at the natural Russian focus position at sentence end.
+- Restore the agent and de-passivize (§55): unpack bureaucratic reflexive constructions
+  (`было принято решение`, `отмечается тенденция`, `создается впечатление`); name the engineer,
+  team, or tool doing the action.
+- Break flat surprisal and vocabulary compression (§54): avoid high-probability blandness;
+  retain or inject exact domain terms, concrete names, and technical specifics instead of
+  generic umbrellas (`различные компоненты`).
 
 ### Machine surface (article / post / opinion)
 
@@ -545,8 +569,8 @@ Then:
 Category is a catalog citation, not a free-text bucket. Write `§N short-name`
 from [ai-markers.md](ai-markers.md) (working core §1–16, 2026 classes
 §28–38, dataset fills / False slop §39, frontier reasoning §40–47, Russian
-syntax/structure §48–52) or the Pass 3 span name (`Lived-in review`,
-`News-governance ritual`, `Glued join letter`).
+syntax/structure §48–52, stylometric/discourse §53–58) or the Pass 3 span name
+(`Lived-in review`, `News-governance ritual`, `Glued join letter`).
 Stacked markers in one span are still one row: cite the strongest `§N`. Do not write
 `нейрослоп` or `вода` as the category.
 

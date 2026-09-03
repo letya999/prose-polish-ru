@@ -182,6 +182,18 @@ PHRASES: dict[str, tuple[str, str, str]] = {
     r"\bне серебряная пуля\b": (
         "S32", "significance", "Ritual silver-bullet disclaimer",
     ),
+    r"\b(?:дело|вопрос|проблема)\s+(?:заключается|состоит)?\s*(?:не\s+в\s+том|не\s+столько\s+в)\b.{0,120}\bа\s+(?:в\s+том|сколько\s+в)\b": (
+        "C07", "contrast", "Negative parallelism / false antithesis (§57)",
+    ),
+    r"\bбыло\s+(?:принято\s+решение|установлено|замечено|отмечено|разработано)\b|\bотмечается\s+тенденция\b|\bсозда[её]тся\s+впечатление\b": (
+        "L07", "diction", "Passive agent deletion (§55)",
+    ),
+    r"\bпотенциально\s+может\b|\bможет\s+потенциально\b|\bне\s+исключено,\s+что.{0,40}\bможет\b|\bможно\s+(?:с\s+уверенностью\s+)?предположить\b": (
+        "H04", "logic", "Epistemic hedge cascade (§56)",
+    ),
+    r"\bчто\s+касается\b.{1,50}\bто\s+(?:здесь|в\s+данном\s+случае|следует|можно)\b|\bесли\s+говорить\s+о\b.{1,50}\bто\s+(?:здесь|следует|можно)\b": (
+        "W24", "water", "Thematic crutch opener / theme-rheme dislocation (§53)",
+    ),
 }
 
 # High-precision fills: fire on the first hit. Common канцелярит still
@@ -191,11 +203,12 @@ ONCE_CODES = {
     "S23", "S24", "S25", "S26", "S27", "S28", "S29", "S30", "S31", "S32",
     "M03", "M04", "M05", "M06",
     "A04", "A05", "A06", "A09",
-    "C01", "C05", "C06",
+    "C01", "C05", "C06", "C07",
     "P01", "P02", "P03",
-    "H01", "H02",
+    "H01", "H02", "H04",
     "V02",
-    "W06", "W08", "W14", "W16", "W18", "W19", "W20", "W21", "W22",
+    "L07",
+    "W06", "W08", "W14", "W16", "W18", "W19", "W20", "W21", "W22", "W24",
 }
 
 PLACEHOLDERS = re.compile(
@@ -242,6 +255,10 @@ CALL_RESPONSE_RE = re.compile(
 TRIVIAL_DEF_RE = re.compile(
     r"(?:\b(?:Git|Docker|Kubernetes|Linux|API|HTTP|JSON|SQL)\s*—\s*это\s+(?:распределенн\w+|программн\w+|популярн\w+)?\s*(?:система|инструмент|формат|протокол|язык)|"
     r"\b(?:представляет собой|является)\s+(?:распределенн\w+|программн\w+|открыт\w+|специализированн\w+)?\s*(?:системой|интерфейсом|протоколом|инструментом)[^.!?\n]{0,80}\bпозволяющ)",
+    re.I,
+)
+CONNECTIVE_OPENER_RE = re.compile(
+    r"^(?:Вместе с тем|Кроме того|Тем не менее|Следовательно|В свою очередь|Более того|В этой связи)\b",
     re.I,
 )
 
@@ -543,6 +560,12 @@ def scan_prose(lines: list[str], mode: str) -> list[Finding]:
             add(findings, "R02", "medium", "rhythm", 1,
                 f"Repeated sentence opening appears {count} times", starter)
 
+    connective_matches = [s for s in sentences if CONNECTIVE_OPENER_RE.match(s)]
+    if len(sentences) >= 5 and len(connective_matches) >= 2 and (len(connective_matches) / len(sentences) >= 0.20):
+        add(findings, "H03", "medium", "cohesion", 1,
+            f"Discourse connective inflation: {len(connective_matches)} of {len(sentences)} sentences open with transitional crutches (§58)",
+            " | ".join(s[:40] for s in connective_matches[:3]))
+
     question_count = full_prose.count("?")
     word_count = len(WORD_RE.findall(full_prose))
     question_limit = 5 if mode == "telegram" else 4
@@ -745,6 +768,23 @@ print("важно отметить")
     assert "R08" in rus_codes, rus_codes
     assert "W23" in rus_codes, rus_codes
     assert "S49" in rus_codes, rus_codes
+    rus_discourse = (
+        "Дело не в том, что сервер упал, а в том, что мониторинг молчал.\n\n"
+        "Было принято решение переписать сервис на Go.\n\n"
+        "Это потенциально может свидетельствовать о возможной вероятности сбоя.\n\n"
+        "Что касается конфигурации сети, то здесь следует проверить MTU.\n\n"
+        "Кроме того, инженеры обновили ядро Linux. "
+        "Вместе с тем, нагрузка на процессор не снизилась. "
+        "Тем не менее, задержки ответа нормализовались. "
+        "Следовательно, проблема заключалась в планировщике потоков. "
+        "В свою очередь, пользователи перестали жаловаться на таймауты."
+    )
+    disc_codes = {item.code for item in scan_prose(rus_discourse.splitlines(), "article")}
+    assert "C07" in disc_codes, disc_codes
+    assert "L07" in disc_codes, disc_codes
+    assert "H04" in disc_codes, disc_codes
+    assert "W24" in disc_codes, disc_codes
+    assert "H03" in disc_codes, disc_codes
     print("self-test: ok")
 
 

@@ -521,6 +521,32 @@
         "Removes TED call-and-response staging ('Поможет ли это... Едва ли')",
         "Cites §48, §51, or §52 in the Маркеры table"
       ]
+    },
+    {
+      "id": 42,
+      "category": "stylometric-negative-parallelism-hedging",
+      "prompt": "Use $prose-polish-ru in standard mode. Polish this architecture summary:\n\nДело не в том, что сервер упал из-за нехватки памяти, а в том, что сборщик мусора V8 заблокировал основной поток на 420 мс. Это потенциально может свидетельствовать о возможной вероятности нехватки дескрипторов в пуле соединений. В проекте было принято решение переписать сетевой транспорт на epoll.",
+      "expected_output": "Eliminates negative parallelism (§57), collapses epistemic hedge cascade (§56), restores active agency (§55); preserves 420 мс, V8, epoll.",
+      "files": [],
+      "expectations": [
+        "Preserves 420 мс, V8, and epoll exactly",
+        "Removes negative parallelism ('Дело не в том, что... а в том, что') and states the payload directly",
+        "Strips epistemic hedge cascade ('потенциально может свидетельствовать о возможной вероятности')",
+        "Cites §55, §56, or §57 in the Маркеры table"
+      ]
+    },
+    {
+      "id": 43,
+      "category": "discourse-connective-inflation",
+      "prompt": "Use $prose-polish-ru in standard mode. Polish this post without connective crutches:\n\nЧто касается конфигурации сети, то здесь инженеры обновили параметры MTU=1500. Вместе с тем, нагрузка на CPU упала на 18%. Кроме того, снизился джиттер пакетов. Тем не менее, часть сокетов осталась открытой. Следовательно, проблема крылась в утечке дескрипторов.",
+      "expected_output": "Removes discourse connective inflation (§58) and thematic crutch (§53); preserves MTU=1500, CPU, 18%.",
+      "files": [],
+      "expectations": [
+        "Preserves MTU=1500, CPU, and 18% exactly",
+        "Removes thematic crutch opener 'Что касается..., то здесь'",
+        "Cuts inflated transitional connectives ('Вместе с тем', 'Кроме того', 'Тем не менее', 'Следовательно')",
+        "Cites §53 or §58 in the Маркеры table"
+      ]
     }
   ]
 }
