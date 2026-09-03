@@ -54,7 +54,8 @@
 загрузить, и правит *владеющий* файл.
 
 1. Заморозить срез постов/статей (article, story, short_form, factual;
-   без wiki-continue и без AINL): `python scripts/corpus_eval.py sample --seed 50 --force`
+   квоты по типу, без wiki-continue/gazetteer; 8 постов канала как house):
+   `python scripts/corpus_eval.py sample --seed 51 --force`
 2. Прогнать пакет, не карту:
 
 ```powershell
@@ -108,7 +109,7 @@ formats, если в черновике Markdown).
 
 | Файл | Что внутри |
 |---|---|
-| `slice.jsonl` | 80 постов/статей: 40 LLMTrace_detection (24 mixed / 8 ai / 8 human) + 40 classification (24 AI / 16 human). Домены: article, story, short_form, factual. AINL только с `--ainl` |
+| `slice.jsonl` | 80 постов/статей: 40 LLMTrace_detection (24 mixed / 8 ai / 8 human) + 32 classification (24 AI / 8 human) + 8 house-постов канала. Домены с квотой: article, story, short_form, factual. AINL только с `--ainl`. House не входит в recall/precision — только §N и treatment |
 | `pack-manifest.json` | какие файлы уехали в system prompt |
 | `runs/<id>/audit.md` | ответ модели |
 | `runs/<id>/spans.json` | KEEP/TRIM/REWRITE/DELETE/FLAG + offsets |

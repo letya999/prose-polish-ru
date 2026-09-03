@@ -137,13 +137,22 @@ PHRASES: dict[str, tuple[str, str, str]] = {
     r"\bтранспортн(?:ой|ая) доступност": (
         "S28", "significance", "Hotel-brochure accessibility closer",
     ),
+    r"\bне стесняйтесь обращаться\b": (
+        "S29", "significance", "Advice-column pep-talk",
+    ),
+    r"\bстратегии справления\b": (
+        "S30", "significance", "Unnamed coping-strategy fill",
+    ),
+    r"\bизвлечь полезный опыт\b": (
+        "S31", "significance", "Advice-column experience closer",
+    ),
 }
 
 # High-precision fills: fire on the first hit. Common канцелярит still
 # needs density (count >= 2) so a single `таким образом` is not a finding.
 ONCE_CODES = {
     "S02", "S03", "S15", "S16", "S17", "S18", "S19", "S20", "S21", "S22",
-    "S23", "S24", "S25", "S26", "S27", "S28",
+    "S23", "S24", "S25", "S26", "S27", "S28", "S29", "S30", "S31",
     "M03", "M04",
     "A04", "A05", "A06",
     "C01",
@@ -585,6 +594,15 @@ print("важно отметить")
     assert "S27" in praise_codes, praise_codes
     assert "S25" in praise_codes, praise_codes
     assert "S28" in praise_codes, praise_codes
+    advice = (
+        "Не стесняйтесь обращаться за помощью. "
+        "Психолог предложит стратегии справления. "
+        "Так вы сможете извлечь полезный опыт."
+    )
+    advice_codes = {item.code for item in scan_prose(advice.splitlines(), "article")}
+    assert "S29" in advice_codes, advice_codes
+    assert "S30" in advice_codes, advice_codes
+    assert "S31" in advice_codes, advice_codes
     print("self-test: ok")
 
 

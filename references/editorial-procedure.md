@@ -110,10 +110,13 @@ facts and fewer hedges. Conversational padding is not a quality signal.
 | News-governance ritual: `обеспечить прозрачность и ответственность`, `вернуть доверие населения`, `усилен контроль` with no new fact | Strong | DELETE. KEEP adjacent sums, dates, orgs. |
 | Lived-in review: stretched words, first-person, insults, crooked punct, named object (кафе, счёт, блюдо) | Soft | KEEP when there is irregularity **plus** a named object. TRIM only the sandwich mold and a fact-free `рекомендую это милое заведение`. |
 | AI-review mold: fluent disappointment *or* praise brochure — atmosphere census, `не оправдали ожиданий`, `великолепный сервис`, `всегда готовы помочь`, `каждое блюдо шедевр`, `классика` + city, exclusive-claim, recap closer — even with a venue name | Strong | TRIM the mold. KEEP a named dish, bill, room, or staff person. Do not KEEP the whole page as lived-in. |
+| Advice-column mold: pep-talk opener (`Даже не пытайтесь`, `Это очень сложно!`), `сеть поддержки` / `доверенные лица`, `не стесняйтесь обращаться`, unnamed `стратегии справления`, closer `извлечь полезный опыт` | Strong | DELETE the pep-talk. KEEP a named action (`позвони`, `встретьтесь в кафе`). Do not rewrite `позитивная нота` as `приятная нота`. |
+| Wiki-card / answer-card: numbered bold labels (`**История создания**`, `**Авторство**`) that restate the lede or pad empty cells | Strong | MERGE dates/names into a paragraph. DELETE empty cells (`Подписан именем Антон Чехов`). KEEP a first-publication fact. FLAG unnamed critics. |
 | Costume slang: stacked `братва` / `вуаля` / `каталка` on a clinic or shop brochure | Strong | TRIM the costume. KEEP the named clinic or price. Real forum register throughout stays KEEP. |
 | Epoch tail on a local note: `в условиях нынешней экономики` | Soft | TRIM the tail. KEEP the price or dish. |
 | Agency wire: named outlet, org, km, %, attributed quote, obituary age/cause | KEEP | KEEP the fact. Do not recast a press-service paragraph as brochure. |
 | Tutorial / UI path: `Панель управления`, imperative clicks, even verbose | KEEP | KEEP the sequence and the how-to closer (`теперь вы знаете`). Cut only throat-clearing around it. |
+| House frame: channel hashtag, greeting slot (`Здравствуй, … читатель`), author `P.S.` / `P.P.S.`, operators `==` `=>` `->` | KEEP | KEEP. A punchy title after the hashtag (`Agile умирает`) is the hook, not drumroll. TRIM only an empty restatement beside it (`Имя ему — …!`). |
 | Thanks / dedication: named staff, ward, dialect, first-person bow | KEEP | KEEP. TRIM only a fact-free `благородное дело` pile with no addressee. |
 | Explainer definition that names the object | KEEP | KEEP the definition. TRIM `востребована во множестве областях` without an example. |
 | Forum slang and insults | Soft | KEEP. Do not comb a thread into a briefing. |
@@ -284,6 +287,7 @@ A synonym is not a treatment:
 | `==` / `=>` in technical prose | hyphen or `это` everywhere | keep when it marks identity or implication |
 | rule of three | a new triad | one exact word or a source fact |
 | empty closer (`и в этом весь смысл`) | a prettier metaphor | delete; end on the last concrete line |
+| `Это гарантирует, что разговор закончится на позитивной ноте` | `так разговор завершится на приятной ноте` | delete the guarantee |
 
 The replacement inherits the surrounding voice. A sterile patch on a sharp
 paragraph is as visible as the original slop.

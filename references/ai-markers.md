@@ -970,6 +970,28 @@ AINL also: generated abstracts much shorter than human ones and poorer
 in digits. Missing numerals in a methods genre is a signal; do not
 invent them.
 
+**Advice-column mold** (LLMTrace article / how-to-feel posts): pep-talk
+that could sit on any topic.
+
+- opener `Даже не пытайтесь… Это очень сложно!`;
+- `сеть поддержки` / `доверенные лица` with no named person;
+- `не стесняйтесь обращаться за помощью`;
+- unnamed psychologist `предложит стратегии справления`;
+- closer `извлечь полезный опыт`.
+
+Treatment: delete the pep-talk. KEEP `позвони маме` / `встретьтесь в кафе`
+if named. A synonym of `позитивная нота` is not a fix.
+
+**Wiki-card / study-guide answer-card** (LLMTrace article create): numbered
+bold labels that turn a post into a gazetteer card.
+
+- `1. **История создания**` / `**Авторство**` / `**Отзывы критиков**`;
+- empty cell restating the title (`Подписан именем Антон Чехов`);
+- weasel critics `Отмечена глубина психологического анализа` with no name.
+
+Treatment: one paragraph with dates and names. DELETE empty labels.
+FLAG unnamed critics. Do not KEEP the grid because two cells have facts.
+
 **Reddit cited ranking** (JCarterJohnson unslop-ai-text, 600-post
 audit; English, but the *classes* travel): em dash density, `not X but
 Y`, uniform rhythm, sycophancy, formulaic essay, list-first, empty

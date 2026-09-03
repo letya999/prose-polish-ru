@@ -164,7 +164,9 @@ metaphors, openings, endings, or rituals such as a mandatory `P.S.`.
 
 Register:
 
-- article / post / opinion: personal, slightly careless, emotionally present;
+- article / post / opinion: personal, slightly careless, emotionally present.
+  Advice-column pep-talk and numbered wiki-card labels are TRIM (Pass 3);
+  KEEP a named action or a first-publication date;
 - review / comment: KEEP stretched words (`суперрр`), first-person, insults,
   crooked punctuation (`ни какое`), and a judgment that names the object
   (кафе, счёт, гребешки, диванчики, обслуживание). KEEP needs irregularity

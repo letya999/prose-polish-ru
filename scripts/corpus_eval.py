@@ -7,8 +7,10 @@ One path, three commands:
     python scripts/corpus_eval.py run --pack audit
     python scripts/corpus_eval.py grade
 
-sample  — 80 RU posts/articles: LLMTrace article, story, short_form, factual.
-          Skips wiki-continue, poetry, abstracts, and (by default) AINL.
+sample  — 80 RU posts/articles: LLMTrace article, story, short_form, factual
+          with per-type quotas; skips wiki-continue, gazetteer ledes, poetry,
+          abstracts, and (by default) AINL. Optional house posts from the
+          channel dump (no authorship gold — treatments only).
 run     — send each text to cliproxy with the skill *pack* stuffed into the
           system prompt (not SKILL.md alone). Model returns an audit table
           plus char-offset spans.
@@ -41,11 +43,20 @@ import urllib.request
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-DEFAULT_OUT = ROOT / "prose-polish-ru-workspace" / "corpus-eval-10"
+DEFAULT_OUT = ROOT / "prose-polish-ru-workspace" / "corpus-eval-11"
 REFS = ROOT / "references"
 PACK_CHOICES = ("map", "audit", "full", "auto")
 POST_TYPES = {"article", "story", "short_form", "factual"}
 WIKI_CONTINUE = re.compile(r"^\s*Продолжи текст\s*:", re.I)
+WIKI_PROMPT = re.compile(r"Продолжи текст\s*:|Раскрой тему|в стиле (?:статьи )?Википеди", re.I)
+GAZETTEER = re.compile(
+    r"(?:протекает по|устье реки находится|исполнительная ветвь|"
+    r"родивш(?:ийся|аяся) в д\.|— село[,\s]|входит в .{0,40}сельск|"
+    r"список народно-освободительных|небольшое село, расположенн)",
+    re.I,
+)
+HOUSE_FILE = ROOT / "prose-polish-ru-workspace" / "tg_last100.json"
+HF_CACHE = ROOT / "prose-polish-ru-workspace" / "hf-cache"
 PACK_FILES = {
     "map": ["SKILL.md"],
     "audit": [
@@ -70,8 +81,11 @@ DATA_TYPES = POST_TYPES
 MIN_CHARS = 400
 MAX_CHARS = 2500
 QUOTA_DET = {"mixed": 24, "ai": 8, "human": 8}
-QUOTA_CLF = {"ai": 24, "human": 16}
+QUOTA_CLF = {"ai": 24, "human": 8}
+QUOTA_HOUSE = 8
 QUOTA_AINL = {"human": 8, "ai": 8}
+TYPE_QUOTA_DET = {"article": 12, "short_form": 8, "story": 10, "factual": 10}
+TYPE_QUOTA_CLF = {"article": 12, "short_form": 6, "story": 8, "factual": 6}
 CLIPROXY_MODEL = "gemini-3.6-flash-high"
 LITELLM_CONTAINER = "ai-stp-litellm-1"
 CLIPROXY_URL = "http://cliproxy:8317/v1/chat/completions"
@@ -122,8 +136,8 @@ SPAN_SCHEMA = """\
 - TRIM/REWRITE/DELETE/FLAG = слоп, вода, заикание, n+заглавная, пустая значимость, review-sandwich, AINL-молд без результата — даже если датасет пометил спан human.
 - Не ставь P(AI). Не пиши «Вердикт». Не оценивай авторство.
 - quote — дословный кусок черновика, не длиннее 80 символов.
-- why — `§N class; treatment`. Для слопа treatment = delete | source-fact | simpler.
-  Для KEEP = keep. Не свободный ярлык.
+- why — `§N class; treatment`. Для слопа treatment = delete | source-fact | simpler
+  сразу после точки с запятой. Для KEEP = keep. Не свободный ярлык и не синоним.
 """
 
 
@@ -159,10 +173,12 @@ def usable_trace(row: dict, labels: set[str], min_chars: int = MIN_CHARS) -> boo
     if row.get("data_type") not in DATA_TYPES:
         return False
     prompt = (row.get("prompt") or "").strip()
-    if WIKI_CONTINUE.match(prompt):
+    if WIKI_CONTINUE.match(prompt) or WIKI_PROMPT.search(prompt):
         return False
     text = row.get("text") or ""
-    return min_chars <= len(text) <= MAX_CHARS
+    if not (min_chars <= len(text) <= MAX_CHARS):
+        return False
+    return not GAZETTEER.search(text[:400])
 
 
 def clamp_intervals(text: str, raw) -> list[list[int]]:
@@ -207,60 +223,112 @@ def pack_row(
     }
 
 
+def trace_jsonl(dataset: str, split: str = HF_SPLIT) -> Path:
+    from huggingface_hub import hf_hub_download
+
+    HF_CACHE.mkdir(parents=True, exist_ok=True)
+    path = hf_hub_download(
+        repo_id=dataset,
+        filename=f"{split}.jsonl",
+        repo_type="dataset",
+        cache_dir=str(HF_CACHE),
+    )
+    return Path(path)
+
+
 def sample_trace(
     dataset: str,
     quota: dict[str, int],
     rng: random.Random,
     id_prefix: str,
     need_intervals: bool,
+    type_quota: dict[str, int] | None = None,
 ) -> tuple[list[dict], int]:
-    first = hf_get(dataset, 0, 1)
-    total = int(first["num_rows_total"])
-    pages = list(range(0, total, 100))
-    rng.shuffle(pages)
-    got: dict[str, list[dict]] = {k: [] for k in quota}
-    scanned = 0
+    path = trace_jsonl(dataset)
     labels = set(quota)
-    for offset in pages:
-        if all(len(got[k]) >= n for k, n in quota.items()):
-            break
-        try:
-            payload = hf_get(dataset, offset, 100)
-        except urllib.error.URLError as exc:
-            print(f"hf skip {dataset} offset={offset}: {exc}", file=sys.stderr)
-            continue
-        for wrapper in payload.get("rows") or []:
-            row = wrapper.get("row") or {}
+    pool: dict[str, list[dict]] = {k: [] for k in quota}
+    scanned = 0
+    with path.open(encoding="utf-8") as fh:
+        for line in fh:
+            line = line.strip()
+            if not line:
+                continue
             scanned += 1
+            row = json.loads(line)
             if not usable_trace(row, labels):
                 continue
             label = row["label"]
-            if len(got[label]) >= quota[label]:
+            data_type = row.get("data_type")
+            if type_quota is not None and data_type not in type_quota:
                 continue
-            text = row["text"]
-            if need_intervals:
-                intervals = clamp_intervals(text, row.get("ai_char_intervals"))
-                if label == "human":
-                    intervals = []
-                elif label == "ai" and not intervals:
-                    intervals = [[0, len(text)]]
-            else:
-                intervals = [] if label == "human" else [[0, len(text)]]
-            got[label].append(
-                pack_row(
-                    f"{id_prefix}-{label}",
-                    len(got[label]) + 1,
-                    dataset,
-                    row,
-                    text,
-                    label,
-                    intervals,
-                )
+            pool[label].append(row)
+    got: dict[str, list[dict]] = {k: [] for k in quota}
+    type_got: dict[str, int] = {k: 0 for k in (type_quota or {})}
+    mixed = [row for items in pool.values() for row in items]
+    rng.shuffle(mixed)
+    for row in mixed:
+        label = row["label"]
+        if len(got[label]) >= quota[label]:
+            continue
+        data_type = row.get("data_type")
+        if type_quota is not None and type_got[data_type] >= type_quota[data_type]:
+            continue
+        text = row["text"]
+        if need_intervals:
+            intervals = clamp_intervals(text, row.get("ai_char_intervals"))
+            if label == "human":
+                intervals = []
+            elif label == "ai" and not intervals:
+                intervals = [[0, len(text)]]
+        else:
+            intervals = [] if label == "human" else [[0, len(text)]]
+        got[label].append(
+            pack_row(
+                f"{id_prefix}-{label}",
+                len(got[label]) + 1,
+                dataset,
+                row,
+                text,
+                label,
+                intervals,
             )
-            if all(len(got[k]) >= n for k, n in quota.items()):
-                break
+        )
+        if type_quota is not None:
+            type_got[data_type] += 1
+        if all(len(got[k]) >= n for k, n in quota.items()):
+            break
     rows = [item for label in quota for item in got[label]]
     return rows, scanned
+
+
+def sample_house(rng: random.Random, n: int = QUOTA_HOUSE) -> list[dict]:
+    if n <= 0 or not HOUSE_FILE.exists():
+        if n > 0:
+            print(f"house dump missing: {HOUSE_FILE}", file=sys.stderr)
+        return []
+    payload = json.loads(HOUSE_FILE.read_text(encoding="utf-8"))
+    pool = []
+    for item in payload.get("last") or []:
+        text = (item.get("text") or "").strip()
+        if MIN_CHARS <= len(text) <= MAX_CHARS:
+            pool.append(item)
+    rng.shuffle(pool)
+    out = []
+    for i, item in enumerate(pool[:n], 1):
+        text = (item.get("text") or "").strip()
+        out.append(
+            pack_row(
+                "house",
+                i,
+                "tg_last100",
+                item,
+                text,
+                "house",
+                [],
+                extra={"data_type": "short_form", "split": "channel"},
+            )
+        )
+    return out
 
 
 def sample_ainl(rng: random.Random) -> list[dict]:
@@ -329,16 +397,25 @@ def cmd_sample(args: argparse.Namespace) -> int:
         print(f"exists: {slice_path} (pass --force to resample)", file=sys.stderr)
         return 0
     rng = random.Random(args.seed)
-    det, n_det = sample_trace(DET, QUOTA_DET, rng, "det", need_intervals=True)
-    clf, n_clf = sample_trace(CLF, QUOTA_CLF, rng, "clf", need_intervals=False)
+    det, n_det = sample_trace(
+        DET, QUOTA_DET, rng, "det", need_intervals=True, type_quota=TYPE_QUOTA_DET
+    )
+    clf, n_clf = sample_trace(
+        CLF, QUOTA_CLF, rng, "clf", need_intervals=False, type_quota=TYPE_QUOTA_CLF
+    )
     ainl = sample_ainl(rng) if args.ainl else []
-    rows = det + clf + ainl
+    house = sample_house(rng) if args.house else []
+    rows = det + clf + ainl + house
     with slice_path.open("w", encoding="utf-8") as fh:
         for item in rows:
             fh.write(json.dumps(item, ensure_ascii=False) + "\n")
+    types = {}
+    for item in rows:
+        types[item.get("data_type")] = types.get(item.get("data_type"), 0) + 1
     print(
         f"wrote {len(rows)} rows → {slice_path} "
-        f"(det {len(det)}/{n_det}, clf {len(clf)}/{n_clf}, ainl {len(ainl)}, seed {args.seed})"
+        f"(det {len(det)}/{n_det}, clf {len(clf)}/{n_clf}, ainl {len(ainl)}, "
+        f"house {len(house)}, types {types}, seed {args.seed})"
     )
     return 0 if len(rows) >= 40 else 1
 
@@ -588,6 +665,8 @@ FILL_ROUTES = (
     (r"сначала всё казалось|но со временем", "ai-markers §39 review sandwich"),
     (r"великолепн\w* сервис|всегда готов(?:ы|а|о)? помочь|каждое блюдо было шедевром|классик\w+ Москвы", "ai-markers §39 AI-review praise mold"),
     (r"этот опыт сделает|важный урок|выбирать правильный путь", "ai-markers §39 expand-fable / lint M04"),
+    (r"не стесняйтесь обращаться|извлечь полезный опыт|стратегии справления|сеть поддержки", "ai-markers §39 advice-column"),
+    (r"\*\*История создания\*\*|\*\*Авторство\*\*|Отмечена глубина психологического", "ai-markers §39 wiki-card"),
     (r"n[А-ЯЁA-Z]", "ai-markers §1 glued join / lint A07"),
 )
 FALSE_SLOP_ROUTES = (
@@ -697,11 +776,15 @@ def cmd_grade(args: argparse.Namespace) -> int:
     treat_ok = 0
     treat_total = 0
     lint_mod = load_lint()
-    treat_re = re.compile(r"\b(delete|source-fact|simpler|удали|факт из|проще)\b", re.I)
+    treat_re = re.compile(
+        r";\s*(delete|source-fact|simpler|удали(?:ть)?|факт из|проще)\b",
+        re.I,
+    )
     for row in rows:
         text = row["text"]
         n = len(text)
-        gold_intervals = row["ai_char_intervals"]
+        is_house = row.get("label") == "house"
+        gold_intervals = [] if is_house else row["ai_char_intervals"]
         gold = ["H"] * n
         for start, end in gold_intervals:
             for i in range(start, min(end, n)):
@@ -744,6 +827,27 @@ def cmd_grade(args: argparse.Namespace) -> int:
             why = str(span.get("why") or "")
             if treat_re.search(why):
                 treat_ok += 1
+        if is_house:
+            report_rows.append(
+                {
+                    "id": row["id"],
+                    "label": "house",
+                    "data_type": row.get("data_type"),
+                    "n_chars": n,
+                    "tp": 0,
+                    "fp": 0,
+                    "fn": 0,
+                    "tn": 0,
+                    "uncovered": 0,
+                    "recall_ai": None,
+                    "precision_slop": None,
+                    "cited_sections": cites,
+                    "categories": cats[:12],
+                    "lint_codes": lint_codes,
+                    "status": "house",
+                }
+            )
+            continue
         pred = pred_tags(n, spans)
         tp = fp = fn = tn = unc = 0
         kinds: list[str] = []
@@ -924,6 +1028,12 @@ def build_parser() -> argparse.ArgumentParser:
         "--ainl",
         action="store_true",
         help="also sample AINL scientific abstracts (off by default)",
+    )
+    sample.add_argument(
+        "--house",
+        action=argparse.BooleanOptionalAction,
+        default=True,
+        help="include channel posts as house-style rows (treatments only, no gold spans)",
     )
     sample.set_defaults(func=cmd_sample)
     run = sub.add_parser("run", help="call cliproxy with the skill pack + audit JSON")
