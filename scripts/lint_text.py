@@ -194,6 +194,9 @@ PHRASES: dict[str, tuple[str, str, str]] = {
     r"\bчто\s+касается\b.{1,50}\bто\s+(?:здесь|в\s+данном\s+случае|следует|можно)\b|\bесли\s+говорить\s+о\b.{1,50}\bто\s+(?:здесь|следует|можно)\b": (
         "W24", "water", "Thematic crutch opener / theme-rheme dislocation (§53)",
     ),
+    r"\b(?:исходя из вышеизложенного|принимая во внимание данные факторы|руководствуясь указанными соображениями|вследствие чего|ввиду того что)\b": (
+        "L08", "diction", "Knizhnost' overload / bookish gerund crutch (§59)",
+    ),
 }
 
 # High-precision fills: fire on the first hit. Common канцелярит still
@@ -207,7 +210,7 @@ ONCE_CODES = {
     "P01", "P02", "P03",
     "H01", "H02", "H04",
     "V02",
-    "L07",
+    "L07", "L08",
     "W06", "W08", "W14", "W16", "W18", "W19", "W20", "W21", "W22", "W24",
 }
 
@@ -259,6 +262,10 @@ TRIVIAL_DEF_RE = re.compile(
 )
 CONNECTIVE_OPENER_RE = re.compile(
     r"^(?:Вместе с тем|Кроме того|Тем не менее|Следовательно|В свою очередь|Более того|В этой связи)\b",
+    re.I,
+)
+NESTED_WHICH_RE = re.compile(
+    r"\bкотор(?:ый|ая|ое|ые|ого|ому|ым|ом|ой|ую|ых|ыми)\b.{1,120}\bкотор(?:ый|ая|ое|ые|ого|ому|ым|ом|ой|ую|ых|ыми)\b",
     re.I,
 )
 
@@ -477,6 +484,11 @@ def scan_prose(lines: list[str], mode: str) -> list[Finding]:
             add(findings, "W23", "medium", "water", line_no,
                 "Trivial definition padding: unsolicited tutorial definition of a standard tool (§51)",
                 raw)
+        nested_rel = NESTED_WHICH_RE.search(text)
+        if nested_rel:
+            add(findings, "R09", "low", "structure", line_no,
+                "Stacked relative clauses: multiple 'который' in one sentence (§60)",
+                nested_rel.group(0))
 
     for pattern, (code, category, message) in PHRASES.items():
         count = phrase_hits[code]
@@ -785,6 +797,13 @@ print("важно отметить")
     assert "H04" in disc_codes, disc_codes
     assert "W24" in disc_codes, disc_codes
     assert "H03" in disc_codes, disc_codes
+    rus_knizhnost = (
+        "Исходя из вышеизложенного, архитектура требует рефакторинга.\n\n"
+        "Мы развернули сервис, который собирает метрики, которые отправляются в дашборд."
+    )
+    knizh_codes = {item.code for item in scan_prose(rus_knizhnost.splitlines(), "article")}
+    assert "L08" in knizh_codes, knizh_codes
+    assert "R09" in knizh_codes, knizh_codes
     print("self-test: ok")
 
 

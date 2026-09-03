@@ -387,6 +387,11 @@ They fail the other way if rewritten into a blog voice.
 - Break flat surprisal and vocabulary compression (§54): avoid high-probability blandness;
   retain or inject exact domain terms, concrete names, and technical specifics instead of
   generic umbrellas (`различные компоненты`).
+- Unpack knizhnost' and participle cascades (§59): convert heavy bookish participle strings
+  (`являющийся связующим звеном и обеспечивающий...`) and bureaucratic gerunds
+  (`исходя из вышеизложенного`) into active personal verbs and simple clauses.
+- Flatten nested subordination stacks (§60): eliminate runs of nested relative clauses
+  (`система, которая... которая... которая...`); break into independent sentences or parataxis.
 
 ### Machine surface (article / post / opinion)
 
@@ -476,6 +481,20 @@ a 40-word note):
 7. Present the result as human-sounding copy. May say it reads as a person
    wrote it / is meant to pass as human. Do not invent a GPTZero percentage
    unless a scan was actually run.
+
+### Why surface synonym swapping fails against deep detectors
+
+Empirical research (MASH arXiv:2601.08564, DAMAGE, Binoculars, TH-Bench, RuATD arXiv:2206.01583) demonstrates that simple synonym swapping or contraction editing leaves the text in a detectable "intermediate laundering region". Deep detectors measure:
+- cross-model surprisal / perplexity curvature;
+- syntactic tree depth monotony;
+- burstiness deficit (uniform sentence length distribution);
+- absence of natural oral modal cadence (§50).
+
+True humanization requires **structural intervention**:
+- breaking syntactic nests and relative clause stacks (§60);
+- altering sentence lengths (interleaving 3–5 word punches with rich compound thoughts);
+- natural theme-rheme packaging (§53);
+- genuine personal stance and modal particles (`же`, `ведь`, `-то`).
 
 Do not install stock humanizer templates (`Разберём, почему`, `Я бы оставил
 такую схему`). Those are §26 residue, the opposite of this pass.
@@ -569,7 +588,7 @@ Then:
 Category is a catalog citation, not a free-text bucket. Write `§N short-name`
 from [ai-markers.md](ai-markers.md) (working core §1–16, 2026 classes
 §28–38, dataset fills / False slop §39, frontier reasoning §40–47, Russian
-syntax/structure §48–52, stylometric/discourse §53–58) or the Pass 3 span name
+syntax/structure §48–52, stylometric/discourse/syntactic §53–60) or the Pass 3 span name
 (`Lived-in review`, `News-governance ritual`, `Glued join letter`).
 Stacked markers in one span are still one row: cite the strongest `§N`. Do not write
 `нейрослоп` or `вода` as the category.

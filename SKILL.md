@@ -69,9 +69,10 @@ short edit noisier and encourages mechanical rewrites:
    practitioner layers, plus 2026 classes (openers/closers, weasel
    attribution, translationese, citation laundering, §40–§47 frontier
    reasoning tells, §48–§52 Russian structural/syntax markers, and
-   §53–§58 stylometric/discourse tells: theme-rheme dislocation, flat
-   surprisal, agent deletion, epistemic cowardice, negative parallelism,
-   connective inflation); house format is KEEP.
+   §53–§60 stylometric/discourse/syntactic tells: theme-rheme dislocation,
+   flat surprisal, agent deletion, epistemic cowardice, negative parallelism,
+   connective inflation, knizhnost' overload, nested subordination stacks);
+   house format is KEEP.
 4. Load [Formats and artifacts](references/formats-and-artifacts.md) when the
    draft contains Markdown, tables, lists, links, citations, images, code, or
    platform-specific formatting.

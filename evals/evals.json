@@ -547,6 +547,31 @@
         "Cuts inflated transitional connectives ('Вместе с тем', 'Кроме того', 'Тем не менее', 'Следовательно')",
         "Cites §53 or §58 in the Маркеры table"
       ]
+    },
+    {
+      "id": 44,
+      "category": "knizhnost-participles",
+      "prompt": "Use $prose-polish-ru in standard mode. Polish this engineering update:\n\nИсходя из вышеизложенного, мы перешли на ClickHouse. Был внедрен модуль агрегации, являющийся промежуточным буфером и обеспечивающий фильтрацию логов, поступающих от сервиса биллинга. Вследствие чего latency запросов снизилась до 15 мс.",
+      "expected_output": "Eliminates bookish gerund opener and archaic connective (§59); unpacks participle chains into personal verbs; preserves ClickHouse, 15 мс.",
+      "files": [],
+      "expectations": [
+        "Preserves ClickHouse and 15 мс exactly",
+        "Removes bookish gerund opener 'Исходя из вышеизложенного' and 'Вследствие чего'",
+        "Unpacks participle chain into active personal verbs",
+        "Cites §59 in the Маркеры table"
+      ]
+    },
+    {
+      "id": 45,
+      "category": "nested-subordination",
+      "prompt": "Use $prose-polish-ru in standard mode. Polish this architecture review:\n\nМы развернули сервис аутентификации, который генерирует JWT-токены, которые передаются в API-шлюз, который проверяет права доступа за 2 мс. Данное архитектурное решение позволило изолировать проверку сессий.",
+      "expected_output": "Flattens nested relative clauses (§60); preserves JWT, API, 2 мс.",
+      "files": [],
+      "expectations": [
+        "Preserves JWT, API, and 2 мс exactly",
+        "Flattens nested 'который' relative clause cascade into simple sentences or parataxis",
+        "Cites §60 in the Маркеры table"
+      ]
     }
   ]
 }

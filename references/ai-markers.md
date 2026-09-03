@@ -1269,6 +1269,25 @@ Documented in stylometric benchmarks (RuATD / CoAT / DeBERTa-Sentinel). Human wr
 
 Treatment: Cut the introductory connector. In 80% of cases, the sentence reads faster, punches harder, and maintains better flow without the connective crutch.
 
+## 59. Knizhnost' overload and participle cascades (книжный стиль и каскады причастий/деепричастий)
+
+Documented in the RuATD benchmark (arXiv:2206.01583) and Russian stylistic analysis of generated prose. Models over-index on the formal bookish register (*книжный стиль*) even in conversational, blog, or community channels:
+
+- participle chains: `компонент, являющийся связующим звеном и обеспечивающий передачу данных, поступающих от сервиса...`;
+- bookish introductory gerunds: `исходя из вышеизложенного`, `принимая во внимание данные факторы`, `руководствуясь указанными соображениями`;
+- archaic/bureaucratic bookish conjunctions: `вследствие чего`, `ввиду того что`, `дабы`.
+
+Treatment: Convert participles and gerunds to finite personal verbs. Break long participle strings into two clear sentences.
+
+## 60. Subordination nesting and clause stacks (синтаксическая матрёшка / каскад придаточных)
+
+Investigated in syntactic tree depth analysis for AI detection (M4 / SemEval-2024 / CoAT). LLMs generate continuous hypothetical subordination (hypotaxis) rather than parataxis, nesting 3+ relative clauses within a single sentence:
+
+- multiple «который»: `Мы развернули сервис, который собирает логи, которые отправляются в кластер, который...`;
+- recursive clause nesting: `Команда поняла, что сбой произошел из-за того, что скрипт, который обновлял конфиг, не проверил права...`.
+
+Treatment: Flatten the syntactic tree. Break relative clauses into independent sentences. Use coordinate conjunctions (`и`, `но`) or simple juxtaposition.
+
 Sources (descriptive, not a detector): Kobak et al. PubMed excess
 vocabulary; Reinhart nominal grammar; Pew 2026 AI-on-the-web;
 WriteHuman 2026 pairs; Bloomberry Sentence DNA; AI PromptIndex 19
@@ -1277,7 +1296,9 @@ slop patterns; Wikipedia:Signs of AI writing; ru-wiki признаки
 markers-ru; AINL-Eval 2025; Osetrova & Sedova 2025; SPbU ChatGPT
 portrait; Gramota.ru rhythm note; WIRED/Imperial cheerfulness 2026;
 Sourati complexity homogenization; LLMTrace classification/detection
-(EN+RU, span intervals); CoAT / RuATD; Reddit cited-tells tally
+(EN+RU, span intervals); CoAT / RuATD (arXiv:2206.01583); DIALOG-22
+(arXiv:2206.08029); arXiv:2605.19516 (Base models vs RLHF);
+arXiv:2601.08564 (MASH); TH-Bench (arXiv:2410); Reddit cited-tells tally
 (unslop-ai-text); Shaib et al. slop taxonomy. Corpora URLs →
 [README](../README.md). Practitioner lists are not frequencies. This
 catalog names fill; Pass H is the humanizer. Do not invent a detector
