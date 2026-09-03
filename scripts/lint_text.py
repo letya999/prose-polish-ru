@@ -146,16 +146,55 @@ PHRASES: dict[str, tuple[str, str, str]] = {
     r"\bизвлечь полезный опыт\b": (
         "S31", "significance", "Advice-column experience closer",
     ),
+    r"\bс одной стороны\b.{0,120}\bс другой стороны\b": (
+        "C05", "contrast", "Dialectical evasion / pseudo-nuance",
+    ),
+    r"\bистина[,\s]+как водится[,\s]+лежит\b": (
+        "C06", "contrast", "False synthesis cliché",
+    ),
+    r"\bесли (?:препарировать|разложить)\b": (
+        "M05", "metadiscourse", "Reasoning scaffolding leak",
+    ),
+    r"\bздесь возникает (?:неочевидная )?развилка\b": (
+        "M06", "metadiscourse", "Reasoning scaffolding leak",
+    ),
+    r"\bпредставьте (?:разработчика|инженера|команду)\b": (
+        "A09", "abstraction", "Sterile archetype persona opener",
+    ),
+    r"\bкогнитивн(?:ая|ой|ую|ые) нагрузк": (
+        "P01", "prestige", "Cognitive buzzword inflation",
+    ),
+    r"\bментальн(?:ая|ой|ую|ые) модел": (
+        "P02", "prestige", "Mental model buzzword inflation",
+    ),
+    r"\bэмерджентн(?:ость|ое|ые|ый)\b": (
+        "P03", "prestige", "Prestige systems jargon",
+    ),
+    r"\bв продолжение этой логики\b": (
+        "H01", "cohesion", "Hyper-cohesion transition glue",
+    ),
+    r"\bиз этого органично вытекает\b": (
+        "H02", "cohesion", "Hyper-cohesion transition glue",
+    ),
+    r"\bвполне понятно искушение\b": (
+        "V02", "voice", "Therapeutic validation opener",
+    ),
+    r"\bне серебряная пуля\b": (
+        "S32", "significance", "Ritual silver-bullet disclaimer",
+    ),
 }
 
 # High-precision fills: fire on the first hit. Common канцелярит still
 # needs density (count >= 2) so a single `таким образом` is not a finding.
 ONCE_CODES = {
     "S02", "S03", "S15", "S16", "S17", "S18", "S19", "S20", "S21", "S22",
-    "S23", "S24", "S25", "S26", "S27", "S28", "S29", "S30", "S31",
-    "M03", "M04",
-    "A04", "A05", "A06",
-    "C01",
+    "S23", "S24", "S25", "S26", "S27", "S28", "S29", "S30", "S31", "S32",
+    "M03", "M04", "M05", "M06",
+    "A04", "A05", "A06", "A09",
+    "C01", "C05", "C06",
+    "P01", "P02", "P03",
+    "H01", "H02",
+    "V02",
     "W06", "W08", "W14", "W16", "W18", "W19", "W20", "W21", "W22",
 }
 
@@ -603,6 +642,31 @@ print("важно отметить")
     assert "S29" in advice_codes, advice_codes
     assert "S30" in advice_codes, advice_codes
     assert "S31" in advice_codes, advice_codes
+    frontier = (
+        "С одной стороны, это полезно, но с другой стороны, возникают риски. "
+        "Истина, как водится, лежит где-то посередине. "
+        "Если препарировать проблему, то здесь возникает неочевидная развилка. "
+        "Представьте разработчика, который видит этот код. "
+        "Когнитивная нагрузка растет, а ментальная модель ломается. "
+        "Возникает эмерджентность в системе. "
+        "В продолжение этой логики отметим следующее. "
+        "Из этого органично вытекает простой шаг. "
+        "Вполне понятно искушение всё переписать. "
+        "Но это не серебряная пуля."
+    )
+    frontier_codes = {item.code for item in scan_prose(frontier.splitlines(), "article")}
+    assert "C05" in frontier_codes, frontier_codes
+    assert "C06" in frontier_codes, frontier_codes
+    assert "M05" in frontier_codes, frontier_codes
+    assert "M06" in frontier_codes, frontier_codes
+    assert "A09" in frontier_codes, frontier_codes
+    assert "P01" in frontier_codes, frontier_codes
+    assert "P02" in frontier_codes, frontier_codes
+    assert "P03" in frontier_codes, frontier_codes
+    assert "H01" in frontier_codes, frontier_codes
+    assert "H02" in frontier_codes, frontier_codes
+    assert "V02" in frontier_codes, frontier_codes
+    assert "S32" in frontier_codes, frontier_codes
     print("self-test: ok")
 
 

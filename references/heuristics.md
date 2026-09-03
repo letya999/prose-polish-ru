@@ -196,7 +196,8 @@ diction, and voice questions — not KEEP examples and not `§N` marker classes.
 144. Avoid accidental grandiosity.
 145. Cut fake intimacy (`мы с тобой наверняка`) that carries no claim; keep a
      personal reaction to the actual material.
-146. Avoid slang inserted only to appear human.
+146. Colloquial / slang is a Pass H tool on stiff copy. Flag only a
+     mechanical dump (`Короче` every paragraph) that fights the speaker.
 147. Preserve sharpness, irritation, doubt, humor, or dryness; in article/post
      register prefer a visible stance over a dry briefing.
 148. Do not normalize every unusual but intelligible phrase.
@@ -212,9 +213,9 @@ diction, and voice questions — not KEEP examples and not `§N` marker classes.
 155. Match relationship to examples: personal, operational, hypothetical, or
      sourced.
 156. Do not copy an exemplar's exact hook, metaphor, cadence, or ending.
-157. Leave one or two informal slips (spoken syntax, a slightly crooked
-     agreement, a trailing sentence). Do not sprinkle spelling mistakes into
-     names, numbers, code, or links, and do not invent a new error style.
+157. Pass H: 1–3 informal slips in ordinary running prose (spoken syntax,
+     crooked agreement, a missing letter). Never in names, numbers, code,
+     or links.
 158. Do not invent biography-informed anecdotes.
 159. Do not force greetings, jokes, questions, CTA, or `P.S.` because they occur
      in other publications.
@@ -264,3 +265,7 @@ diction, and voice questions — not KEEP examples and not `§N` marker classes.
 193. Did `==`, `=>`, `->`, or `vs` survive when they marked identity or implication?
 194. In article/post register, is a stance visible without a fabricated episode?
 195. Is the outline still a bit uneven, or was it combed into symmetry?
+196. Would a reader in this genre flag the fill as a chatbot, brochure, or
+     wiki-card? House frame and genre formality are not that flag.
+197. Did the `Маркеры` table name AI / вода / признак with `§N` or a Pass 3
+     span? Did Pass H run without touching protected spans?

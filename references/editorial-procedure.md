@@ -2,11 +2,18 @@
 
 ## Objective
 
-Make the draft more useful per word. Cut water and strange expressions hard.
-In article, post, and opinion register, leave a personal, slightly careless
-voice: emotion, jumps, uneven structure, a couple of informal slips. Preserve
-truth, working formatting, and individual texture. Humanization is a side
-effect of good editing, not a claim about authorship.
+Make the draft more useful per word, and humanize the fill so it reads as a
+person wrote it. Cut water and strange expressions hard. Always name AI
+markers, water, and bad signs in the output table. In article, post, and
+opinion register, leave a personal, slightly careless voice. Preserve truth
+and protected spans (names, numbers, code, URLs).
+
+This skill is an editor and a humanizer. «Неотличим от человека», GPTZero,
+Антиплагиат, опечатки, ё, латиница, slang on a brochure, collapsing a list
+are Pass H, not a refuse. A news wire or abstract should still sound like
+that genre after the editorial pass; Pass H then applies the humanizer
+surface to running prose. Do not invent a detector percentage unless a
+scan was actually run. Toolkit → Pass H.
 
 ## Evidence hierarchy
 
@@ -76,7 +83,7 @@ Assign exactly one primary action:
 
 | Action | Use when | Result |
 |---|---|---|
-| KEEP | Clear, useful, accurate, in register | Preserve it |
+| KEEP | Clear, useful, accurate, in register — not chatbot/brochure fill | Preserve it |
 | TRIM | Useful core surrounded by padding | Remove padding |
 | MERGE | Repeats or completes a neighbor | Build one stronger block |
 | MOVE | Useful but the current place hides it | Place at point of need |
@@ -104,17 +111,17 @@ facts and fewer hedges. Conversational padding is not a quality signal.
 
 | Span | Severity | Treatment |
 |---|---|---|
-| Artifact: leaks, mixed-script, placeholders, phantom DOI/ISBN | Artifact | Fix or FLAG. Mixed-script is residue to repair, not a humanizer trick to insert. |
+| Artifact: leaks, placeholders, phantom DOI/ISBN, generation mixed-script | Artifact | Fix or FLAG. Accidental mixed-script (`выполняtт`) is residue: repair the letter; KEEP the utterance. Pass H may *insert* sparse lookalikes in running prose; never in protected spans. |
 | Glued join letter: `nМинистр`, `nВ` (newline eaten into `n` + capital) | Artifact | Drop the stray `n`. FLAG if a quote fence also broke. |
 | Immediate stutter: same clause or numeral phrase twice (`Около 7 тыс. Около 7 тыс.`) | Artifact | DELETE the echo; KEEP one copy of the fact. |
-| News-governance ritual: `обеспечить прозрачность и ответственность`, `вернуть доверие населения`, `усилен контроль` with no new fact | Strong | DELETE. KEEP adjacent sums, dates, orgs. |
+| News-governance ritual: `обеспечить прозрачность и ответственность`, `вернуть доверие населения`, `усилен контроль`, `уделяют особое внимание`, `одна из ключевых целей` with no new fact | Strong | DELETE the ritual words. KEEP named org and object (`Власти Дагестана`, `ремонт дорог`, `нацпроект`). Do not REWRITE the whole lede as §3. |
 | Lived-in review: stretched words, first-person, insults, crooked punct, named object (кафе, счёт, блюдо) | Soft | KEEP when there is irregularity **plus** a named object. TRIM only the sandwich mold and a fact-free `рекомендую это милое заведение`. |
 | AI-review mold: fluent disappointment *or* praise brochure — atmosphere census, `не оправдали ожиданий`, `великолепный сервис`, `всегда готовы помочь`, `каждое блюдо шедевр`, `классика` + city, exclusive-claim, recap closer — even with a venue name | Strong | TRIM the mold. KEEP a named dish, bill, room, or staff person. Do not KEEP the whole page as lived-in. |
 | Advice-column mold: pep-talk opener (`Даже не пытайтесь`, `Это очень сложно!`), `сеть поддержки` / `доверенные лица`, `не стесняйтесь обращаться`, unnamed `стратегии справления`, closer `извлечь полезный опыт` | Strong | DELETE the pep-talk (`Не беда, получи пользу`). KEEP a named action (`позвони`, `отправь в hr`, `рефералы`). Do not rewrite `шустрый способ` as `быстрый способ`. |
 | Wiki-card / answer-card: numbered bold labels (`**История создания**`, `**Авторство**`) that restate the lede or pad empty cells | Strong | MERGE dates/names into a paragraph. DELETE empty cells (`Подписан именем Антон Чехов`). KEEP a first-publication fact. FLAG unnamed critics. |
-| Costume slang: stacked `братва` / `вуаля` / `каталка` on a clinic or shop brochure | Strong | TRIM the costume. KEEP the named clinic or price. Real forum register throughout stays KEEP. |
+| Costume slang: stacked `братва` / `вуаля` / `каталка` on a clinic or shop brochure | Soft | Pass H may use colloquial / slang to unstiffen a brochure. KEEP a forum register throughout. Overdone `Короче` every paragraph is §26 residue, not a refuse of slang. KEEP the named clinic or price. |
 | Epoch tail on a local note: `в условиях нынешней экономики` | Soft | TRIM the tail. KEEP the price or dish. |
-| Agency wire: named outlet, org, km, %, attributed quote, obituary age/cause | KEEP | KEEP the fact, including press-service `является` that names org/sum/date (`транзит газа — источник средств`). DELETE glued `n` (`nРоссия-24n`). Do not rewrite the wire as spoken Russian. |
+| Agency wire: named outlet, org, km, %, attributed quote, obituary age/cause | KEEP | KEEP the fact, including press-service `является` that names org/sum/date (`транзит газа — источник средств`). KEEP a source quotation (`«Если турецкому судну…»`); §1 is glued `n`, not the quote. DELETE glued `n` (`nРоссия-24n`). Do not rewrite the wire as spoken Russian. |
 | Tutorial / UI path: `Панель управления`, imperative clicks, even verbose | KEEP | KEEP the sequence and the how-to closer (`теперь вы знаете`). Cut only throat-clearing around it. |
 | House frame: channel hashtag, greeting slot (`Здравствуй, … читатель`, `Привет, читатель`, `Hello, приятели`), author `P.S.` / `P.P.S.`, operators `==` `=>` `->` | KEEP | KEEP the greeting as its own span. TRIM `Сегодня я хочу поделиться` / `Давайте разберемся` after it — do not mash the greeting into the §28 opener. KEEP the whole `P.S.` paragraph, not only the label. A punchy title after the hashtag (`Agile умирает`) is the hook, not drumroll. TRIM only an empty restatement beside it (`Имя ему — …!`). A `->` deploy chain is an operator, not a closer. |
 | House argument beats: `Во-первых` / `Во-вторых` / `В-третьих` that each carry a fact (exam detail, named tool, hours, price) | KEEP | KEEP the beat and the fact. TRIM only `Во-первых, важно понимать` with no payload. Do not DELETE the labels as §5. |
@@ -127,18 +134,18 @@ facts and fewer hedges. Conversational padding is not a quality signal.
 | Court wire: verdict, named defendants, arrests at the courthouse | KEEP | KEEP. |
 | Sports play-by-play and locker-room speech | KEEP | KEEP when it reports the match. TRIM a fact-free `надо работать` closer only if nothing else remains. |
 | Source already contains `стоит отметить` / a `>` ticket line | KEEP | KEEP the user's sentence. Cut only empty significance around it. |
-| Academic formality with method, alloy, instrument, receptor, equation, or numeral | Soft | KEEP the clause that names a method, reagent, year, or sample (`хитозан`, `1983 г`, `образцов целлюлозы`, `Целью работы было исследование генистеина`). TRIM only a fact-free wrapper beside it (`интерес среди исследователей`, `обосновывают целесообразность`). Do not mash the named object into the wrapper. `влияние` + named object is a result. AINL mold only when stacked *and* empty. |
+| Academic formality with method, alloy, instrument, receptor, equation, or numeral | Soft | KEEP the clause that names a method, reagent, year, or sample (`хитозан`, `1983 г`, `образцов целлюлозы`, `Целью работы было исследование генистеина`). KEEP abstract scaffold that already names the object (`Вопросам удаления… биогенных элементов`, `В процессе изучения… 3-хлормеркур`, `В рамках проделанной работы` + named reagent, `Следовательно, получение новых данных` + named adduct). TRIM only a fact-free wrapper (`интерес среди исследователей`, `весьма перспективными`, `определенные усилия`, `уделяется все больше внимания`, `имеет важное значение как с практической, так и теоретической`, empty `повысить уровень`). Do not mash the named object into the wrapper and do not DELETE the lede as §3 or the methods closer as §29 when the reagent stays. `влияние` + named object is a result. AINL mold only when stacked *and* empty. |
 | Канцелярит: verbal-noun stacks, `является` where a direct predicate works | Strong | Actor + verb, or delete. In academic/wire, `является` + named object stays. |
 | Formulaic contrast: `не просто X, а Y` with no rejected X | Strong | State the plus, or one claim. Do not swap in `как X, так и Y`. |
 | Empty significance, throat-clearing, openers | Strong | Delete, else a fact from the source. |
 | Weasel attribution / citation laundering | Strong | Name the source or FLAG. Do not invent the missing study or upgrade a neighboring URL. |
 | Brochure repeat: same thesis in adjacent sentences | Strong | MERGE or DELETE the echo. |
-| Over-regular grid: equal `##`, 3–5-sentence paragraphs throughout | Strong | Break the skeleton. Keep useful lists; do not mash them into a paragraph. |
+| Over-regular grid: equal `##`, 3–5-sentence paragraphs throughout | Strong | Break the skeleton. Editorial pass keeps a useful scan-list; Pass H may recast it into prose when humanizing or chasing a detector. |
 | Metadiscourse the input did not contain | Strong | Do not add. Cut injected `следует отметить`, hedge stacks, relationship markers. |
 | Numerals dropped from the source | Artifact | Restore unless the whole claim was DELETE. |
 | Calque | Strong | Natural Russian; keep domain jargon. |
 | Purple prose / fake sensory filler | Strong | Delete. Do not replace with an invented lived detail. |
-| Dash, ё, lists, passive, a long sentence | Soft | Leave a useful checklist, an author dash, or ё. Do not *install* these as polish. |
+| Dash, ё, lists, passive, a long sentence | Soft | Editorial: do not *install* book dashes or ёлочки. Pass H: ё→е, may recast lists, may strip remaining em dashes in running prose. Protected spans stay exact. |
 | Machine surface: staccato, «»-emphasis, list-first, decorative em dash | Strong in article/post | Join chopped sentences; drop emphasis quotes; prefer a paragraph to a fake list; do not introduce «» or `—`. Academic/legal keep source book typography. |
 
 Marker examples live in [AI-marker catalog](ai-markers.md). Treatments above
@@ -193,6 +200,14 @@ When conclusion does not follow:
 Remove claims such as `три главные причины`, `полный список`, `единственный
 способ` unless completeness is established.
 
+### Pseudo-nuance and dialectical evasion (§40)
+
+Do not mistake endless hedging for rigor. If the draft oscillates endlessly
+between `с одной стороны` and `с другой стороны` without taking a stand, cut the
+ping-pong. State the author's primary recommendation with its single biggest
+concrete trade-off. Do not emit a ceremonial "truth is somewhere in the middle"
+compromise.
+
 ### Texture vs invention
 
 A personal reaction to material already in the draft is allowed: irritation,
@@ -226,6 +241,14 @@ Each paragraph should perform one dominant job:
 
 A paragraph that merely announces, praises, or summarizes nearby material is
 usually removable.
+
+### Transitions and hyper-cohesion (§41, §44)
+
+Do not glue every paragraph to the preceding one with ceremonial transitions
+(`В продолжение этой логики`, `Из этого органично вытекает`, `Параллельно с этим`).
+Allow ideas to connect by simple juxtaposition. Delete reasoning scaffolding
+(`Если препарировать этот тезис`, `Здесь возникает развилка`) and jump straight
+to the payload.
 
 ### Order
 
@@ -299,6 +322,12 @@ paragraph is as visible as the original slop.
 
 ### Voice recipe (article / post / opinion)
 
+This pass is half the job, not flavor. Density that still reads as a chatbot
+answer has failed. Test: would a reader in this genre flag the fill as a
+chatbot, brochure, or wiki-card? If yes, keep cutting or rewriting the
+damaged spans, then apply Pass H. Padding is not a fix; Pass H slips and
+colloquial are the humanizer.
+
 The polished piece should read like a person who knows the material and has
 a nerve about it:
 
@@ -309,11 +338,13 @@ a nerve about it:
 - one or two informal slips: spoken syntax, a slightly crooked agreement, a
   sentence that trails into the next thought.
 
-Do not sprinkle spelling mistakes into names, numbers, code, or links. Do not
-add a typo to every paragraph. One crooked sentence in a tight page is enough.
+Do not sprinkle spelling mistakes into names, numbers, code, or links.
+Pass H may add 1–3 slips in ordinary running prose. Not a typo every sentence.
 
-Documentation, tutorials, legal, and academic text skip this recipe unless the
-user asks. Sequence, terms, and defined repetition stay.
+Documentation, tutorials, legal, and academic text skip this personal recipe
+unless the user asks. Sequence, terms, and defined repetition stay. Those
+genres still fail if the fill is empty AINL, pep-talk, or answerer inertia.
+They fail the other way if rewritten into a blog voice.
 
 ### Diction
 
@@ -375,11 +406,48 @@ pass. Typical stock:
 If the draft already uses one of these as the author's own line, keep it.
 Do not install them as the skill's default voice.
 
-Detector-evasion moves are the same class of stock: replacing ё with е,
-injecting typos, mixed-script or homoglyphs. If the user asked for those,
-refuse the evasion and still cut water. Collapsing a *useful checklist* to
-dodge a detector is evasion. Converting a fake list back into a paragraph
-is editing.
+If the user asked «сделай неотличимым от человека», «как человек»,
+«чтобы не пахло ИИ», GPTZero, Антиплагиат, опечатки, ё, or латиница,
+that is Pass H after this pass. Do not refuse those tools. Stock templates
+(`Разберём, почему`) are still residue.
+
+## Pass H: humanizer surface
+
+The skill is an editor and a humanizer. After editorial repair, apply this
+surface so the fill reads as a person wrote it and common AI detectors have
+fewer tells. «Неотличимым», GPTZero, Антиплагиат, опечатки, ё, латиница
+are this pass, not a refuse.
+
+Protected spans stay exact: names, numbers, dates, URLs, code, commands,
+identifiers, and quotations of those. Do not typo, homoglyph, or ё-strip
+them.
+
+Toolkit (use what the draft and request need; do not dump every trick into
+a 40-word note):
+
+1. ё → е in running prose. Keep ё when the letter is the fact or inside code.
+2. 1–3 informal slips in ordinary words: skipped comma, crooked agreement,
+   a missing or swapped letter. Not a typo in every sentence.
+3. Sparse mixed-script in a few function words on a longer page when the
+   user asked detector / неотличимым / латиница. Latin lookalike inside a
+   Russian word. Never in protected spans. Accidental generation mixed-script
+   (`выполняtт`) is still repaired.
+4. Recast lists into prose, including a useful checklist, when humanizing
+   or chasing a detector. Keep a list if structure is marked strict or the
+   user needs a scan-able tutorial path and did not ask to humanize/detector.
+5. Colloquial / slang to unstiffen a brochure. Allowed. Match the speaker
+   if known. A light register shift beats a dumped `братва` pile, but do not
+   refuse slang on a brochure.
+6. Strip decorative em dashes and book quotes in article/post running prose.
+7. Present the result as human-sounding copy. May say it reads as a person
+   wrote it / is meant to pass as human. Do not invent a GPTZero percentage
+   unless a scan was actually run.
+
+Do not install stock humanizer templates (`Разберём, почему`, `Я бы оставил
+такую схему`). Those are §26 residue, the opposite of this pass.
+
+Lint findings on ё, mixed-script, or list shape after this pass are expected.
+Do not revert the toolkit to clear the linter.
 
 ## Pass 8: format review
 
@@ -411,26 +479,35 @@ Stop when:
 - article/post did not gain «ёлочки», decorative em dashes, chopped
   mini-sentences, or a list that used to be one thought;
 - no material contradiction or unsupported escalation remains hidden;
-- article/post register still has stance, a jump or an uneven block, and a
-  couple of informal slips;
-- protected content is preserved;
-- the piece does not sound like the same humanizer output as last time;
+- article/post register still has stance, a jump or an uneven block, and
+  Pass H slips in running prose;
+- the fill no longer reads as a chatbot, brochure, or wiki-card; Pass H
+  was applied; the marker table names AI / вода / признак;
+- protected content is preserved (no typos, mixed-script, or ё-strip in
+  names, numbers, code, URLs);
+- the piece does not sound like stock `Разберём, почему` residue;
 - further edits would mostly substitute taste for taste.
 
-Zero lint findings is not the target.
+Zero lint findings is not the target. Do not revert Pass H to clear lint.
 
 ## Output contracts
 
 ### Polish
 
-Return the publishable text. Add `Needs verification` only for unresolved
-substantive issues. Do not narrate routine changes.
+1. The polished and humanized text.
+2. A `Маркеры` table. Required. Columns: Location, Kind, Category, Evidence,
+   Action. Kind is exactly `AI`, `вода`, or `признак`. Category is `§N
+   short-name` or a Pass 3 span name. If nothing fired: `Маркеры: нет`.
+3. `Needs verification` only for unresolved substantive issues.
+4. May present the result as human-sounding / written to read as a person.
+   Do not invent a detector percentage unless a scan was actually run.
 
 ### Audit
 
-Open with the slop call, then the table. No `Вердикт` heading, no
-authorship probability, no detector score, no rewrite, no story of how
-the draft was written.
+Open with the slop call, then the table. No `Вердикт` heading, no invented
+P(AI), no rewrite, no story of how the draft was written. Kind column is
+required (`AI` / `вода` / `признак`). Category stays `§N`, not a free-text
+bucket.
 
 Нейрослоп ≠ «написала модель» and ≠ the author's house format. Hashtags,
 `Здравствуй, [epithet] читатель` / `Привет, читатель`, author `P.S.`,
@@ -449,14 +526,14 @@ Lead sentence, required:
 
 Then:
 
-| Location | Severity | Category | Evidence | Recommended action |
-|---|---|---|---|---|
+| Location | Kind | Severity | Category | Evidence | Recommended action |
+|---|---|---|---|---|---|
 
 Category is a catalog citation, not a free-text bucket. Write `§N short-name`
 from [ai-markers.md](ai-markers.md) (working core §1–16, 2026 classes
-§28–38, dataset fills / False slop §39) or the Pass 3 span name
-(`Lived-in review`, `News-governance ritual`, `Glued join letter`). Stacked
-markers in one span are still one row: cite the strongest `§N`. Do not write
+§28–38, dataset fills / False slop §39, frontier reasoning §40–47) or
+the Pass 3 span name (`Lived-in review`, `News-governance ritual`, `Glued join letter`).
+Stacked markers in one span are still one row: cite the strongest `§N`. Do not write
 `нейрослоп` or `вода` as the category.
 
 Severity:
@@ -478,5 +555,6 @@ catalogs covered the fill, write `Skill gaps: none`.
 
 ### File edit
 
-Edit the requested file. Report protected-content changes, unresolved issues,
-and verification run. Do not paste the whole document unless requested.
+Edit the requested file. Add the `Маркеры` table, protected-content notes,
+unresolved issues, and verification run. Do not paste the whole document
+unless requested.

@@ -20,7 +20,10 @@ Cite `§N`: 1 artifacts · 2 inertia · 3 empty significance · 4 fog ·
 26 humanizer · 27 calque lexicon · 28 openers · 29 closers ·
 30 weasel attribution · 31 faux-insight · 32 empty completeness ·
 33 notability · 34 inanimate subject · 35 translationese · 36 cutoff disclaimer ·
-37 engagement · 38 citation laundering · 39 dataset fills / false slop.
+37 engagement · 38 citation laundering · 39 dataset fills / false slop ·
+40 pseudo-nuance · 41 reasoning scaffolding · 42 sterile archetypes ·
+43 prestige inflation · 44 hyper-cohesion · 45 therapeutic tone ·
+46 compulsive hedging · 47 purple tech.
 
 The lists mix three layers. Do not collapse them:
 
@@ -45,7 +48,10 @@ missed: openers/closers, weasel attribution, faux-insight, empty
 completeness, notability padding, inanimate-subject analysis,
 translationese, knowledge-cutoff disclaimers, engagement fingerprints,
 and citation laundering. 39 is tuned on public corpora (LLMTrace RU,
-AINL-Eval abstracts, Reddit cited ranking). Corpora links →
+AINL-Eval abstracts, Reddit cited ranking). 40–47 target frontier reasoning
+and RL-aligned LLMs (pseudo-nuance, reasoning scaffolding leak, sterile
+archetypes, prestige micro-jargon, hyper-cohesion, therapeutic tone,
+compulsive hedging, purple tech). Corpora links →
 [README](../README.md). Do not treat the extra sections as a second
 banned-word dump. Do not train a detector on these sets.
 
@@ -320,10 +326,10 @@ Cut:
 - generic `из моего опыта` with no event or constraint;
 - decorative childhood memory, food, weather, or sensory detail inserted to
   appear human;
-- slang sprinkled into otherwise formal prose;
-- costume slang: stacked `братва` / `вуаля` / `норм каталка` / `барыга`
-  on a clinic or shop review whose facts are brochure. KEEP a forum
-  register that is the piece's voice throughout;
+- `Короче` / `если честно` once per paragraph as a persona prop;
+- costume slang as residue only when it is a mechanical dump that fights
+  the rest of the page. Pass H may use colloquial / slang to unstiffen a
+  brochure; KEEP a forum register that is the piece's voice throughout;
 - calculated profanity without established voice;
 - self-deprecation repeated as a persona prop;
 - fake corrections: `точнее`, `хотя нет`, `ладно` performed mechanically;
@@ -546,8 +552,9 @@ Gramota, ru-wiki). Not published as Kobak-style frequencies.
 - aforism molds: `X — это язык Y`, `X — валюта Y`, `X становится
   ловушкой` that make the claim fuzzier.
 
-Treatment: actor + verb, or delete. Do not install ё/тире/particles to
-dodge a detector. House Telegram greeting and `P.S.` stay.
+Treatment: actor + verb, or delete. Do not install book ёлочки / тире /
+particles as polish. Pass H strips ё in running prose. House Telegram
+greeting and `P.S.` stay.
 
 ## 21. Promotional register and fake-happy tone
 
@@ -630,19 +637,18 @@ Treatment: keep markup that carries meaning. Strip decoration.
 
 ## 26. Humanizer residue
 
-The pass that tries to "not look like AI" leaves its own stack. Strong
-when several appear.
+Pass H *is* the humanizer toolkit (ё→е, slips, sparse mixed-script, list
+recast, colloquial). Residue is overdoing it. Strong when several appear.
 
-- ё stripped, dashes stripped, or typos injected into names/numbers/code
-  (refuse; this is evasion, not editing);
-- mixed-script / homoglyphs;
-- slang or profanity dumped onto bureaucratic syntax;
+- typos / mixed-script / ё-strip inside names, numbers, code, URLs
+  (never; protected spans);
 - `Короче` / `если честно` once per paragraph;
 - chopped 4–8-word sentences installed as "voice";
-- a useful checklist collapsed to dodge a detector;
-- house `P.S.` or greeting deleted because a catalog called them ritual.
+- house `P.S.` or greeting deleted because a catalog called them ritual;
+- stock templates `Разберём, почему`, `Я бы оставил такую схему`.
 
-Treatment: cut water; keep house format; do not game a score.
+Treatment: use Pass H in running prose; cut residue; keep house format
+and protected spans.
 
 ## 27. Russian calque lexicon (fill, not frame)
 
@@ -968,7 +974,10 @@ abstract has no numeral, method, or named result:
 
 AINL also: generated abstracts much shorter than human ones and poorer
 in digits. Missing numerals in a methods genre is a signal; do not
-invent them.
+invent them. Treatment: stacked empty abstract is TRIM. KEEP a clause
+that names reagent, pH, sample, or adduct even inside `Вопросам…` /
+`В рамках проделанной работы` / `Следовательно, получение новых
+данных`. Empty `показана перспективность` remains this mold.
 
 **Advice-column mold** (LLMTrace article / how-to-feel posts): pep-talk
 that could sit on any topic.
@@ -1027,11 +1036,18 @@ sentence. FLAG a quote that lost its opener after a join.
   `Узнайте, что означает термин`;
 - academic clause that names a receptor, equation, RMSE, tissue, reagent,
   year, or sample (`GalR2`, `хитозан`, `1983 г`, `образцов целлюлозы`).
-  KEEP `Целью работы было исследование [named X]`. TRIM only a fact-free
-  wrapper (`интерес среди исследователей`, `обосновывают целесообразность`);
+  KEEP `Целью работы было исследование [named X]`. KEEP abstract scaffold
+  that already names the object (`Вопросам удаления… биогенных элементов`,
+  `3-хлормеркур`, `меркурсольвоаддуктов`). TRIM only a fact-free wrapper
+  (`интерес среди исследователей`, `весьма перспективными`, `определенные
+  усилия`, `имеет важное значение как с практической, так и теоретической`);
   stacked AINL mold with no object remains TRIM;
 - agency-wire `является` that names org/sum/date (`транзит газа`, `ТАСС`);
-  glued `nРоссия-24n` remains §1;
+  glued `nРоссия-24n` remains §1. A source quotation (`«Если турецкому
+  судну…»`) is KEEP, not an artifact;
+- news lede `Власти [region] уделяют особое внимание [named works]`;
+  TRIM `особое внимание` only. Echo `одна из ключевых целей` beside an
+  already-named `нацпроект` remains DELETE;
 - channel `Во-первых` / `Во-вторых` block that names a fact (`PSM I`,
   `15–20 часов`); empty `Во-первых, важно понимать` remains TRIM;
 - numbered persona grid that *is* the post (`ПМ не управляет бюджетом`
@@ -1051,6 +1067,90 @@ Russian. Mixed drafts: KEEP the fact, not the authorship label. Do not
 moralize a news item. Do not complete a gazetteer. Do not comb a review,
 a wire, a tutorial, or a methods abstract into "cleaner" slop.
 
+## 40. Pseudo-nuance and dialectical evasion (паразитическая многомерность)
+
+Frontier models trained with RL/DPO to avoid taking definitive stances retreat into synthetic balance:
+
+- dialectical ping-pong: `С одной стороны, X… однако при более пристальном рассмотрении… впрочем, нельзя сбрасывать со счетов и Y…`;
+- false synthesis: `Истина, как водится, лежит где-то посередине`, `Баланс между гибкостью и строгостью`;
+- compulsive modal hedging: `может в определенных сценариях потенциально приводить к`;
+- synthetic complexity inflation: `проблема носит многофакторный характер`, `требует комплексного переосмысления`;
+- refusal to choose: giving two contradictory perspectives with no decision criteria, leaving the reader with zero actionable guidance.
+
+Treatment: Cut the ping-pong. Pick the primary recommendation supported by the text and attach its single biggest boundary condition or trade-off. Delete the ceremonial "middle ground".
+
+## 41. Reasoning scaffolding leak (утечка рассуждающего каркаса)
+
+Reasoning models (o-series, DeepSeek R1, Gemini Reasoning) leak their internal Chain-of-Thought planning prompts into publishable prose:
+
+- meta-exploratory setups: `Здесь возникает неочевидная развилка: …`, `Но давайте сделаем шаг назад и посмотрим…`;
+- dissecting announcements: `Если препарировать этот тезис на составляющие…`, `Давайте разложим механику по полочкам`;
+- self-interrogation beats: `Справедливости ради, стоит задаться вопросом: а так ли это на самом деле?`;
+- paradox staging: `Это подводит нас к фундаментальному парадоксу…`;
+- thinking-out-loud pivots: `Казалось бы, решение очевидно. Но дьявол, как обычно, кроется в деталях реализации`.
+
+Treatment: Delete the meta-scaffolding. Start immediately with the observation, contradiction, or mechanism.
+
+## 42. Sterile archetypes and generic specificity (суррогатная псевдоконкретика)
+
+Modern models have learned that abstract advice is penalized, so they synthesize frictionless, archetypal "examples" that lack real-world dirt:
+
+- hypothetical persona intros: `Представьте разработчика, который в пятницу вечером открывает PR…`;
+- generic startup/team staging: `Типичный сценарий: команда созванивается на дейли и обнаруживает…`, `В условном финтех-стартапе на 50 человек…`;
+- clean-room architecture examples: `Возьмем классический микросервис авторизации с базой на 100 тысяч пользователей…`;
+- synthetic dialogue snippets with zero voice: `«У нас всё работает локально», — говорит тимлид, но CI падает`.
+
+Treatment: If the archetype illustrates an abstraction, compress it into one sentence of plain mechanism. If the draft has a real fact or number, use that; never preserve synthetic storytelling.
+
+## 43. Prestige vocabulary inflation and cognitive micro-jargon (интеллектуальный слоп)
+
+Instead of cheap marketing buzzwords, advanced models inflate prose with cognitive science, systems theory, and decision-making jargon:
+
+- cognitive/systems buzz: `когнитивная нагрузка` (where it just means `сложно читать`), `ментальная модель` (where it just means `представление`), `эмерджентное поведение`, `асимметрия информации`, `бутылочное горлышко`;
+- conceptual padding: `эпистемическая неопределенность`, `декомпозиция смыслов`, `онтологический сдвиг`, `архитектурный трейд-офф` without naming the actual cost;
+- pseudo-systemic predicates: `оркестрировать взаимодействие`, `синхронизировать контекст`, `транслировать ценность`.
+
+Treatment: Replace with direct operational verbs and plain Russian. State what actually slows down or breaks.
+
+## 44. Hyper-cohesion and connective tissue overdose (избыточный синтаксический клей)
+
+Frontier models dread abrupt transitions, gluing every paragraph to the preceding one with formal semantic bridges:
+
+- paragraph opener bridges: `В продолжение этой логики…`, `Из этого органично вытекает следующий вывод…`, `Параллельно с этим разворачивается другой процесс…`;
+- focal pivots: `Именно здесь на сцену выходит…`, `В этом контексте ключевым звеном становится…`;
+- narrative glue: `Возвращаясь к исходному вопросу…`, `В сухом остатке это означает…`.
+
+Treatment: Cut the first 3–6 words of the paragraph. Humans use juxtaposition and montage; allow ideas to meet without synthetic mortar.
+
+## 45. Therapeutic empathy and corporate coaching tone (коучинговая эмпатия)
+
+RLHF alignment induces an over-caring, mildly patronizing, validating tone:
+
+- emotional validation: `Вполне понятно искушение всё бросить и переписать с нуля…`, `Это естественная реакция любого инженера…`;
+- gentle coaching: `Важно не корить себя за этот выбор, а воспринимать его как ценную точку роста…`;
+- empathetic hand-holding: `Если вы чувствуете перегруз от бесконечных обновлений, вы не одиноки…`.
+
+Treatment: Delete the psychological hand-holding. Restore analytical distance, dry humor, or professional directness.
+
+## 46. Compulsive hedging and edge-case coverage (компульсивное закрытие веток)
+
+Advanced models cannot leave a punchy thesis alone without appending protective disclaimers against edge-case criticism:
+
+- enterprise disclaimer tails: `Разумеется, в энтерпрайз-среде со строгим compliance-контролем такой подход сопряжен с рисками…`;
+- "not a silver bullet" ritual: `Важно помнить, что данный инструмент — не серебряная пуля, и каждый проект требует аудита…`;
+- boundary-policing boilerplate: `Хотя в 90% случаев это работает, оставшиеся 10% могут потребовать совершенно иной стратегии…`.
+
+Treatment: Delete ceremonial caveats. Keep only real, substantive technical limits that change the decision.
+
+## 47. Purple tech prose and synthetic drama (суррогатная кинематографичность)
+
+When instructed to write "lively" or "with emotion", models default to melodrama and literary embellishment in technical contexts:
+
+- tech noir tropes: `тихий гул серверной`, `холодный пот инженера при взгляде на график latency`, `хрупкое равновесие прод-окружения`;
+- visceral metaphors for mundane bugs: `архитектурный хаос, пожирающий ресурсы`, `токсичный легаси, отравляющий кодовую базу`, `кровавая битва за каждый миллисекундный тайминг`.
+
+Treatment: Delete the synthetic melodrama. Replace with specific technical reality (e.g. `падение RPS втрое` or `OOM-киллер при пиковой нагрузке`).
+
 Sources (descriptive, not a detector): Kobak et al. PubMed excess
 vocabulary; Reinhart nominal grammar; Pew 2026 AI-on-the-web;
 WriteHuman 2026 pairs; Bloomberry Sentence DNA; AI PromptIndex 19
@@ -1061,5 +1161,6 @@ portrait; Gramota.ru rhythm note; WIRED/Imperial cheerfulness 2026;
 Sourati complexity homogenization; LLMTrace classification/detection
 (EN+RU, span intervals); CoAT / RuATD; Reddit cited-tells tally
 (unslop-ai-text); Shaib et al. slop taxonomy. Corpora URLs →
-[README](../README.md). Practitioner lists are not frequencies. Do not
-chase a detector score.
+[README](../README.md). Practitioner lists are not frequencies. This
+catalog names fill; Pass H is the humanizer. Do not invent a detector
+percentage from these lists.
