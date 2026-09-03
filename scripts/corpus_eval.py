@@ -43,7 +43,7 @@ import urllib.request
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-DEFAULT_OUT = ROOT / "prose-polish-ru-workspace" / "corpus-eval-11"
+DEFAULT_OUT = ROOT / "prose-polish-ru-workspace" / "corpus-eval-12"
 REFS = ROOT / "references"
 PACK_CHOICES = ("map", "audit", "full", "auto")
 POST_TYPES = {"article", "story", "short_form", "factual"}
@@ -57,6 +57,11 @@ GAZETTEER = re.compile(
 )
 HOUSE_FILE = ROOT / "prose-polish-ru-workspace" / "tg_last100.json"
 HF_CACHE = ROOT / "prose-polish-ru-workspace" / "hf-cache"
+HOUSE_MIN_CHARS = 1
+HOUSE_MAX_CHARS = 8000
+FRAME_HASHTAG = re.compile(r"^#\S+", re.M)
+FRAME_GREET = re.compile(r"Здравствуй[^\n]{0,80}читател", re.I)
+FRAME_PS = re.compile(r"(?m)^\s*P\.S\.S?\b")
 PACK_FILES = {
     "map": ["SKILL.md"],
     "audit": [
@@ -206,7 +211,7 @@ def pack_row(
     extra: dict | None = None,
 ) -> dict:
     extra = extra or {}
-    return {
+    packed = {
         "id": f"{prefix}-{index:02d}",
         "source": source,
         "split": extra.get("split") or HF_SPLIT,
@@ -221,6 +226,10 @@ def pack_row(
         "n_chars": len(text),
         "n_ai_chars": sum(e - s for s, e in intervals),
     }
+    if extra.get("split") == "channel":
+        packed["tg_id"] = extra.get("tg_id") or row.get("id")
+        packed["date"] = extra.get("date")
+    return packed
 
 
 def trace_jsonl(dataset: str, split: str = HF_SPLIT) -> Path:
@@ -301,7 +310,11 @@ def sample_trace(
     return rows, scanned
 
 
-def sample_house(rng: random.Random, n: int = QUOTA_HOUSE) -> list[dict]:
+def sample_house(
+    rng: random.Random,
+    n: int = QUOTA_HOUSE,
+    chronological: bool = False,
+) -> list[dict]:
     if n <= 0 or not HOUSE_FILE.exists():
         if n > 0:
             print(f"house dump missing: {HOUSE_FILE}", file=sys.stderr)
@@ -310,9 +323,10 @@ def sample_house(rng: random.Random, n: int = QUOTA_HOUSE) -> list[dict]:
     pool = []
     for item in payload.get("last") or []:
         text = (item.get("text") or "").strip()
-        if MIN_CHARS <= len(text) <= MAX_CHARS:
+        if HOUSE_MIN_CHARS <= len(text) <= HOUSE_MAX_CHARS:
             pool.append(item)
-    rng.shuffle(pool)
+    if not chronological:
+        rng.shuffle(pool)
     out = []
     for i, item in enumerate(pool[:n], 1):
         text = (item.get("text") or "").strip()
@@ -325,7 +339,12 @@ def sample_house(rng: random.Random, n: int = QUOTA_HOUSE) -> list[dict]:
                 text,
                 "house",
                 [],
-                extra={"data_type": "short_form", "split": "channel"},
+                extra={
+                    "data_type": "short_form",
+                    "split": "channel",
+                    "tg_id": item.get("id"),
+                    "date": item.get("date"),
+                },
             )
         )
     return out
@@ -397,6 +416,18 @@ def cmd_sample(args: argparse.Namespace) -> int:
         print(f"exists: {slice_path} (pass --force to resample)", file=sys.stderr)
         return 0
     rng = random.Random(args.seed)
+    if args.house_only:
+        n = args.n or 100
+        house = sample_house(rng, n=n, chronological=True)
+        rows = house
+        with slice_path.open("w", encoding="utf-8") as fh:
+            for item in rows:
+                fh.write(json.dumps(item, ensure_ascii=False) + "\n")
+        print(
+            f"wrote {len(rows)} house posts → {slice_path} "
+            f"(channel dump, chronological, seed unused, n {n})"
+        )
+        return 0 if len(rows) >= 20 else 1
     det, n_det = sample_trace(
         DET, QUOTA_DET, rng, "det", need_intervals=True, type_quota=TYPE_QUOTA_DET
     )
@@ -676,6 +707,7 @@ FALSE_SLOP_ROUTES = (
     (r"бились от ножа|отступать некуда", "procedure Pass 3 sports + ai-markers §39 False slop"),
     (r"^>\s|три вопроса", "procedure Pass 3 ticket + ai-markers §39 False slop"),
     (r"приговор|задержан|возбуждено уголов", "procedure Pass 3 court/police + ai-markers §39 False slop"),
+    (r"Во-первых|ПМ не управляет бюджетом|Lead Time for Changes", "procedure Pass 3 house argument/table + ai-markers §39 False slop"),
 )
 
 
@@ -761,6 +793,24 @@ def quote_at(text: str, start: int, end: int, limit: int = 120) -> str:
     return chunk[:limit]
 
 
+def house_frame_overtrim(text: str, spans: list[dict]) -> list[str]:
+    hits = []
+    for span in spans:
+        if str(span.get("action") or "").upper() not in SLOP_ACTIONS:
+            continue
+        start = int(span.get("start") or 0)
+        end = int(span.get("end") or 0)
+        chunk = text[start:end]
+        stripped = chunk.strip()
+        if FRAME_HASHTAG.match(stripped) and len(stripped.splitlines()[0]) < 40:
+            hits.append(f"hashtag «{stripped.splitlines()[0]}»")
+        if FRAME_GREET.search(chunk):
+            hits.append("greeting")
+        if FRAME_PS.search(chunk) and len(stripped) < 280:
+            hits.append("P.S.")
+    return hits
+
+
 def cmd_grade(args: argparse.Namespace) -> int:
     dest = args.out
     rows = load_slice(dest / "slice.jsonl")
@@ -775,6 +825,8 @@ def cmd_grade(args: argparse.Namespace) -> int:
     rows_with_none_gaps = 0
     treat_ok = 0
     treat_total = 0
+    house_frame_hits: list[str] = []
+    house_rows = 0
     lint_mod = load_lint()
     treat_re = re.compile(
         r";\s*(delete|source-fact|simpler|удали(?:ть)?|факт из|проще)\b",
@@ -814,7 +866,9 @@ def cmd_grade(args: argparse.Namespace) -> int:
             if re.search(r"(?im)Skill gaps:\s*none\b", audit_raw):
                 rows_with_none_gaps += 1
         lint_mode = (
-            "article"
+            "telegram"
+            if is_house
+            else "article"
             if row.get("data_type") in POST_TYPES | {"news", "review"}
             else "generic"
         )
@@ -828,12 +882,20 @@ def cmd_grade(args: argparse.Namespace) -> int:
             if treat_re.search(why):
                 treat_ok += 1
         if is_house:
+            house_rows += 1
+            frame_hits = house_frame_overtrim(text, spans)
+            slop_n = sum(
+                1
+                for span in spans
+                if str(span.get("action") or "").upper() in SLOP_ACTIONS
+            )
             report_rows.append(
                 {
                     "id": row["id"],
                     "label": "house",
                     "data_type": row.get("data_type"),
                     "n_chars": n,
+                    "tg_id": row.get("tg_id"),
                     "tp": 0,
                     "fp": 0,
                     "fn": 0,
@@ -844,9 +906,13 @@ def cmd_grade(args: argparse.Namespace) -> int:
                     "cited_sections": cites,
                     "categories": cats[:12],
                     "lint_codes": lint_codes,
+                    "slop_spans": slop_n,
+                    "frame_overtrim": frame_hits,
                     "status": "house",
                 }
             )
+            for hit in frame_hits:
+                house_frame_hits.append(f"- {row['id']} TRIM house {hit}")
             continue
         pred = pred_tags(n, spans)
         tp = fp = fn = tn = unc = 0
@@ -944,6 +1010,8 @@ def cmd_grade(args: argparse.Namespace) -> int:
             "unknown_citations": unknown_cites[:20],
             "slop_spans": treat_total,
             "slop_spans_with_treatment": treat_ok,
+            "house_rows": house_rows,
+            "house_frame_overtrim": len(house_frame_hits),
         },
     }
     usage = summary["catalog"]
@@ -991,6 +1059,9 @@ def cmd_grade(args: argparse.Namespace) -> int:
             f"- unknown `§N`: {len(usage['unknown_citations'])}",
             f"- slop spans with a treatment (delete / source-fact / simpler): "
             f"{usage['slop_spans_with_treatment']} / {usage['slop_spans']}",
+            f"- house posts: {usage.get('house_rows', 0)}; "
+            f"frame over-TRIM (hashtag/greeting/P.S.): "
+            f"{usage.get('house_frame_overtrim', 0)}",
             "",
             "Cited:",
             *cite_lines,
@@ -1007,6 +1078,10 @@ def cmd_grade(args: argparse.Namespace) -> int:
             "- references/formats-and-artifacts.md — Markdown, tables, lists, links.",
             "- scripts/lint_text.py — regex-stable fill the eye already named.",
             "- Do not add a banned word. Do not optimize recall/precision.",
+            "",
+            "## House frame over-TRIM",
+            "",
+            *(house_frame_hits[:40] or ["- none"]),
         ]
     )
     (dest / "disagreements.md").write_text("\n".join(lines) + "\n", encoding="utf-8")
@@ -1034,6 +1109,17 @@ def build_parser() -> argparse.ArgumentParser:
         action=argparse.BooleanOptionalAction,
         default=True,
         help="include channel posts as house-style rows (treatments only, no gold spans)",
+    )
+    sample.add_argument(
+        "--house-only",
+        action="store_true",
+        help="sample only channel posts (skip LLMTrace); default n=100",
+    )
+    sample.add_argument(
+        "--n",
+        type=int,
+        default=0,
+        help="with --house-only, how many posts (default 100)",
     )
     sample.set_defaults(func=cmd_sample)
     run = sub.add_parser("run", help="call cliproxy with the skill pack + audit JSON")

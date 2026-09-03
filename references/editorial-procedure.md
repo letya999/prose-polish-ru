@@ -116,7 +116,9 @@ facts and fewer hedges. Conversational padding is not a quality signal.
 | Epoch tail on a local note: `в условиях нынешней экономики` | Soft | TRIM the tail. KEEP the price or dish. |
 | Agency wire: named outlet, org, km, %, attributed quote, obituary age/cause | KEEP | KEEP the fact. Do not recast a press-service paragraph as brochure. |
 | Tutorial / UI path: `Панель управления`, imperative clicks, even verbose | KEEP | KEEP the sequence and the how-to closer (`теперь вы знаете`). Cut only throat-clearing around it. |
-| House frame: channel hashtag, greeting slot (`Здравствуй, … читатель`), author `P.S.` / `P.P.S.`, operators `==` `=>` `->` | KEEP | KEEP. A punchy title after the hashtag (`Agile умирает`) is the hook, not drumroll. TRIM only an empty restatement beside it (`Имя ему — …!`). |
+| House frame: channel hashtag, greeting slot (`Здравствуй, … читатель`), author `P.S.` / `P.P.S.`, operators `==` `=>` `->` | KEEP | KEEP the whole `P.S.` paragraph, not only the label. A punchy title after the hashtag (`Agile умирает`) is the hook, not drumroll. TRIM only an empty restatement beside it (`Имя ему — …!`). A `->` deploy chain is an operator, not a closer. |
+| House argument beats: `Во-первых` / `Во-вторых` / `В-третьих` that each carry a fact (exam detail, named tool, hours, price) | KEEP | KEEP the beat and the fact. TRIM only `Во-первых, важно понимать` with no payload. Do not DELETE the labels as §5. |
+| House case table / metric list: numbered answers from named personas, or named metrics with a one-line so-what | KEEP | KEEP the table. §8 is equal empty paragraphs, not a 5×7 case grid or 17 named DORA metrics. TRIM only a fact-free gloss (`спокойнее сон`) beside a named metric. |
 | Thanks / dedication: named staff, ward, dialect, first-person bow | KEEP | KEEP. TRIM only a fact-free `благородное дело` pile with no addressee. |
 | Explainer definition that names the object | KEEP | KEEP the definition. TRIM `востребована во множестве областях` without an example. |
 | Forum slang and insults | Soft | KEEP. Do not comb a thread into a briefing. |

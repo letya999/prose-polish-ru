@@ -56,6 +56,7 @@
 1. Заморозить срез постов/статей (article, story, short_form, factual;
    квоты по типу, без wiki-continue/gazetteer; 8 постов канала как house):
    `python scripts/corpus_eval.py sample --seed 51 --force`
+   Сто постов канала: `python scripts/corpus_eval.py sample --house-only --n 100 --force`
 2. Прогнать пакет, не карту:
 
 ```powershell

@@ -1027,7 +1027,13 @@ sentence. FLAG a quote that lost its opener after a join.
   `Узнайте, что означает термин`;
 - academic clause that names a receptor, equation, RMSE, tissue, or alloy
   (`GalR2`, `уравнение Гендерсона`, `0,871`). Stacked AINL mold without
-  an object remains TRIM.
+  an object remains TRIM;
+- channel `Во-первых` / `Во-вторых` block that names a fact (`PSM I`,
+  `15–20 часов`); empty `Во-первых, важно понимать` remains TRIM;
+- numbered persona grid that *is* the post (`ПМ не управляет бюджетом`
+  1–5 answers); §8 is not a license to mash it into a paragraph;
+- named metric + one-line so-what (`Lead Time for Changes`); TRIM only
+  a fact-free gloss (`спокойнее сон`).
 
 Treatment: same hierarchy — delete, else a source fact, else simpler
 Russian. Mixed drafts: KEEP the fact, not the authorship label. Do not
