@@ -920,7 +920,9 @@ interval is labeled AI.
 начали проявляться нюансы`.
 
 **AI-review mold** (LLMTrace RU reviews; not lived-in). A fluent
-complaint or praise arc with a venue name is still mold:
+complaint *or* praise arc with a venue name is still mold.
+
+Disappointment:
 
 - expectation template: `не оправдали (моих) ожиданий`;
 - atmosphere census: `Первое, что меня удивило, это атмосфера` plus
@@ -931,9 +933,22 @@ complaint or praise arc with a venue name is still mold:
   подхватили`);
 - epoch tail: `в условиях нынешней экономики` on an otherwise local note.
 
+Praise brochure (the same class, inverted polarity):
+
+- `великолепный сервис` / `положительные эмоции` with no episode;
+- staff merism: `всегда готовы помочь`, `хочется отметить заботу и
+  профессионализм`;
+- `завтраки всегда разнообразные и вкусные` with no dish;
+- `каждое блюдо было шедевром`;
+- venue-as-classic: `настоящая классика Москвы` / city + `классика`;
+- `превзошёл все наши ожидания` / `внимания к деталям`;
+- `удобная транспортная доступность` as a hotel/cafe closer.
+
 Treatment: one TRIM/REWRITE for the stacked arc. KEEP a named dish, bill,
-or staff fact if it is specific. Do not KEEP the whole page as False slop
-because a restaurant is named.
+room number, or staff person if it is specific. A thanks letter with a
+named addressee (`семья Рюлиных`, `земной поклон`) is still False slop;
+TRIM only the brochure wrapper around it. Do not KEEP the whole page
+because a restaurant or hotel is named.
 
 **Costume slang** (style-transfer / expand on a clinic or shop): stacked
 `братва`, `каталка`, `вуаля`, `не кислят`, `барыга` on brochure facts.
@@ -972,7 +987,8 @@ sentence. FLAG a quote that lost its opener after a join.
 
 - lived-in review: irregularity **plus** a named object (`ни какое`,
   `суперрр`, `обалденные`, a dish/bill/sofa). A fluent disappointment
-  arc with only a venue name is AI-review mold above, not this bullet;
+  *or* praise arc with only a venue name is AI-review mold above, not
+  this bullet;
 - agency wire: named outlet, complex, km, %; `сказал Фортов`; fire/accident
   lead; obituary age and cause;
 - tutorial click-path: `Панель управления` + imperative steps, even verbose;

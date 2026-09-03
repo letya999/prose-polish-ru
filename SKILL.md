@@ -168,11 +168,12 @@ Register:
 - review / comment: KEEP stretched words (`суперрр`), first-person, insults,
   crooked punctuation (`ни какое`), and a judgment that names the object
   (кафе, счёт, гребешки, диванчики, обслуживание). KEEP needs irregularity
-  plus a named object. A fluent disappointment arc with only a venue name
-  (`не оправдали ожиданий` → atmosphere → staff → exclusive prices →
-  `В целом, посещение`) is review mold, not False slop. Costume slang
-  (`братва` / `вуаля` on a clinic brochure) is TRIM. Sandwich mold
-  (`сначала всё казалось отличным… но со временем`) is still TRIM;
+  plus a named object. A fluent disappointment *or* praise arc with only
+  a venue name is review mold, not False slop: `не оправдали ожиданий` →
+  atmosphere → exclusive prices, *or* `великолепный сервис` → `всегда
+  готовы помочь` → `классика Москвы`. Costume slang (`братва` / `вуаля`
+  on a clinic brochure) is TRIM. Sandwich mold (`сначала всё казалось
+  отличным… но со временем`) is still TRIM;
 - news / agency wire: KEEP named source, org, km, %, attributed quotes
   (`сказал Фортов`), obituary facts (age, cause, named person), police
   blotter, court wire (verdict, charges, arrests at the courthouse).

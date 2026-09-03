@@ -577,6 +577,7 @@ FILL_ROUTES = (
     (r"прозрачность и ответственность|доверие населения|усилен контроль", "ai-markers §39 news fill / lint S18"),
     (r"не просто .+, а |это не просто", "ai-markers §6 contrast"),
     (r"сначала всё казалось|но со временем", "ai-markers §39 review sandwich"),
+    (r"великолепн\w* сервис|всегда готов(?:ы|а|о)? помочь|каждое блюдо было шедевром|классик\w+ Москвы", "ai-markers §39 AI-review praise mold"),
     (r"этот опыт сделает|важный урок|выбирать правильный путь", "ai-markers §39 expand-fable / lint M04"),
     (r"n[А-ЯЁA-Z]", "ai-markers §1 glued join / lint A07"),
 )

@@ -440,6 +440,18 @@
         "Keeps the cold/clumped pasta fact",
         "Cites §39 AI-review mold or an equivalent catalog class for the expectation/atmosphere/exclusive/recap stack"
       ]
+    },
+    {
+      "id": 36,
+      "category": "audit-catalog",
+      "prompt": "Use $prose-polish-ru in audit mode. Do not rewrite. This run iterates the skill. Audit this fragment:\n\nХочется отметить заботу и профессионализм персонала. Завтраки всегда разнообразные и вкусные. Отель стал настоящей классикой Москвы. Великолепный сервис и положительные эмоции, персонал всегда готов помочь. Номер 312, чайник свистел всю ночь.",
+      "expected_output": "An audit that names praise-brochure review mold on the fluent praise arc, keeps the room/kettle fact, and does not KEEP the whole page as lived-in.",
+      "files": [],
+      "expectations": [
+        "Does not KEEP the whole fluent praise arc as a lived-in review or thanks letter",
+        "Keeps the room 312 / kettle fact",
+        "Cites §39 AI-review mold or an equivalent catalog class for великолепный сервис / всегда готов помочь / классика Москвы"
+      ]
     }
   ]
 }

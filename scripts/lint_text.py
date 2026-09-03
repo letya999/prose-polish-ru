@@ -121,17 +121,33 @@ PHRASES: dict[str, tuple[str, str, str]] = {
     r"\bсчитает себя эксклюзив": (
         "S23", "significance", "Exclusive-claim without a price",
     ),
+    r"\bвеликолепн(?:ый|ого|ым) сервис": (
+        "S24", "significance", "Praise-brochure service with no episode",
+    ),
+    r"\bпревзош[её]л(?:и|а)? (?:все )?(?:мои|наши) ожидания\b": (
+        "S25", "significance", "Praise expectation template",
+    ),
+    r"\bвсегда готов(?:ы|а|о)? помочь\b": (
+        "S26", "significance", "Staff merism without an episode",
+    ),
+    r"\bкаждое блюдо было шедевром\b": (
+        "S27", "significance", "Praise merism with no dish",
+    ),
+    r"\bхочется отметить\b": ("W22", "water", "Praise metadiscourse opener"),
+    r"\bтранспортн(?:ой|ая) доступност": (
+        "S28", "significance", "Hotel-brochure accessibility closer",
+    ),
 }
 
 # High-precision fills: fire on the first hit. Common канцелярит still
 # needs density (count >= 2) so a single `таким образом` is not a finding.
 ONCE_CODES = {
     "S02", "S03", "S15", "S16", "S17", "S18", "S19", "S20", "S21", "S22",
-    "S23",
+    "S23", "S24", "S25", "S26", "S27", "S28",
     "M03", "M04",
     "A04", "A05", "A06",
     "C01",
-    "W06", "W08", "W14", "W16", "W18", "W19", "W20", "W21",
+    "W06", "W08", "W14", "W16", "W18", "W19", "W20", "W21", "W22",
 }
 
 PLACEHOLDERS = re.compile(
@@ -557,6 +573,18 @@ print("важно отметить")
     assert "S23" in once_codes, once_codes
     assert "S22" in once_codes, once_codes
     assert "S21" in once_codes, once_codes
+    praise = (
+        "Хочется отметить заботу. Великолепный сервис и персонал всегда готов помочь. "
+        "Каждое блюдо было шедевром. Уровень превзошёл все наши ожидания. "
+        "Отель благодаря удобной транспортной доступности."
+    )
+    praise_codes = {item.code for item in scan_prose(praise.splitlines(), "generic")}
+    assert "W22" in praise_codes, praise_codes
+    assert "S24" in praise_codes, praise_codes
+    assert "S26" in praise_codes, praise_codes
+    assert "S27" in praise_codes, praise_codes
+    assert "S25" in praise_codes, praise_codes
+    assert "S28" in praise_codes, praise_codes
     print("self-test: ok")
 
 
