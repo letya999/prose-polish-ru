@@ -1033,7 +1033,14 @@ sentence. FLAG a quote that lost its opener after a join.
 - numbered persona grid that *is* the post (`ПМ не управляет бюджетом`
   1–5 answers); §8 is not a license to mash it into a paragraph;
 - named metric + one-line so-what (`Lead Time for Changes`); TRIM only
-  a fact-free gloss (`спокойнее сон`).
+  a fact-free gloss (`спокойнее сон`);
+- greeting `Привет, читатель` / `Hello, приятели` as its own span; mash
+  with `Сегодня хочу поделиться` is §28, not the greeting;
+- numbered how-to with named steps (`рефералы`, `Постановка целей`);
+  empty benefits list (`1. Повышение мотивации`) remains DELETE;
+- author outline heading that introduces a payload (`О формате`,
+  `Чего я хочу достичь в 2025?`); drumroll `А теперь о главном`
+  remains TRIM.
 
 Treatment: same hierarchy — delete, else a source fact, else simpler
 Russian. Mixed drafts: KEEP the fact, not the authorship label. Do not

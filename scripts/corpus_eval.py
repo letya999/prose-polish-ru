@@ -43,7 +43,7 @@ import urllib.request
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-DEFAULT_OUT = ROOT / "prose-polish-ru-workspace" / "corpus-eval-12"
+DEFAULT_OUT = ROOT / "prose-polish-ru-workspace" / "corpus-eval-13"
 REFS = ROOT / "references"
 PACK_CHOICES = ("map", "audit", "full", "auto")
 POST_TYPES = {"article", "story", "short_form", "factual"}
@@ -314,14 +314,16 @@ def sample_house(
     rng: random.Random,
     n: int = QUOTA_HOUSE,
     chronological: bool = False,
+    dump: Path | None = None,
 ) -> list[dict]:
-    if n <= 0 or not HOUSE_FILE.exists():
+    path = dump or HOUSE_FILE
+    if n <= 0 or not path.exists():
         if n > 0:
-            print(f"house dump missing: {HOUSE_FILE}", file=sys.stderr)
+            print(f"house dump missing: {path}", file=sys.stderr)
         return []
-    payload = json.loads(HOUSE_FILE.read_text(encoding="utf-8"))
+    payload = json.loads(path.read_text(encoding="utf-8"))
     pool = []
-    for item in payload.get("last") or []:
+    for item in payload.get("last") or payload.get("posts") or []:
         text = (item.get("text") or "").strip()
         if HOUSE_MIN_CHARS <= len(text) <= HOUSE_MAX_CHARS:
             pool.append(item)
@@ -334,7 +336,7 @@ def sample_house(
             pack_row(
                 "house",
                 i,
-                "tg_last100",
+                path.stem,
                 item,
                 text,
                 "house",
@@ -418,7 +420,9 @@ def cmd_sample(args: argparse.Namespace) -> int:
     rng = random.Random(args.seed)
     if args.house_only:
         n = args.n or 100
-        house = sample_house(rng, n=n, chronological=True)
+        house = sample_house(
+            rng, n=n, chronological=True, dump=args.house_file or HOUSE_FILE
+        )
         rows = house
         with slice_path.open("w", encoding="utf-8") as fh:
             for item in rows:
@@ -707,7 +711,7 @@ FALSE_SLOP_ROUTES = (
     (r"бились от ножа|отступать некуда", "procedure Pass 3 sports + ai-markers §39 False slop"),
     (r"^>\s|три вопроса", "procedure Pass 3 ticket + ai-markers §39 False slop"),
     (r"приговор|задержан|возбуждено уголов", "procedure Pass 3 court/police + ai-markers §39 False slop"),
-    (r"Во-первых|ПМ не управляет бюджетом|Lead Time for Changes", "procedure Pass 3 house argument/table + ai-markers §39 False slop"),
+    (r"Во-первых|ПМ не управляет бюджетом|Lead Time for Changes|О формате|Привет, читатель", "procedure Pass 3 house argument/table/outline + ai-markers §39 False slop"),
 )
 
 
@@ -1120,6 +1124,12 @@ def build_parser() -> argparse.ArgumentParser:
         type=int,
         default=0,
         help="with --house-only, how many posts (default 100)",
+    )
+    sample.add_argument(
+        "--house-file",
+        type=Path,
+        default=None,
+        help="channel dump JSON (default: tg_last100.json)",
     )
     sample.set_defaults(func=cmd_sample)
     run = sub.add_parser("run", help="call cliproxy with the skill pack + audit JSON")

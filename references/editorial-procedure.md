@@ -110,15 +110,16 @@ facts and fewer hedges. Conversational padding is not a quality signal.
 | News-governance ritual: `обеспечить прозрачность и ответственность`, `вернуть доверие населения`, `усилен контроль` with no new fact | Strong | DELETE. KEEP adjacent sums, dates, orgs. |
 | Lived-in review: stretched words, first-person, insults, crooked punct, named object (кафе, счёт, блюдо) | Soft | KEEP when there is irregularity **plus** a named object. TRIM only the sandwich mold and a fact-free `рекомендую это милое заведение`. |
 | AI-review mold: fluent disappointment *or* praise brochure — atmosphere census, `не оправдали ожиданий`, `великолепный сервис`, `всегда готовы помочь`, `каждое блюдо шедевр`, `классика` + city, exclusive-claim, recap closer — even with a venue name | Strong | TRIM the mold. KEEP a named dish, bill, room, or staff person. Do not KEEP the whole page as lived-in. |
-| Advice-column mold: pep-talk opener (`Даже не пытайтесь`, `Это очень сложно!`), `сеть поддержки` / `доверенные лица`, `не стесняйтесь обращаться`, unnamed `стратегии справления`, closer `извлечь полезный опыт` | Strong | DELETE the pep-talk. KEEP a named action (`позвони`, `встретьтесь в кафе`). Do not rewrite `позитивная нота` as `приятная нота`. |
+| Advice-column mold: pep-talk opener (`Даже не пытайтесь`, `Это очень сложно!`), `сеть поддержки` / `доверенные лица`, `не стесняйтесь обращаться`, unnamed `стратегии справления`, closer `извлечь полезный опыт` | Strong | DELETE the pep-talk (`Не беда, получи пользу`). KEEP a named action (`позвони`, `отправь в hr`, `рефералы`). Do not rewrite `шустрый способ` as `быстрый способ`. |
 | Wiki-card / answer-card: numbered bold labels (`**История создания**`, `**Авторство**`) that restate the lede or pad empty cells | Strong | MERGE dates/names into a paragraph. DELETE empty cells (`Подписан именем Антон Чехов`). KEEP a first-publication fact. FLAG unnamed critics. |
 | Costume slang: stacked `братва` / `вуаля` / `каталка` on a clinic or shop brochure | Strong | TRIM the costume. KEEP the named clinic or price. Real forum register throughout stays KEEP. |
 | Epoch tail on a local note: `в условиях нынешней экономики` | Soft | TRIM the tail. KEEP the price or dish. |
 | Agency wire: named outlet, org, km, %, attributed quote, obituary age/cause | KEEP | KEEP the fact. Do not recast a press-service paragraph as brochure. |
 | Tutorial / UI path: `Панель управления`, imperative clicks, even verbose | KEEP | KEEP the sequence and the how-to closer (`теперь вы знаете`). Cut only throat-clearing around it. |
-| House frame: channel hashtag, greeting slot (`Здравствуй, … читатель`), author `P.S.` / `P.P.S.`, operators `==` `=>` `->` | KEEP | KEEP the whole `P.S.` paragraph, not only the label. A punchy title after the hashtag (`Agile умирает`) is the hook, not drumroll. TRIM only an empty restatement beside it (`Имя ему — …!`). A `->` deploy chain is an operator, not a closer. |
+| House frame: channel hashtag, greeting slot (`Здравствуй, … читатель`, `Привет, читатель`, `Hello, приятели`), author `P.S.` / `P.P.S.`, operators `==` `=>` `->` | KEEP | KEEP the greeting as its own span. TRIM `Сегодня я хочу поделиться` / `Давайте разберемся` after it — do not mash the greeting into the §28 opener. KEEP the whole `P.S.` paragraph, not only the label. A punchy title after the hashtag (`Agile умирает`) is the hook, not drumroll. TRIM only an empty restatement beside it (`Имя ему — …!`). A `->` deploy chain is an operator, not a closer. |
 | House argument beats: `Во-первых` / `Во-вторых` / `В-третьих` that each carry a fact (exam detail, named tool, hours, price) | KEEP | KEEP the beat and the fact. TRIM only `Во-первых, важно понимать` with no payload. Do not DELETE the labels as §5. |
-| House case table / metric list: numbered answers from named personas, or named metrics with a one-line so-what | KEEP | KEEP the table. §8 is equal empty paragraphs, not a 5×7 case grid or 17 named DORA metrics. TRIM only a fact-free gloss (`спокойнее сон`) beside a named metric. |
+| House case table / metric list: numbered answers from named personas, or named metrics with a one-line so-what | KEEP | KEEP the table. §8 is equal empty paragraphs, not a 5×7 case grid or 17 named DORA metrics. KEEP a numbered how-to with named steps (`рефералы`, `Постановка целей`, `hh.ru`). DELETE an empty benefits list (`1. Повышение мотивации`). TRIM only a fact-free gloss (`спокойнее сон`) beside a named metric. |
+| House outline headings: `О формате`, `Чего я хочу достичь в 2025?`, `Чем я отличаюсь?` that introduce a payload paragraph | KEEP | KEEP the heading. §8 is equal empty paragraphs, not author H2s. TRIM only a drumroll that restates the next sentence (`А теперь о главном — о блоге`). |
 | Thanks / dedication: named staff, ward, dialect, first-person bow | KEEP | KEEP. TRIM only a fact-free `благородное дело` pile with no addressee. |
 | Explainer definition that names the object | KEEP | KEEP the definition. TRIM `востребована во множестве областях` without an example. |
 | Forum slang and insults | Soft | KEEP. Do not comb a thread into a briefing. |
@@ -432,9 +433,9 @@ authorship probability, no detector score, no rewrite, no story of how
 the draft was written.
 
 Нейрослоп ≠ «написала модель» and ≠ the author's house format. Hashtags,
-`Здравствуй, [epithet] читатель`, author `P.S.`, and operators are KEEP
-when the draft or samples already use them. Do not score a channel template
-as slop because it repeats.
+`Здравствуй, [epithet] читатель` / `Привет, читатель`, author `P.S.`,
+outline headings, and operators are KEEP when the draft already uses them.
+Do not score a channel template as slop because it repeats.
 
 Нейрослоп is stacked *fill*: brochure grid (`во-первых` / `Как устроено` /
 equal blocks), `не просто X, а Y`, fake completeness, empty significance,
