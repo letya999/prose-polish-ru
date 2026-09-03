@@ -228,6 +228,22 @@ GENERIC_HEADINGS = {
 MIXED_SCRIPT_RE = re.compile(
     r"\b(?=[A-Za-zА-Яа-яЁё]*[A-Za-z])(?=[A-Za-zА-Яа-яЁё]*[А-Яа-яЁё])[A-Za-zА-Яа-яЁё]+\b"
 )
+GENITIVE_CHAIN_RE = re.compile(
+    r"\b[а-яё]+(?:ени[яий]|ани[яий]|ити[яий]|ост[ией]|ест[ией]|и[яий])\s+"
+    r"[а-яё]+(?:ени[яий]|ани[яий]|ити[яий]|ост[ией]|ест[ией]|и[яий]|[ое]в|ей|[ая])\s+"
+    r"[а-яё]+(?:ени[яий]|ани[яий]|ити[яий]|ост[ией]|ест[ией]|и[яий]|[ое]в|ей|[ая])\s+"
+    r"[а-яё]+(?:ени[яий]|ани[яий]|ити[яий]|ост[ией]|ест[ией]|и[яий]|[ое]в|ей|[ая])\b",
+    re.I,
+)
+CALL_RESPONSE_RE = re.compile(
+    r"\?\s*(?:Определенно|Едва ли|Безусловно|Вряд ли|Конечно|Точно нет|Вовсе нет)\b",
+    re.I,
+)
+TRIVIAL_DEF_RE = re.compile(
+    r"(?:\b(?:Git|Docker|Kubernetes|Linux|API|HTTP|JSON|SQL)\s*—\s*это\s+(?:распределенн\w+|программн\w+|популярн\w+)?\s*(?:система|инструмент|формат|протокол|язык)|"
+    r"\b(?:представляет собой|является)\s+(?:распределенн\w+|программн\w+|открыт\w+|специализированн\w+)?\s*(?:системой|интерфейсом|протоколом|инструментом)[^.!?\n]{0,80}\bпозволяющ)",
+    re.I,
+)
 
 
 def mask_fences(lines: list[str]) -> tuple[list[str], set[int]]:
@@ -429,6 +445,21 @@ def scan_prose(lines: list[str], mode: str) -> list[Finding]:
         ):
             add(findings, "S18", "medium", "significance", line_no,
                 "News-governance ritual without a new fact", raw)
+        gen_chain = GENITIVE_CHAIN_RE.search(text)
+        if gen_chain:
+            add(findings, "L06", "medium", "diction", line_no,
+                "Genitive / verbal-noun stack: 4+ consecutive nominals in genitive case (§48)",
+                gen_chain.group(0))
+        call_resp = CALL_RESPONSE_RE.search(text)
+        if call_resp:
+            add(findings, "R08", "medium", "rhythm", line_no,
+                "Call-and-response staging: rhetorical self-question and prompt answer (§52)",
+                raw)
+        triv_def = TRIVIAL_DEF_RE.search(text)
+        if triv_def:
+            add(findings, "W23", "medium", "water", line_no,
+                "Trivial definition padding: unsolicited tutorial definition of a standard tool (§51)",
+                raw)
 
     for pattern, (code, category, message) in PHRASES.items():
         count = phrase_hits[code]
@@ -456,6 +487,40 @@ def scan_prose(lines: list[str], mode: str) -> list[Finding]:
                 "Adjacent sentences restate the same thesis; inspect for brochure echo",
                 f"{sentences[idx][:80]} | {sentences[idx + 1][:80]}")
             break
+
+    # Segment prose lines into paragraphs by line_no continuity
+    paragraphs: list[list[str]] = []
+    curr_para: list[str] = []
+    prev_no = -1
+    for line_no, p_text, is_heading in prose_lines:
+        if is_heading:
+            if curr_para:
+                paragraphs.append(curr_para)
+                curr_para = []
+            prev_no = -1
+            continue
+        if prev_no != -1 and line_no > prev_no + 1:
+            if curr_para:
+                paragraphs.append(curr_para)
+                curr_para = []
+        curr_para.append(p_text)
+        prev_no = line_no
+    if curr_para:
+        paragraphs.append(curr_para)
+
+    for para in paragraphs:
+        para_text = " ".join(para)
+        p_sentences = [s.strip() for s in SENTENCE_RE.split(para_text) if len(WORD_RE.findall(s)) >= 4]
+        if len(p_sentences) >= 3:
+            head_toks = content_tokens(p_sentences[0])
+            tail_toks = content_tokens(p_sentences[-1])
+            shared = head_toks & tail_toks
+            smaller = min(len(head_toks), len(tail_toks))
+            if smaller >= 3 and len(shared) / smaller >= 0.5:
+                add(findings, "S49", "medium", "structure", 1,
+                    "Paragraph micro-summary / hourglass echo: last sentence echoes opening thesis (§49)",
+                    f"{p_sentences[0][:70]} … {p_sentences[-1][:70]}")
+                break
     lengths = [len(WORD_RE.findall(s)) for s in sentences]
     if len(lengths) >= 6:
         for start in range(len(lengths) - 5):
@@ -667,6 +732,19 @@ print("важно отметить")
     assert "H02" in frontier_codes, frontier_codes
     assert "V02" in frontier_codes, frontier_codes
     assert "S32" in frontier_codes, frontier_codes
+    rus_syntax = (
+        "Мы заняты вопросом обеспечения реализации оптимизации процессов разработки.\n\n"
+        "Поможет ли это решить задачу? Едва ли. Стоит ли пробовать? Определенно.\n\n"
+        "Git — это распределенная система контроля версий.\n\n"
+        "Миграция базы данных требует отдельного планирования архитектуры проекта. "
+        "Инженеры готовят скрипты и проверяют репликацию на стейджинге. "
+        "Таким образом, планирование архитектуры проекта решает проблему миграции базы данных."
+    )
+    rus_codes = {item.code for item in scan_prose(rus_syntax.splitlines(), "article")}
+    assert "L06" in rus_codes, rus_codes
+    assert "R08" in rus_codes, rus_codes
+    assert "W23" in rus_codes, rus_codes
+    assert "S49" in rus_codes, rus_codes
     print("self-test: ok")
 
 

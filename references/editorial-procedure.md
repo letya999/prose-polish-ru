@@ -32,8 +32,8 @@ Never use a lower layer to override a higher one.
 
 Extract without interrogating the user unnecessarily:
 
-- mode: audit, light, standard, or deep;
-- deliverable and platform;
+- mode: audit, light, standard, deep, or clean;
+- deliverable and platform (e.g. tg, habr, vc, doc);
 - audience and assumed knowledge;
 - structure authority: strict, guided, or free;
 - facts and spans to preserve;
@@ -359,6 +359,10 @@ They fail the other way if rewritten into a blog voice.
 - Keep accepted professional slang for the intended audience.
 - Keep author operators (`==`, `=>`, `->`, `vs`) when they mark identity,
   implication, or comparison.
+- Break genitive chains (§48): unpack strings of 3+ nouns in the genitive case
+  (`в целях обеспечения оптимизации процессов…`) into an active verb and subject.
+- Cut trivial definition padding (§51): delete unsolicited encyclopedia/tutorial
+  definitions of standard tools (`Git — это распределенная система…`, `API — это…`).
 
 ### Machine surface (article / post / opinion)
 
@@ -382,6 +386,12 @@ comma more often than a textbook.
   every `однако`, `впрочем`, `короче`, `кстати` unless the sentence is
   unreadable without it. Leave one harmless informal comma. Never alter
   commas in names, numbers, code, or links.
+- Avoid TED call-and-response staging (§52): replace theatrical self-questions
+  and prompt answers (`Поможет ли это? Едва ли.`) with one direct declarative
+  statement.
+- Restore modal particle cadence (§50): in article/post register, let natural
+  Russian particles (`же`, `ведь`, `то`, `-таки`, `уж`) provide vocal cadence
+  instead of antiseptic UN-interpreter phrasing.
 
 Documentation, tutorials, legal, and academic text keep source typography
 and may use lists and book quotes when the genre needs them.
@@ -495,11 +505,14 @@ Zero lint findings is not the target. Do not revert Pass H to clear lint.
 ### Polish
 
 1. The polished and humanized text.
-2. A `Маркеры` table. Required. Columns: Location, Kind, Category, Evidence,
-   Action. Kind is exactly `AI`, `вода`, or `признак`. Category is `§N
-   short-name` or a Pass 3 span name. If nothing fired: `Маркеры: нет`.
-3. `Needs verification` only for unresolved substantive issues.
-4. May present the result as human-sounding / written to read as a person.
+2. For `clean` depth (or if the user requested "clean", "без таблицы", or "no table"):
+   STOP HERE. Do not output the `Маркеры` table.
+3. Otherwise (default for light, standard, deep), return a `Маркеры` table.
+   Required. Columns: Location, Kind, Category, Evidence, Action. Kind is
+   exactly `AI`, `вода`, or `признак`. Category is `§N short-name` or a Pass 3
+   span name. If nothing fired: `Маркеры: нет`.
+4. `Needs verification` only for unresolved substantive issues.
+5. May present the result as human-sounding / written to read as a person.
    Do not invent a detector percentage unless a scan was actually run.
 
 ### Audit
@@ -531,8 +544,9 @@ Then:
 
 Category is a catalog citation, not a free-text bucket. Write `§N short-name`
 from [ai-markers.md](ai-markers.md) (working core §1–16, 2026 classes
-§28–38, dataset fills / False slop §39, frontier reasoning §40–47) or
-the Pass 3 span name (`Lived-in review`, `News-governance ritual`, `Glued join letter`).
+§28–38, dataset fills / False slop §39, frontier reasoning §40–47, Russian
+syntax/structure §48–52) or the Pass 3 span name (`Lived-in review`,
+`News-governance ritual`, `Glued join letter`).
 Stacked markers in one span are still one row: cite the strongest `§N`. Do not write
 `нейрослоп` or `вода` as the category.
 

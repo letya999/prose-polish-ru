@@ -494,6 +494,33 @@
         "Identifies and cites therapeutic empathy (§45) or compulsive hedging (§46)",
         "Preserves k8s-prod-3 and 23:15 as protected facts"
       ]
+    },
+    {
+      "id": 40,
+      "category": "clean-mode",
+      "prompt": "Use $prose-polish-ru in clean mode. Polish this technical note for Telegram:\n\nВажно отметить, что релиз 2.4.0 включает критический фикс утечки памяти в воркере #3. Мы наблюдали падение потребления RAM с 4 ГБ до 850 МБ. Подробнее: https://github.com/org/repo/pull/123",
+      "expected_output": "Polished text only, with no trailing Markdown table or verification section.",
+      "files": [],
+      "expectations": [
+        "Preserves 2.4.0, #3, 4 ГБ, 850 МБ, and https://github.com/org/repo/pull/123 exactly",
+        "Removes 'Важно отметить, что'",
+        "Does NOT emit a Markdown table (no `| Location |` or `| Маркеры |`)",
+        "Does NOT emit a 'Needs verification' section"
+      ]
+    },
+    {
+      "id": 41,
+      "category": "russian-syntax",
+      "prompt": "Use $prose-polish-ru in standard mode. Polish this architecture draft and unpack Russian translationese:\n\nGit — это распределенная система контроля версий. Мы заняты вопросом обеспечения реализации оптимизации процессов управления качеством сборки. Поможет ли это ускорить пайплайн? Едва ли. Стоит ли инвестировать ресурсы? Определенно. Базовый бенчмарк показал p50 14с.",
+      "expected_output": "Unpacks genitive chains (§48); cuts trivial Git definition (§51); eliminates TED call-and-response (§52); preserves p50 14с.",
+      "files": [],
+      "expectations": [
+        "Preserves p50 14с exactly",
+        "Deletes the trivial Git definition",
+        "Unpacks the genitive chain into active verbs",
+        "Removes TED call-and-response staging ('Поможет ли это... Едва ли')",
+        "Cites §48, §51, or §52 in the Маркеры table"
+      ]
     }
   ]
 }

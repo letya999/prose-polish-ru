@@ -23,7 +23,9 @@ Cite `§N`: 1 artifacts · 2 inertia · 3 empty significance · 4 fog ·
 37 engagement · 38 citation laundering · 39 dataset fills / false slop ·
 40 pseudo-nuance · 41 reasoning scaffolding · 42 sterile archetypes ·
 43 prestige inflation · 44 hyper-cohesion · 45 therapeutic tone ·
-46 compulsive hedging · 47 purple tech.
+46 compulsive hedging · 47 purple tech · 48 genitive chains ·
+49 paragraph echo · 50 particle deficit · 51 trivial definitions ·
+52 call-and-response.
 
 The lists mix three layers. Do not collapse them:
 
@@ -51,7 +53,10 @@ and citation laundering. 39 is tuned on public corpora (LLMTrace RU,
 AINL-Eval abstracts, Reddit cited ranking). 40–47 target frontier reasoning
 and RL-aligned LLMs (pseudo-nuance, reasoning scaffolding leak, sterile
 archetypes, prestige micro-jargon, hyper-cohesion, therapeutic tone,
-compulsive hedging, purple tech). Corpora links →
+compulsive hedging, purple tech). 48–52 target Russian-specific structural
+and syntax distortions (genitive chains, paragraph-level micro-summary /
+hourglass echo, modal particle deficit, trivial definition padding, TED
+call-and-response staging). Corpora links →
 [README](../README.md). Do not treat the extra sections as a second
 banned-word dump. Do not train a detector on these sets.
 
@@ -1150,6 +1155,55 @@ When instructed to write "lively" or "with emotion", models default to melodrama
 - visceral metaphors for mundane bugs: `архитектурный хаос, пожирающий ресурсы`, `токсичный легаси, отравляющий кодовую базу`, `кровавая битва за каждый миллисекундный тайминг`.
 
 Treatment: Delete the synthetic melodrama. Replace with specific technical reality (e.g. `падение RPS втрое` or `OOM-киллер при пиковой нагрузке`).
+
+## 48. Genitive chains and verbal-noun stacks (нанизывание родительного падежа)
+
+A defining Russian translationese and bureaucratic model tell. Generative models copy English prepositional chains (`of the X of the Y`) or Soviet канцелярит, stringing 4+ nouns in the genitive case:
+
+- nominal genitive train: `в целях обеспечения реализации оптимизации процессов управления качеством разработки`;
+- stacked abstract nouns: `оценка уровня готовности инфраструктуры развертывания сервиса`;
+- avoidance of direct action: using verbal nouns (`осуществление контроля`, `проведение анализа`, `достижение повышения`) instead of active verbs (`контролировать`, `анализировать`, `повышать`).
+
+Treatment: Unpack the chain. Find the true actor and the active verb. Limit consecutive genitive nouns to at most two.
+
+## 49. Paragraph-level micro-summary and hourglass echo (абзацный микро-сэндвич)
+
+Wikipedia: Signs of AI writing calls this the "Hourglass structure". Models obsessively close almost every paragraph with a redundant recap of its opening:
+
+- paragraph echo: opening line states a thesis -> body explains it -> closing sentence rephrases the opening line (`Таким образом, именно это делает решение столь востребованным`, `В этом и заключается главное преимущество такого подхода`);
+- micro-summary ritual: treating every 4-sentence paragraph as an independent self-contained essay with its own mini-conclusion.
+
+Treatment: Cut the last sentence of the paragraph if it merely echoes the first. Let paragraphs push the narrative forward or end on the specific evidence.
+
+## 50. Russian modal particle deficit (дефицит модальных частиц / «перевод ООН»)
+
+Natural Russian prose relies heavily on modal, limiting, and expressive particles (`же`, `ведь`, `то`, `-таки`, `уж`, `мол`, `как раз`, `хоть`). AI models generate "UN interpreter Russian" — grammatically pristine, syntactically smooth, but intonationally dead and antiseptic:
+
+- absence of conversational glue: long arguments without a single expressive particle;
+- monotonous declarative rhythm with zero oral cadence;
+- hyper-formal sentence connectors (`в связи с этим`, `на основании вышеизложенного`) where a particle (`ведь`, `же`) would naturally do the job.
+
+Treatment: In article/post/opinion register, introduce natural particles during Pass H to restore human vocal cadence and nuance. Never force particles into formal documentation or legal text.
+
+## 51. Trivial definition padding (суррогатная эрудиция и словарный ликбез)
+
+Models frequently assume a zero-knowledge reader even in advanced technical contexts, padding drafts with dictionary definitions of industry-standard tools:
+
+- unsolicited tutorial definitions: `Для начала разберемся: Git — это распределенная система контроля версий...`;
+- encyclopedia throat-clearing: `Как известно, API (Application Programming Interface) представляет собой интерфейс, позволяющий программам взаимодействовать друг с другом`;
+- tautological definitions that delay the point by 2–3 sentences.
+
+Treatment: Delete the definition entirely. The qualified audience already knows what Git, Docker, Kubernetes, or an API is. Start directly with the actual problem or architecture decision.
+
+## 52. Call-and-response rhetorical staging (риторический пинг-понг в стиле спикеров TED)
+
+Borrowed English LinkedIn/TED rhetoric translated into Russian: the author repeatedly asks rhetorical self-questions and immediately answers with canned dramatic adverbs:
+
+- prompt-and-nod: `Поможет ли это решить проблему? Едва ли. Стоит ли внедрять этот подход? Определенно.`;
+- dramatic self-interrogation: `Означает ли это конец эпохи монолитов? Вовсе нет. Готовы ли команды к переходу? Не факт.`;
+- stacked rhetorical duos where neither question nor answer carries a checkable fact.
+
+Treatment: Delete the question-and-answer charade. Convert to a single direct declarative sentence stating the reality.
 
 Sources (descriptive, not a detector): Kobak et al. PubMed excess
 vocabulary; Reinhart nominal grammar; Pew 2026 AI-on-the-web;
