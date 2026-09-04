@@ -108,6 +108,7 @@ Check content:
 - ranges, multipliers, decimal separators, currencies, and units are preserved;
 - percentages include denominator context where needed;
 - `Да/Нет`, `Высокий/Средний/Низкий` are defined when judgment matters;
+- dimensional homogeneity: numbers grouped under a single column header must measure the same physical or operational phenomenon against an identical baseline; never mix runtime coordination costs with algorithmic scaling laws or variance explained without explicit dimensional qualification (§64);
 - table does not claim precision unavailable in sources;
 - prose does not restate every cell;
 - caveats are attached to relevant rows or introduced before interpretation.
@@ -115,6 +116,7 @@ Check content:
 Common AI artifacts:
 
 - fabricated feature matrices;
+- conflating resource consumption multipliers with compute-scaling sample budgets or statistical metrics in a single comparison table (§64);
 - all options receiving balanced pros and cons;
 - generic `Описание / Преимущества / Недостатки` columns;
 - subjective scores without rubric;
@@ -198,6 +200,7 @@ Check:
 - alt text describes the image's information, not `image` or marketing copy;
 - alt text does not rewrite technical notation to appease lint;
 - caption adds interpretation, provenance, or caveat rather than repeating alt;
+- caption-body synchronization: captions must not introduce uncontextualized deprecation claims or orphan facts (e.g. `старый сервер устарел`) that receive zero explanation in the surrounding body prose; every substantive claim in a caption must align with the article's text;
 - figure numbering remains consistent;
 - body references the correct figure;
 - claims derived from a chart state what is actually visible;
@@ -211,6 +214,7 @@ Common AI artifacts:
 
 - generic `Схема процесса` alt text;
 - overlong captions that restate the section;
+- orphaned claims in captions (introducing technical deprecations, caveats, or tools in italics under an image without mentioning or explaining them in the text);
 - invented interpretation of an uninspected image;
 - renaming image files or paths during prose cleanup;
 - changing `spawn vs peering` to unnatural wording solely to remove `vs`;
@@ -228,6 +232,8 @@ Check:
 - CLI flags retain hyphens, case, quotes, and spacing;
 - paths retain separators and case where relevant;
 - function, class, API, model, config, and environment names remain exact;
+- parameter locus of control: every mentioned configuration key or runtime parameter must specify where and how it is controlled (CLI flag, env var, config file, API body, or hardcoded engine default); avoid phantom configs where a default is claimed but no locus exists (§66);
+- hands-on reproducibility: practical walkthroughs, recipes, and setup scenarios must supply the minimal reproducible command, configuration snippet, or execution sequence, not merely drop API primitive names without instructions on how to run them;
 - placeholder syntax remains valid;
 - commands are not combined, reordered, or made destructive;
 - comments inside code are not polished unless requested;
@@ -238,6 +244,8 @@ Check:
 Common AI artifacts:
 
 - typographic quotes inside executable commands;
+- phantom parameters without execution locus or configuration context (§66);
+- practical guides that omit actionable CLI commands or config snippets, stranding the reader with abstract API calls;
 - em dashes replacing double hyphens;
 - translated identifiers;
 - corrected spelling inside code;

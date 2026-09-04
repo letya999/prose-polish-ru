@@ -30,7 +30,9 @@ diction, and voice questions — not KEEP examples and not `§N` marker classes.
 16. Check superlatives and first/only/best claims.
 17. Check numbers for unit, period, denominator, sample, and source.
 18. Check percentages against raw values when both exist.
-19. Check ranges and multipliers for preserved typography and magnitude.
+19. Check ranges and multipliers for preserved typography, magnitude, and
+    dimensional homogeneity: do not conflate runtime coordination cost multipliers
+    with inference compute scaling laws or variance explained under one comparison column (§64).
 20. Check dates, versions, model names, product names, and status for consistency.
 21. Keep source attribution attached to the claim it supports.
 22. Do not make a linked page support more than it actually says.
@@ -61,6 +63,12 @@ diction, and voice questions — not KEEP examples and not `§N` marker classes.
     actual variable?
 44. Does a paragraph contain an actor, event, relation, or testable proposition?
 45. After removing prestige terms, does the sentence still say anything?
+45b. Check architectural label fidelity: does the high-level label ("peering",
+     "mesh", "reactive") match the actual mechanism (daemon RPC, socket bus,
+     polling)? Flag concept stretching (§65).
+45c. Trace configuration parameter locus of control: if a parameter is cited
+     with a default, is its locus of control explicit? Do not allow claims of a
+     default while asserting no configuration toggle exists (§66).
 46. Does the mechanism explain how the effect occurs?
 47. Does `поэтому` connect cause and effect or merely neighboring facts?
 48. Does `это значит` preserve the original statement's strength?
@@ -95,6 +103,12 @@ diction, and voice questions — not KEEP examples and not `§N` marker classes.
     conveyor-belt syllabus progression with zero organic diversions is an AI tell.
 70. End when the argument lands; do not append a universal moral or a stock
     closer such as `Я бы оставил такую схему`.
+70c. Maintain platform scope consistency: if framed as CLI/terminal automation,
+     do not jump into consumer Desktop GUI clients unannouncedly; frame UI equivalents
+     explicitly as analogs.
+70d. Check hands-on reproducibility: in sections labeled "Практика", "Сценарии",
+     or "How-to", require actionable CLI command lines, configuration snippets,
+     or execution sequences, not just abstract API names.
 
 ## E. Paragraph function
 
@@ -114,6 +128,9 @@ diction, and voice questions — not KEEP examples and not `§N` marker classes.
 83. Check pronoun references across paragraph boundaries.
 84. Check that `это`, `такой`, `данный`, and `подобный` have clear antecedents.
 85. Preserve purposeful callbacks; remove accidental repetition.
+85b. Figure caption synchronization: figure and diagram captions must not
+     introduce orphan facts, technical deprecations, or tools that receive
+     zero explanation in the body text.
 
 ## F. Water and redundancy
 

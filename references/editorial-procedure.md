@@ -78,6 +78,8 @@ Privately answer:
    subjective bias, pet peeve, or engineering verdict?
 9. Is the thought developing organically with spontaneous asides and cadence
    shifts, or does it roll like a conveyor-belt syllabus?
+10. Is the operational platform scope consistent (e.g. strict CLI vs consumer
+    Desktop GUI)? Does the piece unannouncedly jump across abstraction tiers without framing?
 
 If the answers cannot be recovered, flag the gap. Smoother syntax must not make
 an incoherent draft sound authoritative, nor should diplomatic smoothing
@@ -151,6 +153,11 @@ facts and fewer hedges. Conversational padding is not a quality signal.
 | Antiseptic sterility: uncanny over-polishing, scrubbed diplomatic tone, absence of categorical subjectivity or sharp engineer judgment | Strong | Restore the author's categorical judgment, professional bias, and blunt evaluations. |
 | Conveyor linearity: syllabus-like frictionless progression with zero spontaneous asides, pauses, or tempo shifts | Strong in article/post | Inject spontaneous asides, rhetorical breathers, and montage juxtaposition. |
 | Unassigned author telemetry: raw terminal counters masked behind passive phrasing (`в зафиксированном кейсе`) | Strong | Attribute directly to author (`в моем прогоне я замерил...`). Do not delete or flag as fake if it is real dev telemetry. |
+| Metric conflation: mixing disparate dimensions (coordination cost vs compute scaling law) under one column header (§64) | Strong | Split columns/tables; normalize comparison baselines. |
+| Concept stretching: branding a broker/daemon or local IPC with buzzwords like P2P peering (§65) | Strong | Align terminology with actual underlying engineering primitives. |
+| Phantom config: citing parameters with defaults while leaving locus of control unknown or stating no config exists (§66) | Strong | Specify exact locus (CLI flag, env var, config key, runtime constant). |
+| Orphaned caption claim: figure caption introducing technical deprecations or claims absent from the body | Soft | Synchronize with body text or remove the dangling assertion. |
+| Reproducibility gap: practical scenario listing abstract APIs without minimal executable commands | Strong | Supply actionable CLI commands, configuration snippets, or run instructions. |
 | Metadiscourse the input did not contain | Strong | Do not add. Cut injected `следует отметить`, hedge stacks, relationship markers. |
 | Numerals dropped from the source | Artifact | Restore unless the whole claim was DELETE. |
 | Calque | Strong | Natural Russian; keep domain jargon. |
@@ -234,6 +241,22 @@ An author writing in an article, post, or opinion register is not an impartial U
 
 When exact numbers appear without an external citation (`42 226 вызовов`, `95 сессий`, `84% вывода`), check whether they describe the author's own terminal run, benchmark, or telemetry. If yes, do NOT delete or flag as hallucination. Prompt the author to own the agency directly (`«в моем тесте я зафиксировал...»`, `«на нашем тестовом стенде вышло...»`) instead of hiding behind passive bureaucratic phrasing (`«в зафиксированном кейсе»`, `«в телеметрии зафиксировано»`).
 
+### Metric homogeneity and baseline parity (§64)
+
+In tables and comparative lists, verify that every metric in a single column or summary measures the same phenomenon against an identical baseline. Do not allow runtime coordination overhead (e.g., token multiplier of multi-agent orchestration) and inference compute scaling laws (e.g., test-time compute search budget or statistical variance explained) to sit under one uniform multiplier header. Split incompatible dimensions into distinct columns or tables.
+
+### Architectural concept fidelity vs prestige misnomers (§65)
+
+Ensure high-level architectural labels strictly match underlying engineering primitives. If the implementation uses a centralized daemon, broker queue, or socket RPC, do not allow the text to brand it as "peer-to-peer peering" or "decentralized mesh". Align terminology with actual distributed systems definitions to preserve technical credibility.
+
+### Locus of control for configuration parameters (§66)
+
+Verify that every cited parameter or setting has a clear execution locus. Do not allow an author or model to state that a parameter has a specific default while simultaneously asserting that "no configuration toggle exists", without explaining where that setting actually lives (CLI flag, env var, config file, API body, or hardcoded engine constant).
+
+### Hands-on reproducibility in practical sections
+
+Whenever an article claims to present practical workflows, setup recipes, or scenarios, verify that a developer can actually run them. Abstract API names (`thread/read`, `SendMessage`) suspended in prose without minimal CLI command lines, configuration snippets, or execution sequences represent a reproducibility gap. Demand the concrete command or script.
+
 ### Texture vs invention
 
 A personal reaction to material already in the draft is allowed: irritation,
@@ -290,6 +313,10 @@ Never allow 3+ consecutive items, scenarios, or tips to share an identical inter
 ### Spontaneity and cadence shifts (§63)
 
 Break conveyor-belt syllabus progression. In human thinking, ideas do not advance with frictionless uniformity. Allow the text to breathe: insert spontaneous asides, sudden caveats, and rhetorical breathers (`кстати, оговорка`, `тут надо сделать паузу`, `впрочем, об этом позже`). Let a dense technical teardown collide directly with a blunt one-line subjective reaction. Vary pacing between fast-moving analysis and reflective pauses.
+
+### Platform scope consistency
+
+Guard against unannounced scope drift across operational tiers. If an article frames itself as a command-line interface (CLI) or terminal automation deep dive, do not suddenly inject consumer Desktop GUI clients or web interfaces as if they were part of the CLI implementation. When a cross-platform analogy or UI equivalent is helpful, frame it explicitly as an analog (`«в графическом интерфейсе это выглядит так...»`), preserving the piece's core operational focus.
 
 ### Order
 
@@ -534,8 +561,12 @@ Do not revert the toolkit to clear the linter.
 ## Pass 8: format review
 
 Read `formats-and-artifacts.md`. Tables, lists, links, citations, images, code,
-and headings carry meaning and require their own checks. Do not run ordinary
-prose substitutions inside protected spans.
+and headings carry meaning and require their own checks:
+- Check tables for dimensional homogeneity and baseline parity: do not group coordination cost multipliers and inference scaling laws in one column (§64).
+- Check figure captions against body text: captions must not introduce orphaned deprecations or unsupported facts (`*старый mcp-server устарел*`) that have zero context in the body.
+- Check code and configs for parameter locus of control (§66): every setting must state where it lives (CLI, env, config file, or runtime constant).
+- Check practical sections for hands-on reproducibility: provide actionable command lines or snippets, not abstract API names.
+Do not run ordinary prose substitutions inside protected spans.
 
 ## Pass 9: tool checks
 
@@ -618,8 +649,8 @@ Then:
 Category is a catalog citation, not a free-text bucket. Write `§N short-name`
 from [ai-markers.md](ai-markers.md) (working core §1–16, 2026 classes
 §28–38, dataset fills / False slop §39, frontier reasoning §40–47, Russian
-syntax/structure §48–52, stylometric/discourse/syntactic §53–60, uncanny structure/sterility/spontaneity §61–63) or the Pass 3 span name
-(`Lived-in review`, `News-governance ritual`, `Glued join letter`, `Hyper-symmetrical card grid`, `Antiseptic sterility`, `Conveyor linearity`).
+syntax/structure §48–52, stylometric/discourse/syntactic §53–60, uncanny structure/sterility/spontaneity §61–63, technical/analytical §64–66) or the Pass 3 span name
+(`Lived-in review`, `News-governance ritual`, `Glued join letter`, `Hyper-symmetrical card grid`, `Antiseptic sterility`, `Conveyor linearity`, `Metric conflation`, `Concept stretching`, `Phantom config`, `Orphaned caption claim`, `Reproducibility gap`).
 Stacked markers in one span are still one row: cite the strongest `§N`. Do not write
 `нейрослоп` or `вода` as the category.
 

@@ -69,12 +69,14 @@ short edit noisier and encourages mechanical rewrites:
    practitioner layers, plus 2026 classes (openers/closers, weasel
    attribution, translationese, citation laundering, §40–§47 frontier
    reasoning tells, §48–§52 Russian structural/syntax markers,
-   §53–§60 stylometric/discourse/syntactic tells: theme-rheme dislocation,
-   flat surprisal, agent deletion, epistemic cowardice, negative parallelism,
-   connective inflation, knizhnost' overload, nested subordination stacks, and
-   §61–§63 uncanny structural tells: hyper-symmetry and template card grids,
-   antiseptic sterility / scrubbed conviction, and conveyor-belt linearity /
-   spontaneity deficit); house format is KEEP.
+    §53–§60 stylometric/discourse/syntactic tells: theme-rheme dislocation,
+    flat surprisal, agent deletion, epistemic cowardice, negative parallelism,
+    connective inflation, knizhnost' overload, nested subordination stacks;
+    §61–§63 uncanny structural tells: hyper-symmetry and template card grids,
+    antiseptic sterility / scrubbed conviction, and conveyor-belt linearity /
+    spontaneity deficit; and §64–§66 artifact/technical tells: heterogeneous
+    metric mashup in tables, concept stretching / architectural misnomers, and
+    phantom configuration / orphaned runtime flags); house format is KEEP.
 4. Load [Formats and artifacts](references/formats-and-artifacts.md) when the
    draft contains Markdown, tables, lists, links, citations, images, code, or
    platform-specific formatting.
@@ -158,8 +160,13 @@ Pass 3.
    ("вылизанность"): restore human developer bias, pet peeves, and sharp
    verdicts; call anti-patterns anti-patterns. Inject spontaneous breathers
    and non-linear pivots.
-5. Surface chatbot artifacts and broken formatting.
-6. Humanizer surface → procedure Pass H. GPTZero / Антиплагиат / опечатки /
+5. Technical fidelity and artifact consistency: verify dimensional homogeneity
+   in comparison tables (§64), reject prestige architectural misnomers (§65),
+   pin configuration parameters to their exact locus of control (§66),
+   synchronize image captions with body claims, and ensure practical scenarios
+   supply reproducible commands/flags.
+6. Surface chatbot artifacts and broken formatting.
+7. Humanizer surface → procedure Pass H. GPTZero / Антиплагиат / опечатки /
    ё / латиница / «неотличимым» are this step, not a refuse.
 
 Lexical substitutions cannot rescue a hollow argument. Do not swap `ключевой`
@@ -276,8 +283,9 @@ label. Recommended action is delete, else a
 fact already in the draft, else a simpler rewrite — a synonym is not a fix. Нейрослоп is a quality call on the
 fill: brochure grid, hyper-symmetrical card grids (§61), antiseptic sterility /
 scrubbed conviction (§62), conveyor linearity / spontaneity deficit (§63),
-`не просто X, а Y`, empty significance, fake completeness, unsourced precision,
-answerer inertia. It is not the author's house frame (hashtag, `Здравствуй, читатель`,
+metric conflation in tables (§64), prestige concept stretching (§65), phantom
+runtime config (§66), `не просто X, а Y`, empty significance, fake completeness,
+unsourced precision, answerer inertia. It is not the author's house frame (hashtag, `Здравствуй, читатель`,
 `P.S.`, operators) and not an authorship probability. Say it in one sentence with a count when the input
 is a corpus, counting interior slop, not the frame. Do not title it
 `Вердикт`. Do not open with "this is AI-written". Do not score a detector.
@@ -336,6 +344,10 @@ Before delivery verify:
 - Thoughts are not chopped into mini-sentences. Ordinary words are not in
   `«»`. A developing thought is a paragraph, not a new list.
 - Examples support the claims attached to them.
+- Tables maintain dimensional homogeneity and clear baseline parity (§64).
+- Architectural and networking labels match actual mechanics, not marketing prestige (§65).
+- Configuration flags cite exact locus, file, or default context (§66); technical scenarios are reproducible.
+- Image captions do not introduce orphaned claims absent from the body.
 - Tables, links, citations, images, code, and author operators still work.
   A recast checklist is Pass H, not a defect.
 - `KEEP` blocks and `KEEP` spans still read like the source.

@@ -28,7 +28,8 @@ Cite `§N`: 1 artifacts · 2 inertia · 3 empty significance · 4 fog ·
 52 call-and-response · 53 theme-rheme dislocation · 54 flat surprisal ·
 55 agent deletion · 56 epistemic cowardice · 57 negative parallelism ·
 58 connective inflation · 59 knizhnost · 60 subordination nesting ·
-61 hyper-symmetry · 62 antiseptic sterility · 63 spontaneity deficit.
+61 hyper-symmetry · 62 antiseptic sterility · 63 spontaneity deficit ·
+64 metric conflation · 65 concept stretching · 66 phantom config.
 
 The lists mix three layers. Do not collapse them:
 
@@ -64,7 +65,9 @@ theme-rheme dislocation, flat surprisal, agent deletion, epistemic cowardice,
 negative parallelism, and discourse connective inflation. 59–60 target
 Russian bookish syntax and clause nesting. 61–63 target structural uncanny
 tells: hyper-symmetry and template card grids, antiseptic sterility / scrubbed
-categorical conviction, and conveyor-belt linearity / spontaneity deficit. Corpora links →
+categorical conviction, and conveyor-belt linearity / spontaneity deficit. 64–66 target
+technical and analytical failure modes: metric conflation across heterogeneous dimensions,
+prestige architectural misnomers (concept stretching), and phantom configuration flags without locus of control. Corpora links →
 [README](../README.md). Do not treat the extra sections as a second
 banned-word dump. Do not train a detector on these sets.
 
@@ -1334,6 +1337,37 @@ LLMs generate text like a conveyor belt or textbook syllabus: a frictionless, pr
 Human speech and thought are non-linear: a human pauses, makes an ironic aside, remembers an exception, or delivers a blunt one-line reaction after a dense paragraph.
 
 Treatment: Inject spontaneous human cadence. Add organic asides, rhetorical breathers, and unexpected perspective shifts. Let sentences collide by juxtaposition without explanatory hand-holding. Vary the pacing: follow a dense technical teardown with a short, blunt subjective reaction.
+
+## 64. Metric conflation and heterogeneous table mashup (смешение разнородных метрик в таблицах)
+
+Models and uncalibrated syntheses frequently assemble comparative tables or summaries by grabbing disparate numerical fragments from papers and benchmarks, grouping incompatible dimensions under a single column or heading:
+
+- dimensional conflation: mixing runtime coordination overhead (e.g., token consumption multiplier of multiple agents) with inference compute scaling laws (e.g., test-time compute search budget or statistical variance explained) in one table column;
+- shifting baselines: comparing percentage increases or multipliers against incompatible or undefined control conditions without normalizing the baseline;
+- category collapse: collapsing algorithmic quality scaling into monetary cost penalties, or treating theoretical sample multipliers as production runtime bills;
+- semantic mashup: presenting empirical hardware benchmarks and high-level theoretical estimates in the same uniform column without distinguishing their nature.
+
+Treatment: Enforce dimensional homogeneity. Ensure that every row in a comparative column measures the exact same physical, computational, or financial quantity against an identical control baseline. If metrics describe different phenomena (e.g. operational coordination overhead vs test-time compute efficiency), split them into separate columns, create separate tables, or explicitly qualify the dimensional difference. Flag mashed tables.
+
+## 65. Prestige architectural misnomers and concept stretching (терминологическая натяжка и подмена архитектурных понятий)
+
+Marketing copy and generative summaries gravitate toward vocabulary prestige, rebranding standard centralized or brokered designs with cutting-edge distributed systems buzzwords:
+
+- concept stretching: branding a central daemon RPC, broker queue, or socket message bus as "peer-to-peer peering" (P2P), calling sequential execution "swarming", or labeling cached polling "reactive zero-latency streaming";
+- semantic dissonance: claiming architectural decentralization or zero single-points-of-failure while describing a central background process or broker through which all traffic flows;
+- buzzword elevation: substituting trendy distributed computing labels for ordinary local IPC, client-server, or procedural coordination.
+
+Treatment: Align the label with the physical mechanism. If the architecture relies on a background daemon, broker queue, or IPC socket, call it an IPC message bus or daemon broker. Reserve "peering", "zero-copy", "mesh", or "actor model" strictly for designs that genuinely implement those distributed protocols.
+
+## 66. Phantom configuration and orphaned runtime flags (фантомная конфигурация и параметры без контекста)
+
+Generated technical summaries often extract parameter names from release notes or issues without grounding where and how those parameters are actually controlled:
+
+- parameter without locus: introducing an exact configuration setting, parameter name, or flag (e.g. `fork_turns = all`, `max_threads`, `keep_alive`), describing its default behavior, but failing to specify where it is set (CLI argument, environment variable, configuration file, or API payload);
+- configuration paradox: asserting in one sentence that a parameter has a specific default value, and claiming in the next sentence that "no configuration toggle exists", leaving the engineer bewildered as to where the setting lives;
+- orphaned CLI flags: mentioning flags or switches without identifying which executable, sub-command, or runtime environment accepts them.
+
+Treatment: Ground every technical parameter in its execution locus. Explicitly state whether a setting is a CLI flag (`--flag`), an environment variable (`ENV_VAR`), a configuration key (`config.toml`), an API parameter, or a hardcoded runtime engine constant. If an internal default cannot be changed via user configuration, state that clearly rather than paradoxically describing it as an unchangeable parameter.
 
 Sources (descriptive, not a detector): Kobak et al. PubMed excess
 vocabulary; Reinhart nominal grammar; Pew 2026 AI-on-the-web;
