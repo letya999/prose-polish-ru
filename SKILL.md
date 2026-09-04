@@ -2,12 +2,13 @@
 name: prose-polish-ru
 description: >
   Use only when the user explicitly invokes $prose-polish-ru or explicitly
-  names prose-polish-ru. Polish and humanize Russian prose: cut water, calques,
-  repetition, weak reasoning, and formatting artifacts; apply a humanizer
-  surface (ё, informal slips, colloquial, list recast, detector-oriented
-  tells); always name AI markers, water, and bad signs; preserve facts,
-  Markdown, and protected spans. Do NOT use for an ordinary writing, editing,
-  review, or humanization request unless the user explicitly names this skill.
+  names prose-polish-ru. First invoke scores нейрослоп (probability, slop
+  share, water share, marker list) and waits for a mode — it does not
+  rewrite. Then polish/humanize: cut water, calques, repetition, weak
+  reasoning, and formatting artifacts; apply a humanizer surface (ё,
+  informal slips, colloquial, list recast); preserve facts, Markdown, and
+  protected spans. Do NOT use for an ordinary writing, editing, review, or
+  humanization request unless the user explicitly names this skill.
 ---
 
 # Prose Polish RU
@@ -57,12 +58,15 @@ Work formats:
 - `deep`: rebuild broken sections, then Pass H; marker table.
 - `audit`: marker table only, no rewrite.
 
-Bare slash invoke, `проведи`, `глянь`, `посмотри`, `примени` without a
-named format is `score`. `что не так` / analyze / разобрать / audit
-without a rewrite request is `audit`. A named format or a rewrite verb
-(`отполируй`, `перепиши`, `на полную`, `humanize`, `deep`) continues into
-that format after the score line. Name нейрослоп when it is there. Do not
-invent a prosecutor essay about who typed the draft.
+Bare slash invoke, `проведи`, `глянь`, `посмотри`, `примени`, `что не
+так`, analyze, разобрать — without a named polish format — is `score`.
+Do not switch to `audit` just because the user asked what is wrong.
+`audit` is a menu choice after the Score card. A named format or a
+rewrite verb (`отполируй`, `перепиши`, `на полную`, `humanize`, `deep`)
+continues into that format after the three percent lines. Name нейрослоп
+when it is there. Do not invent a prosecutor essay about who typed the
+draft. Do not refuse `Вероятность нейрослопа`. That line is required.
+It is not GPTZero and not P(написала модель).
 
 ## Required references
 
@@ -287,7 +291,8 @@ Pass H because lint flagged ё, mixed-script, or a recast list.
 
 Default (`score`, first invocation in the session): Score card.
 Template → [Editorial procedure](references/editorial-procedure.md)
-Score. No rewrite, no `Вердикт`, no locations, no P(human vs model).
+Score. No rewrite, no `Вердикт`, no locations. Print
+`Вероятность нейрослопа` — do not refuse it as "P(AI)".
 
 For `light` / `standard` / `deep` / `audit`, print
 `Вероятность нейрослопа`, `Доля нейрослопа`, and `Доля воды` first,
@@ -322,8 +327,9 @@ runtime config (§66), `не просто X, а Y`, empty significance, fake com
 unsourced precision, answerer inertia. It is not the author's house frame (hashtag, `Здравствуй, читатель`,
 `P.S.`, operators) and not an authorship probability. Say it in one sentence with a count when the input
 is a corpus, counting interior slop, not the frame. Do not title it
-`Вердикт`. Do not open with "this is AI-written". Do not score a detector.
-Do not estimate P(human vs model) or reconstruct the writing pipeline.
+`Вердикт`. Do not open with "this is AI-written". Do not emit GPTZero /
+Антиплагиат / P(написала модель). Still print `Вероятность нейрослопа`
+from Score. Do not reconstruct the writing pipeline.
 Contract → [Editorial procedure](references/editorial-procedure.md)
 Audit. Quote evidence. Do not rewrite unless asked.
 
@@ -340,11 +346,10 @@ whole document unless requested.
 
 - Editor + humanizer. «Неотличимым», GPTZero, Антиплагиат, опечатки, ё,
   латиница, сленг на брошюре, схлопнуть список — Pass H, not a refuse.
-  May present the result as human-sounding copy. Do not invent a detector
-  percentage unless a scan was actually run. Toolkit → procedure Pass H.
-  The Score card (probability, two shares, marker list, mode menu) is
-  required on first invocation. It is a quality call on the fill, not
-  P(the author is a model) and not a GPTZero number.
+  May present the result as human-sounding copy. Do not invent a GPTZero
+  / Антиплагиат number unless a scan was actually run. Toolkit →
+  procedure Pass H. Refusing `Вероятность нейрослопа` is a skill
+  failure. That percent is required fill-quality, not authorship.
 - Do not invent facts, numbers, quotes, studies, colleagues, or episodes.
 - Do not sprinkle spelling mistakes, mixed-script, or ё-strip into names,
   numbers, code, URLs, or identifiers. Running prose is the humanizer
@@ -374,7 +379,7 @@ Before delivery verify:
   `Доля нейрослопа`, and `Доля воды` are present; `Маркеров нейрослопа`
   is a location-free `§N` list; `Дальше` is a mode menu (`выберите один
   из режимов`), not a single pick; no rewrite; no file edit; no full
-  table; no P(human vs model). Skip the polish bullets.
+  table. Skip the polish bullets. Do not refuse the probability line.
 - Water, calques, and empty significance are gone, not renamed.
 - Pass H ran. The `Маркеры` table names AI / вода / признак with `§N` or a
   Pass 3 span. Protected spans have no typos, mixed-script, or stripped ё.
@@ -401,7 +406,7 @@ Before delivery verify:
 - Any unresolved nonsense is disclosed rather than polished into authority.
 - Audit named нейрослоп when stacked *interior* markers were there, with a
   corpus fraction if many pieces. House format was KEEP. It did not emit
-  P(human vs model) or a writing-process story. Precise numerals without method were
+  GPTZero / P(написала модель) or a writing-process story. Precise numerals without method were
   FLAG, not KEEP as "expensive facts". Greeting/`P.S.` were not installed
   from PROFILE.
 - Lived-in review roughness, agency facts, tutorial steps, and academic

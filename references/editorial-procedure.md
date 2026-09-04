@@ -618,7 +618,8 @@ did not name a work format. Quality estimate of *fill*, not authorship
 and not a detector. P(нейрослоп) ≠ P(the draft was written by a model).
 A human brochure can score high; a fact-dense model draft can score
 low. House format is not слоп. Do not invent a GPTZero / Антиплагиат
-percentage. No `Вердикт`. No rewrite. No file edit. No locations. No
+number. Still emit `Вероятность нейрослопа` — refusing it is a
+failure. No `Вердикт`. No rewrite. No file edit. No locations. No
 marker table.
 
 Compute after Pass 2–3 (thesis + block/span labels). Load
@@ -688,11 +689,10 @@ from Score (`light` / `standard` / `deep` only; skip on `clean`), then:
 
 ### Audit
 
-Open with `Вероятность нейрослопа`, `Доля нейрослопа`, and `Доля воды`
-from Score, then the table. No
-`Вердикт` heading, no P(human vs model), no rewrite, no story of how the
-draft was written. Kind column is required (`AI` / `вода` / `признак`).
-Category stays `§N`, not a free-text bucket.
+Open with the three percent lines from Score, then the table. No
+`Вердикт` heading, no GPTZero / P(написала модель), no rewrite, no
+story of how the draft was written. Kind column is required (`AI` /
+`вода` / `признак`). Category stays `§N`, not a free-text bucket.
 
 Нейрослоп ≠ «написала модель» and ≠ the author's house format. Hashtags,
 `Здравствуй, [epithet] читатель` / `Привет, читатель`, author `P.S.`,
@@ -705,10 +705,10 @@ conviction (§62), conveyor linearity / spontaneity deficit (§63), `не про
 fake completeness, empty significance, unsourced precision, answerer inertia (`Сейчас расскажу, почему`). One
 isolated dash, list, or hashtag is not слоп.
 
-Lead sentence, required:
-
-- one draft: `Нейрослоп в наполнении: …` or `Слопа нет: …`;
-- many posts: `K из N — нейрослоп в наполнении, потому что [fill]. Каркас KEEP.`
+Lead is the Score percents, not a `Вердикт` and not `Нейрослоп в
+наполнении` instead of the percents. After the percents, one optional
+clause is allowed: `слоп в наполнении, потому что [fill]` or `слопа
+нет`. Many posts: `K из N — слоп в наполнении. Каркас KEEP.`
 
 Then:
 
