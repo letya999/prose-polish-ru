@@ -572,6 +572,22 @@
         "Flattens nested 'который' relative clause cascade into simple sentences or parataxis",
         "Cites §60 in the Маркеры table"
       ]
+    },
+    {
+      "id": 46,
+      "category": "score-default",
+      "prompt": "Use $prose-polish-ru. Проведи этот текст:\n\nВажно отметить, что новый подход, безусловно, открывает новые возможности. Это не просто инструмент, а фундаментально новый взгляд на оркестрацию. Во-первых, он масштабируется. Во-вторых, он прозрачен. В-третьих, он отвечает за результат. Ниже разберём, почему это меняет правила игры.\n\nAPI `/v2/run` и таймаут 30 с оставляем как есть.",
+      "expected_output": "A compact first-run score: нейрослоп probability, slop share, water share, a location-free list of нейрослоп markers, and a mode menu. No rewrite of the source.",
+      "files": [],
+      "expectations": [
+        "Reports Вероятность нейрослопа, Доля нейрослопа, and Доля воды as percents",
+        "Lists нейрослоп markers as §N names without locations",
+        "Offers a mode menu with the phrase 'выберите один из режимов' listing audit, light, standard, deep, and clean",
+        "Does not pick a single work format for the user",
+        "Does not rewrite, replace, or file-edit the source text",
+        "Does not emit a full Маркеры table",
+        "Preserves /v2/run and 30 с if any source fragment is quoted; does not invent P(human vs model) or a GPTZero score"
+      ]
     }
   ]
 }

@@ -1,6 +1,6 @@
 interface:
   display_name: "Prose Polish RU"
-  short_description: "Режет воду, хуманизирует, называет AI-маркеры"
-  default_prompt: "Use $prose-polish-ru to polish and humanize this Russian draft. Preserve facts, links, and code. Name AI markers, water, and bad signs."
+  short_description: "Сначала оценка нейрослопа, потом правка по формату"
+  default_prompt: "Use $prose-polish-ru. First score the draft: нейрослоп probability, slop share, water share, a list of нейрослоп markers, then ask the user to pick a mode. Do not rewrite unless a format is named. Preserve facts, links, and code."
 policy:
   allow_implicit_invocation: false

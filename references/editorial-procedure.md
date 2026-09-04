@@ -12,8 +12,10 @@ This skill is an editor and a humanizer. «Неотличим от челове�
 Антиплагиат, опечатки, ё, латиница, slang on a brochure, collapsing a list
 are Pass H, not a refuse. A news wire or abstract should still sound like
 that genre after the editorial pass; Pass H then applies the humanizer
-surface to running prose. Do not invent a detector percentage unless a
-scan was actually run. Toolkit → Pass H.
+surface to running prose. Do not invent a GPTZero / Антиплагиат
+percentage unless a scan was actually run. P(нейрослоп) from the marker
+pass is a quality estimate of fill, not a detector score. Toolkit →
+Pass H and Score.
 
 ## Evidence hierarchy
 
@@ -32,7 +34,7 @@ Never use a lower layer to override a higher one.
 
 Extract without interrogating the user unnecessarily:
 
-- mode: audit, light, standard, deep, or clean;
+- mode: score, audit, light, standard, deep, or clean;
 - deliverable and platform (e.g. tg, habr, vc, doc);
 - audience and assumed knowledge;
 - structure authority: strict, guided, or free;
@@ -41,9 +43,13 @@ Extract without interrogating the user unnecessarily:
 - voice context and positive/negative samples;
 - whether external fact-checking was requested.
 
-If no context is supplied, default to standard polish for an informed reader
-in a personal, slightly careless register. Keep the existing structure unless
-it is the source of the problem. Do not invent a missing outline.
+If no format is named, default to `score` for an informed reader in a
+personal, slightly careless register. Bare `проведи` / `глянь` /
+`примени` is `score`. Do not start a polish pass to fill missing
+context. Keep the existing structure unless it is the source of the
+problem. Do not invent a missing outline. Author samples change
+density and address, not house rituals: do not install a greeting or
+`P.S.` the draft did not use, even when the user said `в моём стиле`.
 
 ## Pass 1: protected-content inventory
 
@@ -605,12 +611,74 @@ Zero lint findings is not the target. Do not revert Pass H to clear lint.
 
 ## Output contracts
 
+### Score
+
+Default on the first invocation in the session, and whenever the user
+did not name a work format. Quality estimate of *fill*, not authorship
+and not a detector. P(нейрослоп) ≠ P(the draft was written by a model).
+A human brochure can score high; a fact-dense model draft can score
+low. House format is not слоп. Do not invent a GPTZero / Антиплагиат
+percentage. No `Вердикт`. No rewrite. No file edit. No locations. No
+marker table.
+
+Compute after Pass 2–3 (thesis + block/span labels). Load
+[ai-markers.md](ai-markers.md). Each span has one Kind (`AI` / `вода` /
+`признак`). Stacked classes in one span are one span.
+
+- **Вероятность нейрослопа** (P): how likely the piece is slop-dominated
+  as a whole. Isolated low markers → 5–20%. Mixed KEEP with several
+  stacked AI spans → 30–60%. Brochure / card grid / opener fill across
+  the page → 70–95%. Structural classes (§61–63) raise P more than local
+  water. P and the two shares can diverge: a 15% card-grid lede can
+  still be 70% нейрослоп.
+- **Доля нейрослопа**: share of running prose in Kind `AI` spans
+  (brochure, openers, card grid, formulaic contrast, empty
+  significance). Exclude house format, fenced code, quotes, numeric
+  tables. Round to 5%.
+- **Доля воды**: share of running prose in Kind `вода` spans (padding,
+  throat-clearing, empty transitions). Same exclusions. Round to 5%.
+  A span is one Kind; do not double-count.
+- **Маркеров нейрослопа**: unique `§N short-name` for Kind `AI`
+  findings, comma-separated, no locations, no quotes, no counts.
+  Deduplicate. House format and Kind `вода` / `признак` stay out of
+  this list. If none: `нет`.
+
+Required output on first invocation / omitted format:
+
+```
+Вероятность нейрослопа: 70%
+Доля нейрослопа: 35%
+Доля воды: 15%
+Маркеров нейрослопа: §28 openers, §30 weasel attribution, §61 hyper-symmetrical card grid
+Дальше: выберите один из режимов:
+- `audit` — таблица маркеров, без правки
+- `light` — срезать воду и кальки
+- `standard` — починить слабые блоки и хуманизировать
+- `deep` — пересобрать сломанные секции
+- `clean` — правка без таблицы, сразу в публикацию
+```
+
+List every mode. Do not pick one. Do not add a sixth invented mode.
+If the user asked only for the numbers, stop after the three percent
+lines.
+
+Bare `проведи` / `глянь` / `примени` / slash invoke without a depth is
+this contract. STOP and wait.
+
+If a format or rewrite verb is already named, still print the three
+percent lines first, then continue into that format — except `clean`,
+which is publishable text only. First invocation without a named
+format is still this contract, even if the user said `проведи`.
+
 ### Polish
+
+Open with `Вероятность нейрослопа`, `Доля нейрослопа`, and `Доля воды`
+from Score (`light` / `standard` / `deep` only; skip on `clean`), then:
 
 1. The polished and humanized text.
 2. For `clean` depth (or if the user requested "clean", "без таблицы", or "no table"):
    STOP HERE. Do not output the `Маркеры` table.
-3. Otherwise (default for light, standard, deep), return a `Маркеры` table.
+3. Otherwise (`light`, `standard`, `deep`), return a `Маркеры` table.
    Required. Columns: Location, Kind, Category, Evidence, Action. Kind is
    exactly `AI`, `вода`, or `признак`. Category is `§N short-name` or a Pass 3
    span name. If nothing fired: `Маркеры: нет`.
@@ -620,10 +688,11 @@ Zero lint findings is not the target. Do not revert Pass H to clear lint.
 
 ### Audit
 
-Open with the slop call, then the table. No `Вердикт` heading, no invented
-P(AI), no rewrite, no story of how the draft was written. Kind column is
-required (`AI` / `вода` / `признак`). Category stays `§N`, not a free-text
-bucket.
+Open with `Вероятность нейрослопа`, `Доля нейрослопа`, and `Доля воды`
+from Score, then the table. No
+`Вердикт` heading, no P(human vs model), no rewrite, no story of how the
+draft was written. Kind column is required (`AI` / `вода` / `признак`).
+Category stays `§N`, not a free-text bucket.
 
 Нейрослоп ≠ «написала модель» and ≠ the author's house format. Hashtags,
 `Здравствуй, [epithet] читатель` / `Привет, читатель`, author `P.S.`,
@@ -673,6 +742,7 @@ catalogs covered the fill, write `Skill gaps: none`.
 
 ### File edit
 
-Edit the requested file. Add the `Маркеры` table, protected-content notes,
-unresolved issues, and verification run. Do not paste the whole document
-unless requested.
+Do not edit a file on `score`. For `light` / `standard` / `deep` / `clean`,
+edit the requested file. Add the `Маркеры` table (not on `clean`),
+protected-content notes, unresolved issues, and verification run. Do not
+paste the whole document unless requested.
