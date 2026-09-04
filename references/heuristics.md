@@ -83,13 +83,16 @@ diction, and voice questions — not KEEP examples and not `§N` marker classes.
 61. Avoid a prose table of contents after visible headings already provide one.
 62. Avoid background history that does not change interpretation.
 63. Avoid a definition section for terms the target reader knows.
-64. Avoid identical internal templates across all sections.
+64. Avoid identical internal templates and card grids across sections (e.g.
+    repeated "Как устроено" / "Профит", "Проблема" / "Решение", identical
+    bold-label bullets). Break hyper-symmetry; let cases vary in volume and
+    dirty detail.
 65. Allow unequal section lengths according to importance.
 66. Make the center of gravity visible through evidence and space.
 67. Use transitions when direction changes, not between every paragraph.
 68. Let adjacent paragraphs connect implicitly when the relation is obvious.
-69. Keep asides, jumps, and returns when they change understanding or attitude;
-    delete them only if they add neither.
+69. Keep asides, jumps, returns, and spontaneous rhetorical breathers;
+    conveyor-belt syllabus progression with zero organic diversions is an AI tell.
 70. End when the argument lands; do not append a universal moral or a stock
     closer such as `Я бы оставил такую схему`.
 
@@ -175,10 +178,12 @@ diction, and voice questions — not KEEP examples and not `§N` marker classes.
 130. Let a complex sentence carry a genuinely layered relation.
 131. Avoid alternating short and long sentences mechanically.
 132. Preserve deliberate accumulation and parallelism.
-133. Break perfect symmetry when it falsely equalizes importance.
+133. Break perfect symmetry when it falsely equalizes importance. Uncanny
+     volumetric balance across paragraphs or scenario cards signals machine generation.
 134. Keep symmetry where comparison or instructions benefit from it.
 135. Read aloud mentally: fix places where grammar is correct but breath and
-     emphasis fight the thought.
+     emphasis fight the thought. Insert spontaneous breathers and cadence shifts
+     between dense teardowns and blunt reactions.
 
 ## I. Diction and register
 
@@ -199,8 +204,11 @@ diction, and voice questions — not KEEP examples and not `§N` marker classes.
 146. Colloquial / slang is a Pass H tool on stiff copy. Flag only a
      mechanical dump (`Короче` every paragraph) that fights the speaker.
 147. Preserve sharpness, irritation, doubt, humor, or dryness; in article/post
-     register prefer a visible stance over a dry briefing.
-148. Do not normalize every unusual but intelligible phrase.
+     register prefer a visible stance over a dry briefing. Beware antiseptic
+     sterility ("вылизанность"): prose without human friction, pet peeves,
+     or categorical conviction reads like a consulting memo.
+148. Do not normalize every unusual, categorical, or opinionated phrase. Call
+     bad engineering ideas bad.
 149. Do not upgrade ordinary words to prestige synonyms.
 150. Use terminology consistently; do not vary technical terms for style.
 
@@ -226,6 +234,10 @@ diction, and voice questions — not KEEP examples and not `§N` marker classes.
      position silently.
 164. Distinguish voice from structure: samples do not override requested form.
 165. Preserve meaningful roughness; remove only roughness that hides the claim.
+165b. Distinguish author telemetry from synthetic precision: when raw terminal
+      logs or benchmark counters appear, prompt the author to claim first-person
+      agency (`«я замерил на стенде»`, `«в моем логе»`) instead of deleting them
+      or leaving them in passive bureaucracy (`«в зафиксированном кейсе»`).
 
 ## K. Introductions and endings
 

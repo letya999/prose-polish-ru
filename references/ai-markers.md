@@ -27,7 +27,8 @@ Cite `§N`: 1 artifacts · 2 inertia · 3 empty significance · 4 fog ·
 49 paragraph echo · 50 particle deficit · 51 trivial definitions ·
 52 call-and-response · 53 theme-rheme dislocation · 54 flat surprisal ·
 55 agent deletion · 56 epistemic cowardice · 57 negative parallelism ·
-58 connective inflation.
+58 connective inflation · 59 knizhnost · 60 subordination nesting ·
+61 hyper-symmetry · 62 antiseptic sterility · 63 spontaneity deficit.
 
 The lists mix three layers. Do not collapse them:
 
@@ -60,7 +61,10 @@ and syntax distortions (genitive chains, paragraph echo, particle deficit,
 trivial definitions, call-and-response). 53–58 target academic stylometric
 and discourse anomalies (RuATD, AINL-Eval, arXiv:2606.04177 284-feature analysis):
 theme-rheme dislocation, flat surprisal, agent deletion, epistemic cowardice,
-negative parallelism, and discourse connective inflation. Corpora links →
+negative parallelism, and discourse connective inflation. 59–60 target
+Russian bookish syntax and clause nesting. 61–63 target structural uncanny
+tells: hyper-symmetry and template card grids, antiseptic sterility / scrubbed
+categorical conviction, and conveyor-belt linearity / spontaneity deficit. Corpora links →
 [README](../README.md). Do not treat the extra sections as a second
 banned-word dump. Do not train a detector on these sets.
 
@@ -904,11 +908,17 @@ Extends §14. The harm is epistemic, not stylistic.
 - process vs instance mix: a default, a timeout, or one thread
   stated as architecture;
 - secondary commentary presented as primary;
+- unassigned author telemetry: raw terminal counters (`42 226 вызовов`, `95 сессий`) masked as impersonal facts (`«в зафиксированном кейсе»`, `«в телеметрии зафиксировано»`) instead of direct author attribution (`«в моем прогоне»`, `«на тестовом стенде»`);
 - bibliography never used;
 - DOI/ISBN theater already in §14.
 
 Treatment: attach each source to *this* claim. FLAG unsourced
 precision. Do not KEEP a sharp numeral as an "expensive fact".
+Distinguish external claim vs author telemetry: if a precise figure
+represents the author's own terminal run or benchmark, do not delete or
+flag as fabrication—prompt the author to claim agency directly (`«в моем
+тесте я зафиксировал...»`). If it asserts an external industry fact
+without a source, FLAG or remove.
 
 ## 39. Dataset-observed fills (tune, not detect)
 
@@ -1287,6 +1297,43 @@ Investigated in syntactic tree depth analysis for AI detection (M4 / SemEval-202
 - recursive clause nesting: `Команда поняла, что сбой произошел из-за того, что скрипт, который обновлял конфиг, не проверил права...`.
 
 Treatment: Flatten the syntactic tree. Break relative clauses into independent sentences. Use coordinate conjunctions (`и`, `но`) or simple juxtaposition.
+
+## 61. Hyper-symmetry and template card grids (шаблонная симметрия и карточная сетка)
+
+Models frequently force varied engineering concepts, scenarios, or tips into artificially symmetric taxonomic card grids:
+
+- identical internal sub-blocks across 3+ items: repeated `### N. Название` → `* **Как устроено:**` → `* **Профит:**`, or `**Проблема** / **Решение** / **Плюсы**`, or matching bold-label bullets across all subsections;
+- volumetric symmetry: sections, scenarios, or paragraphs artificially matching in sentence count (3–4 sentences) and word count ($\pm 10\%$);
+- unnatural taxonomy: forcing uneven real-world cases into equal containers (e.g. treating a 2-minute git command and an entire architectural paradigm with identical 2-field formatting cards);
+- uniform list parallelism: identical clause structures and rhythmic cadence across all items in an inventory.
+
+Human technical thought is naturally asymmetrical and centered around gravity points: a messy, battle-tested edge case gets three paragraphs of dirty nuance and scars, while an obvious case gets two punchy sentences.
+
+Treatment: Break the card grid. Strip repetitive bureaucratic sub-headers (`Как устроено`, `Профит`, `Плюсы`). Let the prose flow unevenly: expand the core difficult scenario with real trade-offs and edge-cases; compress trivial scenarios into one or two sentences or merge them.
+
+## 62. Antiseptic sterility and scrubbed conviction (вылизанность и стерилизованная бесконфликтность)
+
+RLHF alignment and safety tuning sanitize prose, scrubbing away all friction, frustration, professional bias, and sharp subjective conviction:
+
+- uncanny over-polishing (*вылизанность*): every sentence is grammatically pristine, emotionally neutral, and diplomatically balanced, producing a synthetic "consulting memo" tone;
+- absence of categorical subjectivity: the text avoids taking a hard stand, calling bad solutions bad, or expressing strong engineer opinions;
+- compulsive moderation: everything is presented as "an interesting alternative", "has its nuances", "requires a balanced trade-off analysis", avoiding blunt verdicts (`«это архитектурный костыль»`, `«так делать — себе дороже»`);
+- missing developer scars and pet peeves: real practitioners have passionate biases (hating polling, swearing by worktrees, dismissing enterprise cargo-cults). When a text reads as though no human ever suffered debugging it, it is sterile slop.
+
+Treatment: Restore the author's categorical judgment, subjective bias, and emotional presence. Let the text sound like an opinionated practitioner who has a nerve about the topic. Call an anti-pattern an anti-pattern. Do not mistake diplomatic neutrality for technical rigor.
+
+## 63. Spontaneity deficit and conveyor-belt linearity (дефицит спонтанности и конвейерная линейность)
+
+LLMs generate text like a conveyor belt or textbook syllabus: a frictionless, predictable, linear progression from point A to point B:
+
+- syllabus progression: every paragraph mechanically steps into the next with no surprises, no sudden realizations, and no change of direction;
+- complete absence of spontaneous asides (*organic asides*): no rhetorical pauses (`«кстати, оговорка»`, `«ладно, об этом чуть позже»`, `«хотя кого я обманываю»`), no self-interruptions with concrete caveats;
+- flat emotional tempo: no dynamic shift between dense technical disassembly, dry developer sarcasm, and relaxed conceptual reflection;
+- escorted connections: ideas are never juxtaposed sharply; they are always accompanied by polite connective scaffolding.
+
+Human speech and thought are non-linear: a human pauses, makes an ironic aside, remembers an exception, or delivers a blunt one-line reaction after a dense paragraph.
+
+Treatment: Inject spontaneous human cadence. Add organic asides, rhetorical breathers, and unexpected perspective shifts. Let sentences collide by juxtaposition without explanatory hand-holding. Vary the pacing: follow a dense technical teardown with a short, blunt subjective reaction.
 
 Sources (descriptive, not a detector): Kobak et al. PubMed excess
 vocabulary; Reinhart nominal grammar; Pew 2026 AI-on-the-web;

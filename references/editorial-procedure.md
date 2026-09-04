@@ -73,9 +73,15 @@ Privately answer:
 6. Where does the claim stop being supported?
 7. What is the author's attitude toward the material: irritation, doubt,
    preference, glee, fatigue?
+8. Is the draft taking a firm, categorical stand, or has it been scrubbed
+   into sterile, diplomatic consulting balance? Where is the author's
+   subjective bias, pet peeve, or engineering verdict?
+9. Is the thought developing organically with spontaneous asides and cadence
+   shifts, or does it roll like a conveyor-belt syllabus?
 
 If the answers cannot be recovered, flag the gap. Smoother syntax must not make
-an incoherent draft sound authoritative.
+an incoherent draft sound authoritative, nor should diplomatic smoothing
+drain the author's real conviction.
 
 ## Pass 3: classify blocks
 
@@ -141,6 +147,10 @@ facts and fewer hedges. Conversational padding is not a quality signal.
 | Weasel attribution / citation laundering | Strong | Name the source or FLAG. Do not invent the missing study or upgrade a neighboring URL. |
 | Brochure repeat: same thesis in adjacent sentences | Strong | MERGE or DELETE the echo. |
 | Over-regular grid: equal `##`, 3–5-sentence paragraphs throughout | Strong | Break the skeleton. Editorial pass keeps a useful scan-list; Pass H may recast it into prose when humanizing or chasing a detector. |
+| Hyper-symmetrical card grid: identical sub-blocks (`Как устроено / Профит`, `Проблема / Решение`) across 3+ items | Strong | Break the grid. Remove repetitive sub-headers; expand the tricky case with real trade-offs, compress obvious cases. |
+| Antiseptic sterility: uncanny over-polishing, scrubbed diplomatic tone, absence of categorical subjectivity or sharp engineer judgment | Strong | Restore the author's categorical judgment, professional bias, and blunt evaluations. |
+| Conveyor linearity: syllabus-like frictionless progression with zero spontaneous asides, pauses, or tempo shifts | Strong in article/post | Inject spontaneous asides, rhetorical breathers, and montage juxtaposition. |
+| Unassigned author telemetry: raw terminal counters masked behind passive phrasing (`в зафиксированном кейсе`) | Strong | Attribute directly to author (`в моем прогоне я замерил...`). Do not delete or flag as fake if it is real dev telemetry. |
 | Metadiscourse the input did not contain | Strong | Do not add. Cut injected `следует отметить`, hedge stacks, relationship markers. |
 | Numerals dropped from the source | Artifact | Restore unless the whole claim was DELETE. |
 | Calque | Strong | Natural Russian; keep domain jargon. |
@@ -216,6 +226,14 @@ Strip recursive hedge piles (`потенциально может свидете
 
 Eliminate rhetorical strawman corrections (`Дело не в том, что X, а в том, что Y`, `Вопрос не столько в X, сколько в Y`). State the actual positive proposition directly in one sentence.
 
+### Categorical subjectivity vs diplomatic scrubbing (§62)
+
+An author writing in an article, post, or opinion register is not an impartial UN rapporteur. Do not smooth away strong opinions, professional irritation, or categorical verdicts. If a pattern is an over-engineered dead end, state it plainly (`это костыль`, `так делать — себе дороже`, `это классический антипаттерн`). Human expertise is opinionated, biased, and tempered by scars. Distinguish between unsubstantiated factual claims (which need evidence) and subjective professional stance (which gives the piece its pulse). Do not let diplomatic neutrality scrub away the author's real conviction.
+
+### Author telemetry vs synthetic precision (§38)
+
+When exact numbers appear without an external citation (`42 226 вызовов`, `95 сессий`, `84% вывода`), check whether they describe the author's own terminal run, benchmark, or telemetry. If yes, do NOT delete or flag as hallucination. Prompt the author to own the agency directly (`«в моем тесте я зафиксировал...»`, `«на нашем тестовом стенде вышло...»`) instead of hiding behind passive bureaucratic phrasing (`«в зафиксированном кейсе»`, `«в телеметрии зафиксировано»`).
+
 ### Texture vs invention
 
 A personal reaction to material already in the draft is allowed: irritation,
@@ -264,6 +282,14 @@ Cut ceremonial sentence-opening connectors (`Вместе с тем`, `Кром�
 `Следовательно`, `В свою очередь`, `Более того`). If more than 20% of sentences open with
 transitional crutches, strip them; sentences connect naturally by topical progression and
 juxtaposition.
+
+### Breaking hyper-symmetry and template grids (§61)
+
+Never allow 3+ consecutive items, scenarios, or tips to share an identical internal template (e.g. repeated `### N. Название` → `* **Как устроено:**` → `* **Профит:**`, or `**Проблема** / **Решение** / **Плюсы**`). Symmetrical card grids belong in generated answer cards or landing page widgets, not living technical essays. Break the grid: strip the repeated sub-headers and vary section volume. The most complex or controversial case gets 2–3 paragraphs of dirty trade-offs and edge-cases; the obvious or minor case gets two punchy sentences or merges into a neighbor.
+
+### Spontaneity and cadence shifts (§63)
+
+Break conveyor-belt syllabus progression. In human thinking, ideas do not advance with frictionless uniformity. Allow the text to breathe: insert spontaneous asides, sudden caveats, and rhetorical breathers (`кстати, оговорка`, `тут надо сделать паузу`, `впрочем, об этом позже`). Let a dense technical teardown collide directly with a blunt one-line subjective reaction. Vary pacing between fast-moving analysis and reflective pauses.
 
 ### Order
 
@@ -348,6 +374,9 @@ a nerve about it:
 
 - stance on the page: reaction, not a balanced briefing;
 - emotion attached to the actual claim, not a weather report;
+- categorical subjectivity: professional bias, unapologetic judgments (`это костыль`, `так делать нельзя`), pet peeves, calling bad ideas bad;
+- anti-sterility (*против вылизанности*): reject uncannily smooth, conflict-free consulting prose; preserve the developer's raw edge, skepticism, and irritability;
+- spontaneity and non-linear cadence: organic asides, spontaneous pauses, dynamic shifts between deep technical dive and relaxed irony;
 - first person as a reaction (`меня бесит этот поллинг`), not as a fake memoir;
 - non-linear path: an aside, a return, unequal sections;
 - one or two informal slips: spoken syntax, a slightly crooked agreement, a
@@ -571,8 +600,9 @@ outline headings, and operators are KEEP when the draft already uses them.
 Do not score a channel template as slop because it repeats.
 
 Нейрослоп is stacked *fill*: brochure grid (`во-первых` / `Как устроено` /
-equal blocks), `не просто X, а Y`, fake completeness, empty significance,
-unsourced precision, answerer inertia (`Сейчас расскажу, почему`). One
+equal blocks), hyper-symmetrical card grids (§61), antiseptic sterility / scrubbed
+conviction (§62), conveyor linearity / spontaneity deficit (§63), `не просто X, а Y`,
+fake completeness, empty significance, unsourced precision, answerer inertia (`Сейчас расскажу, почему`). One
 isolated dash, list, or hashtag is not слоп.
 
 Lead sentence, required:
@@ -588,8 +618,8 @@ Then:
 Category is a catalog citation, not a free-text bucket. Write `§N short-name`
 from [ai-markers.md](ai-markers.md) (working core §1–16, 2026 classes
 §28–38, dataset fills / False slop §39, frontier reasoning §40–47, Russian
-syntax/structure §48–52, stylometric/discourse/syntactic §53–60) or the Pass 3 span name
-(`Lived-in review`, `News-governance ritual`, `Glued join letter`).
+syntax/structure §48–52, stylometric/discourse/syntactic §53–60, uncanny structure/sterility/spontaneity §61–63) or the Pass 3 span name
+(`Lived-in review`, `News-governance ritual`, `Glued join letter`, `Hyper-symmetrical card grid`, `Antiseptic sterility`, `Conveyor linearity`).
 Stacked markers in one span are still one row: cite the strongest `§N`. Do not write
 `нейрослоп` or `вода` as the category.
 
