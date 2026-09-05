@@ -9,6 +9,7 @@ paths = [
   '''prose-polish-ru-workspace/''',
   '''evals/''',
   '''hf-cache/''',
+  '''(^|/)\.env\.example$''',
 ]
 regexes = [
   '''sk-none''',
