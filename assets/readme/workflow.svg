@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="640" height="148" viewBox="0 0 640 148" role="img" aria-labelledby="t d">
+  <title id="t">Editorial pipeline</title>
+  <desc id="d">Theses or a draft become checked claims, then prose, then Pass H on article and post.</desc>
+  <rect x="0.5" y="0.5" width="639" height="147" rx="8" fill="#101010" stroke="#434343"/>
+
+  <g font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace">
+    <rect x="16" y="16" width="130" height="116" rx="6" fill="#181818" stroke="#434343"/>
+    <text x="28" y="40" font-size="11" fill="#fb631b">ВХОД</text>
+    <text x="28" y="68" font-size="14" fill="#ffffff">тезисы</text>
+    <text x="28" y="90" font-size="11" fill="#858483">черновик</text>
+    <text x="28" y="108" font-size="11" fill="#858483">авторский текст</text>
+  </g>
+  <path d="M152 74h18" stroke="#fb631b" stroke-width="2"/>
+  <path d="m164 68 8 6-8 6" fill="none" stroke="#fb631b" stroke-width="2"/>
+
+  <g font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace">
+    <rect x="178" y="16" width="130" height="116" rx="6" fill="#181818" stroke="#434343"/>
+    <text x="190" y="40" font-size="11" fill="#fb631b">ФАКТЫ</text>
+    <text x="190" y="68" font-size="14" fill="#ffffff">проверить</text>
+    <text x="190" y="90" font-size="11" fill="#858483">не выдумать</text>
+    <text x="190" y="108" font-size="11" fill="#858483">FLAG, если нет</text>
+  </g>
+  <path d="M314 74h18" stroke="#fb631b" stroke-width="2"/>
+  <path d="m326 68 8 6-8 6" fill="none" stroke="#fb631b" stroke-width="2"/>
+
+  <g font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace">
+    <rect x="340" y="16" width="130" height="116" rx="6" fill="#181818" stroke="#434343"/>
+    <text x="352" y="40" font-size="11" fill="#fb631b">ТЕКСТ</text>
+    <text x="352" y="68" font-size="14" fill="#ffffff">плотнее</text>
+    <text x="352" y="90" font-size="11" fill="#858483">без воды</text>
+    <text x="352" y="108" font-size="11" fill="#858483">без калек</text>
+  </g>
+  <path d="M476 74h18" stroke="#fb631b" stroke-width="2"/>
+  <path d="m488 68 8 6-8 6" fill="none" stroke="#fb631b" stroke-width="2"/>
+
+  <g font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace">
+    <rect x="502" y="16" width="122" height="116" rx="6" fill="#181818" stroke="#434343"/>
+    <text x="514" y="40" font-size="11" fill="#fb631b">PASS H</text>
+    <text x="514" y="68" font-size="14" fill="#ffffff">статья/пост</text>
+    <text x="514" y="90" font-size="11" fill="#858483">шероховатость</text>
+    <text x="514" y="108" font-size="11" fill="#858483">позиция</text>
+  </g>
+</svg>

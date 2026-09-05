@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="640" height="100" viewBox="0 0 640 100" role="img" aria-labelledby="t d">
+  <title id="t">Request routing</title>
+  <desc id="d">Write does the work. Evaluate audits. Bare invoke scores.</desc>
+  <rect x="0.5" y="0.5" width="639" height="99" rx="8" fill="#101010" stroke="#434343"/>
+
+  <g font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace">
+    <rect x="16" y="18" width="196" height="64" rx="6" fill="#181818" stroke="#434343"/>
+    <text x="28" y="44" font-size="11" fill="#fb631b">напиши / отполируй</text>
+    <text x="28" y="66" font-size="13" fill="#ffffff">делает работу</text>
+
+    <rect x="222" y="18" width="196" height="64" rx="6" fill="#181818" stroke="#434343"/>
+    <text x="234" y="44" font-size="11" fill="#fb631b">оцени / проанализируй</text>
+    <text x="234" y="66" font-size="13" fill="#ffffff">аудит, без правки</text>
+
+    <rect x="428" y="18" width="196" height="64" rx="6" fill="#181818" stroke="#434343"/>
+    <text x="440" y="44" font-size="11" fill="#fb631b">голый вызов</text>
+    <text x="440" y="66" font-size="13" fill="#ffffff">карточка score</text>
+  </g>
+</svg>

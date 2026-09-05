@@ -1,40 +1,134 @@
-# prose-polish-ru
+<p align="center">
+  <img src="assets/readme/hero.svg" width="640" alt="prose-polish-ru: тезисы → проверенный текст, чуть небрежный">
+</p>
+
+<p align="center">
+  <img src="https://img.shields.io/badge/skill-prose--polish--ru-black" alt="skill">
+  <img src="https://img.shields.io/badge/lang-RU-0a66c2" alt="Russian">
+  <img src="https://img.shields.io/badge/install-npx%20skills%20add-fb631b" alt="npx skills add">
+</p>
 
 Редакционный скилл и жёсткий хуманизатор для русского текста. Вход —
-тезисы, сгенерированный черновик или готовый авторский текст. Процесс:
-авторские тезисы → проверенные утверждения → связный текст → проверка
-результата.
+тезисы, сгенерированный черновик или готовый авторский текст. Число из
+черновика — не факт, пока его не проверили. На статье и посте обязателен
+Pass H: авторский стиль, лёгкие опечатки, шероховатость, косноязычие,
+эмоциональность и категоричность.
 
-По просьбе написать или отредактировать — делает работу. По просьбе
-оценить — аудит. Без глагола — карточка `score`. Режет воду, кальки и
-нейрослоп в *наполнении*. На статье/посте обязателен Pass H: авторский
-стиль, лёгкие опечатки и шероховатость, косноязычие, эмоциональность и
-категоричность. Сохраняет защищённые спаны (имена, код, URL). Число из
-черновика — не факт, пока его не проверили. Не выдумывает процент
-GPTZero без скана. P(нейрослоп) — оценка наполнения, не P(написала модель).
-
-Контракт: [`SKILL.md`](SKILL.md). Каталог маркеров:
-[`references/ai-markers.md`](references/ai-markers.md). Процедура:
+Контракт: [`SKILL.md`](SKILL.md). Процедура:
 [`references/editorial-procedure.md`](references/editorial-procedure.md).
+Каталог маркеров:
+[`references/ai-markers.md`](references/ai-markers.md).
 
-Установка: `npx skills add . -g -y --skill prose-polish-ru --copy -a "*"`
+## Один конвейер, четыре шага
 
-## Датасеты
+<p align="center">
+  <img src="assets/readme/workflow.svg" width="640" alt="Вход → факты → текст → Pass H на статье и посте">
+</p>
 
-Корпуса, по которым тюнился каталог. Это источники *классов* слопа
-(gazetteer-padding, abstract-mold, span KEEP), не обучающая выборка
-для классификатора. Не гонять по ним detector score.
+Точность раньше пользы, польза раньше структуры, структура раньше голоса.
+Плотное предложение, которое увереннее свидетельства, — провал. P(нейрослоп)
+оценивает наполнение, не «писала ли модель». Процент GPTZero без скана не
+выдумывается.
+
+## Маршрут по просьбе, не по счётчику сессии
+
+<p align="center">
+  <img src="assets/readme/route.svg" width="640" alt="напиши — работа, оцени — аудит, голый вызов — score">
+</p>
+
+Глубина (`light` · `standard` · `deep`) и формат выдачи (`clean` · таблица ·
+`audit` · `score`) — разные оси. `clean` — формат без таблицы маркеров, не
+отключение фактчека.
+
+## Поставьте скилл, дальше ведёт агент
+
+```bash
+npx skills add . -g -y --skill prose-polish-ru --copy -a "*"
+```
+
+Из GitHub, когда репозиторий доступен агенту:
+
+```bash
+npx skills add letya999/prose-polish-ru -g -y --skill prose-polish-ru --copy -a "*"
+```
+
+Явный вызов: `$prose-polish-ru` или по имени. Обычное «перепиши» скилл сам
+не хватает.
+
+## Русские хуманизаторы
+
+Все открытые русские хуманизаторы, которые имеют смысл как сосед по задаче:
+скилл, линтер или офлайн-библиотека именно для русского AI-текста. Не
+.NET Humanizer и не англоязычный dump Wikipedia:Signs of AI writing.
+Звёзды — снимок на 2026-09-05.
+
+| Репозиторий | ★ | Что это |
+|---|---:|---|
+| [ilyautov/humanizer-ru](https://github.com/ilyautov/humanizer-ru) | 286 | 64 признака, 20 банов, калибровка под голос, eval до/после. Метит в GPTZero / burstiness |
+| [smixs/humanizer-ru](https://github.com/smixs/humanizer-ru) | 148 | 38 паттернов, detect без правки, питоновский линтер жёстких запретов |
+| [N1arko/redaktura-skills](https://github.com/N1arko/redaktura-skills) | 130 | Набор редакторских скиллов (главред, посты, UX-копирайт), не только хуманизатор |
+| [Vladimir-Human/humanizer-ru](https://github.com/Vladimir-Human/humanizer-ru) | 123 | Сначала находит следы и объясняет. 40 regex, реестр доказательств, демо в браузере |
+| [ksanyok/TextHumanize](https://github.com/ksanyok/TextHumanize) | 75 | Офлайн-библиотека, 25 языков включая русский. Не агентский скилл |
+| [thevseprod/humanizer-ru](https://github.com/thevseprod/humanizer-ru) | 37 | Компактный скилл: отдельные правила RU и EN в одном `SKILL.md` |
+| [gc-tilda/pishi-chelovechno](https://github.com/gc-tilda/pishi-chelovechno) | 8 | 31 запрет трёх уровней вместо советов «пиши живо» |
+| [asavvin-pixel/ochelovech](https://github.com/asavvin-pixel/ochelovech) | 1 | Типографика, лексика, структура; калибровка под автора |
+
+Этот скилл стоит рядом, не вместо них. Соседи в основном охотятся за
+маркерами и обходом детектора. Здесь ещё обязательны проверка утверждений,
+KEEP защищённых спанов и Pass H: лёгкая небрежность и позиция на статье/посте,
+а не идеально вычесанный «человеческий» шаблон.
+
+На одной статье мы сравнивали
+[stop-slop](https://github.com/hardikpandya/stop-slop),
+[blader/humanizer](https://github.com/blader/humanizer),
+[ilyautov](https://github.com/ilyautov/humanizer-ru),
+[smixs](https://github.com/smixs/humanizer-ru) и
+[Vladimir-Human](https://github.com/Vladimir-Human/humanizer-ru).
+Английские скиллы не закрывают канцелярит и русские кальки.
+`humanizerai/humanize` без ключа API не стартует.
+
+## Английские, от 200 звёзд
+
+Только репозитории, где задача — очеловечить или снять AI-следы с прозы.
+Не .NET Humanizer, не SharePoint, не «taste» и не дизайн-hallmark.
+Китайские форки blader (`op7418/Humanizer-zh`, ~17k) сюда не входят.
+Звёзды — снимок на 2026-09-05.
+
+| Репозиторий | ★ | Зачем смотреть |
+|---|---:|---|
+| [blader/humanizer](https://github.com/blader/humanizer) | 43065 | Канонический агентский скилл. 35 паттернов Wikipedia:Signs of AI writing |
+| [hardikpandya/stop-slop](https://github.com/hardikpandya/stop-slop) | 16823 | Бан-листы фраз и структур. Крупный, давно без коммитов |
+| [conorbronsdon/avoid-ai-writing](https://github.com/conorbronsdon/avoid-ai-writing) | 4113 | Detect-only и плотность флагов. Живая поддержка |
+| [lynote-ai/humanize-text](https://github.com/lynote-ai/humanize-text) | 1600 | Пайплайн: translation chain, multi-turn rewrite, detection loop |
+| [fromleda/text-humanizer](https://github.com/fromleda/text-humanizer) | 739 | Обход GPTZero / Turnitin, не редактор |
+| [DadaNanjesha/AI-Text-Humanizer-App](https://github.com/DadaNanjesha/AI-Text-Humanizer-App) | 421 | Streamlit, spaCy + NLTK, без LLM |
+| [harshaneel/humanize](https://github.com/harshaneel/humanize) | 415 | Два статических скилла, опора на литературу 2024–2026 |
+| [Anbeeld/WRITING.md](https://github.com/Anbeeld/WRITING.md) | 363 | Правила под жанр, якоря, самоаудит |
+| [sam-paech/antislop-sampler](https://github.com/sam-paech/antislop-sampler) | 355 | Подавление слопа на инференсе, не пост-редактура |
+| [devswha/patina](https://github.com/devswha/patina) | 345 | KO / EN / ZH / JA |
+| [lynote-ai/humanize-text-skill](https://github.com/lynote-ai/humanize-text-skill) | 236 | Скилл-обёртка того же пайплайна |
+| [Aboudjem/humanizer-skill](https://github.com/Aboudjem/humanizer-skill) | 214 | 55 паттернов, 5 голосов, оценка 0–100, локально |
+
+Ниже порога, но из того же сравнения: [jpeggdev/humanize-writing](https://github.com/jpeggdev/humanize-writing) (58),
+[humanizerai/agent-skills](https://github.com/humanizerai/agent-skills) (42, нужен API-ключ).
+
+<details>
+<summary>Датасеты, по которым тюнился каталог</summary>
+
+Корпуса — источники *классов* слопа (gazetteer-padding, abstract-mold, span
+KEEP), не обучающая выборка для классификатора. Не гонять по ним detector
+score.
 
 ### Русский (приоритет)
 
 | Корпус | Что внутри | Зачем скиллу |
 |---|---|---|
 | [iitolstykh/LLMTrace_classification](https://huggingface.co/datasets/iitolstykh/LLMTrace_classification) | ~340k RU + ~249k EN, human/AI, 8–9 доменов, GPT-4o, GigaChat, YaGPT, Qwen, Gemini | Живой RU-слоп: wiki-continue, expand-news, отзывы. Бумага: [arXiv:2509.21269](https://arxiv.org/abs/2509.21269) |
-| [iitolstykh/LLMTrace_detection](https://huggingface.co/datasets/iitolstykh/LLMTrace_detection) | human / ai / mixed + `ai_char_intervals` (символьные спаны) | Смешанный черновик: KEEP полезный факт, не «человеческий интервал». Авторство ≠ качество |
-| [iis-research-team/AINL-Eval-2025](https://huggingface.co/datasets/iis-research-team/AINL-Eval-2025) · [GitHub](https://github.com/iis-research-team/AINL-Eval-2025) | 52k русских научных тезисов, human vs GPT-4-Turbo / Gemma2 / Llama3.3 / DeepSeek-V3 / GigaChat-Lite | Шаблон аннотации: `оказывает существенное влияние`, `перспективный подход`, мало цифр. [arXiv:2508.09622](https://arxiv.org/abs/2508.09622) |
-| [RussianNLP/coat](https://huggingface.co/datasets/RussianNLP/coat) · [GitHub](https://github.com/RussianNLP/CoAT) | 246k RU, 13 генераторов, 6 доменов (RuATD → CoAT) | Жанровый сдвиг: парафраз / суммаризация / упрощение vs человек |
-| [CoffeBank/Ru-hard-detection-dataset](https://github.com/CoffeBank/Ru-hard-detection-dataset) | Новости, эссе, наука; human / ai / ai+rew (Gemini, GPT-4o-mini, DeepSeek) | Парафраз-слой: слоп после «перепиши» |
-| [GigaCheck](https://github.com/ai-forever/gigacheck) | Код + модели на LLMTrace; span localization | Не корпус текстов; ссылка на ту же span-логику. [arXiv:2410.23728](https://arxiv.org/abs/2410.23728) |
+| [iitolstykh/LLMTrace_detection](https://huggingface.co/datasets/iitolstykh/LLMTrace_detection) | human / ai / mixed + `ai_char_intervals` | Смешанный черновик: KEEP полезный факт, не «человеческий интервал». Авторство ≠ качество |
+| [iis-research-team/AINL-Eval-2025](https://huggingface.co/datasets/iis-research-team/AINL-Eval-2025) · [GitHub](https://github.com/iis-research-team/AINL-Eval-2025) | 52k русских научных тезисов | Шаблон аннотации: `оказывает существенное влияние`, мало цифр. [arXiv:2508.09622](https://arxiv.org/abs/2508.09622) |
+| [RussianNLP/coat](https://huggingface.co/datasets/RussianNLP/coat) · [GitHub](https://github.com/RussianNLP/CoAT) | 246k RU, 13 генераторов, 6 доменов | Жанровый сдвиг: парафраз / суммаризация / упрощение vs человек |
+| [CoffeBank/Ru-hard-detection-dataset](https://github.com/CoffeBank/Ru-hard-detection-dataset) | Новости, эссе, наука; human / ai / ai+rew | Парафраз-слой: слоп после «перепиши» |
+| [GigaCheck](https://github.com/ai-forever/gigacheck) | Код + модели на LLMTrace; span localization | Не корпус текстов. [arXiv:2410.23728](https://arxiv.org/abs/2410.23728) |
 
 Страница LLMTrace: https://sweetdream779.github.io/LLMTrace-info/
 
@@ -42,24 +136,23 @@ GPTZero без скана. P(нейрослоп) — оценка наполне
 
 | Корпус | Что внутри | Зачем скиллу |
 |---|---|---|
-| [Shaib et al. slop](https://github.com/cshaib/slop) | Span-разметка slop по таксономии Density / Templatedness / Factuality / Tone (150 news + 100 QA) | Слоп = качество спана, не «кто писал». [arXiv:2509.19163](https://arxiv.org/abs/2509.19163) |
-| [unslop-ai-text](https://github.com/JCarterJohnson/vibecoded-design-tells/tree/main/unslop-ai-text) | Reddit 2021–2026, 7984 on-topic, 600 постов hand-audit, `verified_tally.csv` | Что люди *цитируют* как tell: em dash, `not X but Y`, ритм, sycophancy. Keyword-pass врёт |
-| [sam-paech/antislop-sampler](https://github.com/sam-paech/antislop-sampler) | Over-represented phrases (`slop_phrases_*.json`), regex `not just X but Y` | EN fiction/blog fingerprints; в RU смотреть кальку |
-| [sam-paech/gemma-3-27b-it-antislop-ftpo-preference-dataset](https://huggingface.co/datasets/sam-paech/gemma-3-27b-it-antislop-ftpo-preference-dataset) | Preference-пары, поле `slop_phrase` / regex | Размеченный нейрослоп на уровне фразы (Elara, negative parallelism) |
+| [Shaib et al. slop](https://github.com/cshaib/slop) | Span-разметка Density / Templatedness / Factuality / Tone | Слоп = качество спана, не «кто писал». [arXiv:2509.19163](https://arxiv.org/abs/2509.19163) |
+| [unslop-ai-text](https://github.com/JCarterJohnson/vibecoded-design-tells/tree/main/unslop-ai-text) | Reddit 2021–2026, 600 постов hand-audit | Что люди *цитируют* как tell. Keyword-pass врёт |
+| [sam-paech/antislop-sampler](https://github.com/sam-paech/antislop-sampler) | `slop_phrases_*.json`, regex `not just X but Y` | EN fiction/blog fingerprints; в RU смотреть кальку |
+| [antislop FTPO preference](https://huggingface.co/datasets/sam-paech/gemma-3-27b-it-antislop-ftpo-preference-dataset) | Preference-пары, поле `slop_phrase` | Размеченный нейрослоп на уровне фразы |
 | [N8Programs/unslop-good](https://huggingface.co/datasets/N8Programs/unslop-good) | 1k EN «polish this AI passage» | Purple travel/marketing fill |
-| [WriteHuman 2026 tells](https://writehuman.ai/blog/ai-tells-in-2026) | 80k humanization pairs: `ensuring`, `rather than`, `plays a crucial role in shaping` | Измеренные EN-формы 2026 |
+| [WriteHuman 2026 tells](https://writehuman.ai/blog/ai-tells-in-2026) | 80k humanization pairs | Измеренные EN-формы 2026 |
 
-### Не использовать как учебный слоп-корпус
+Не учебный слоп-корпус: [Solenopsisbot/real-slop](https://huggingface.co/datasets/Solenopsisbot/real-slop) (сырые чаты, NSFW, без разметки слопа); бинарные super-corpus human/AI без span-слопа.
 
-- [Solenopsisbot/real-slop](https://huggingface.co/datasets/Solenopsisbot/real-slop) — 155k сырых чатов, много NSFW, без разметки слопа.
-- Детекторные super-corpus вроде AIvsHuman-SuperCorpus — бинарный human/AI, не span-слоп.
+</details>
 
-## Как тюнить целиком (не только SKILL.md)
+<details>
+<summary>Как тюнить целиком, не только SKILL.md</summary>
 
 Каталоги — часть скилла. Eval, который пихает в system только `SKILL.md`,
-не проверяет, узнаёт ли модель классы из `ai-markers.md`, и все патчи
-съезжают в карту. Честный цикл грузит те же файлы, что скилл велел бы
-загрузить, и правит *владеющий* файл.
+не проверяет, узнаёт ли модель классы из `ai-markers.md`. Честный цикл
+грузит те же файлы, что скилл велел бы загрузить, и правит *владеющий* файл.
 
 1. Заморозить срез постов/статей (article, story, short_form, factual;
    квоты по типу, без wiki-continue/gazetteer; 8 постов канала как house):
@@ -90,35 +183,32 @@ python scripts/corpus_eval.py run --pack audit
 | `assets/simple-language.md` | ремесло простого языка: одна мысль, первое предложение работает. Не «ясный язык» |
 
 5. Если линт уже видит класс, а модель KEEP — сначала смотреть, не
-   ложный ли это вызов линтера. Иначе miss узнавания (пакет не доехал /
-   Category без `§N`), а не дыра в каталоге.
+   ложный ли это вызов линтера. Иначе miss узнавания, а не дыра в каталоге.
 6. Тот же срез после патча. Held-out — отдельный замороженный срез, не
-   «тот же sample с новым seed»: новый seed сам по себе не гарантирует
-   непересечение. Recall/precision по `ai_char_intervals` — диагностика
-   авторского перекрытия, не оценка качества правки.
+   «тот же sample с новым seed». Recall/precision по `ai_char_intervals` —
+   диагностика авторского перекрытия, не оценка качества правки.
 
 Линтер отдельно: `python scripts/lint_text.py --self-test`. Отсутствие
 `§N` в ответе — проблема формата отчёта, не доказательство, что правило
-не применили. «Линтер видит, модель KEEP» не значит, что ошиблась модель:
-линтер тоже ошибается.
+не применили.
 
-## Прогон скилла по датасету
+</details>
+
+<details>
+<summary>Прогон скилла по датасету</summary>
 
 Модель и прокси задаются переменными `PROSE_POLISH_MODEL`,
 `PROSE_POLISH_LITELLM_CONTAINER`, `PROSE_POLISH_CLIPROXY_URL`
 (по умолчанию Gemini через cliproxy в контейнере `ai-stp-litellm-1`).
 Золото `ai_char_intervals` — *авторство*, не слоп и не качество правки.
-Хороший ИИ-фрагмент, оставленный KEEP, не обязан быть FN. Плохой
-человеческий фрагмент, правильно срезанный, не обязан быть FP.
+Хороший ИИ-фрагмент, оставленный KEEP, не обязан быть FN.
 
 Три группы проверки (авторство — только диагностика):
 
 1. **Контрольные искажения** — `check_preservation.py --self-test`,
-   `check_readability.py --self-test`, `lint_text.py --self-test`:
-   убрана оговорка, переставлены числа, сломан URL, карточки vs таблица.
-2. **Полный редакторский прогон** — `corpus_eval.py run --mode polish`
-   (тезисы или черновик → текст). Нужна отдельная редакторская разметка
-   (`editorial_spans`: проблема, тип, что менять, что сохранить).
+   `check_readability.py --self-test`, `lint_text.py --self-test`.
+2. **Полный редакторский прогон** — `corpus_eval.py run --mode polish`.
+   Нужна отдельная редакторская разметка (`editorial_spans`).
 3. **Слепое сравнение** — исходник / обычная генерация / скилл; люди из
    аудитории. «Неотличим от человека» так и проверяется, не одним процентом.
 
@@ -135,16 +225,13 @@ python scripts/corpus_eval.py grade
 
 Пилот на 2 текстах: `python scripts/corpus_eval.py run --pack audit --limit 2`
 
-`--pack`: `map` (только SKILL.md, evals 2–6) · `audit` (карта + procedure +
-ai-markers, default) · `full` (ещё heuristics и formats) · `auto` (audit +
-formats, если в черновике Markdown).
-
-Артефакты: `corpus-eval-2/` … `corpus-eval-6/` — map-only;
-`corpus-eval-7/` — pack. Перегон: `run --force`.
+`--pack`: `map` (только SKILL.md) · `audit` (карта + procedure + ai-markers,
+default) · `full` (ещё heuristics и formats) · `auto` (audit + formats, если
+в черновике Markdown).
 
 | Файл | Что внутри |
 |---|---|
-| `slice.jsonl` | 80 постов/статей: 40 LLMTrace_detection (24 mixed / 8 ai / 8 human) + 32 classification (24 AI / 8 human) + 8 house-постов канала. Домены с квотой: article, story, short_form, factual. AINL только с `--ainl`. House не входит в recall/precision — только §N и treatment |
+| `slice.jsonl` | 80 постов/статей: 40 LLMTrace_detection + 32 classification + 8 house-постов. House не входит в recall/precision |
 | `pack-manifest.json` | какие файлы уехали в system prompt |
 | `runs/<id>/audit.md` | ответ модели |
 | `runs/<id>/spans.json` | KEEP/TRIM/REWRITE/DELETE/FLAG + offsets |
@@ -154,14 +241,15 @@ formats, если в черновике Markdown).
 
 Как читать `disagreements.md`:
 
-- **MISS** — золото сказало «тут AI», скилл оставил KEEP. Либо дыра в каталоге, либо золото разметило нормальный кусок как AI, либо модель не увидела уже описанный класс.
-- **FP** — золото сказало «человек», скилл пометил слоп. Либо ложный вызов (False slop), либо золото пропустило слоп.
+- **MISS** — золото сказало «тут AI», скилл оставил KEEP.
+- **FP** — золото сказало «человек», скилл пометил слоп.
 - **Catalog usage** — доля ответов с `§N`. Ноль при `--pack audit` значит, что цитирование классов не работает.
 - Не поднимать precision, сваливая KEEP-примеры в `SKILL.md`.
 
-Контейнер, URL и модель — через `PROSE_POLISH_*` (см. выше). Пропуск
-готового `spans.json` срабатывает только если совпал fingerprint текста,
-пакета, промпта и модели. `run` возвращает 0 только если все кейсы ок;
-частичный прогон — код 1.
+Пропуск готового `spans.json` срабатывает только если совпал fingerprint
+текста, пакета, промпта и модели. `run` возвращает 0 только если все кейсы
+ок; частичный прогон — код 1.
 
 `assets/simple-language.md` и `agents/openai.yaml` входят в пакет.
+
+</details>
