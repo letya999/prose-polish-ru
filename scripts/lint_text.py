@@ -15,6 +15,11 @@ from collections import Counter
 from dataclasses import asdict, dataclass
 from pathlib import Path
 
+_SCRIPTS = Path(__file__).resolve().parent
+if str(_SCRIPTS) not in sys.path:
+    sys.path.insert(0, str(_SCRIPTS))
+from md_parse import split_table_row
+
 
 @dataclass(frozen=True)
 class Finding:
@@ -24,6 +29,10 @@ class Finding:
     line: int
     message: str
     evidence: str
+    start: int = 0
+    end: int = 0
+    observation: str = ""
+    confidence: str = "medium"
 
 
 PHRASES: dict[str, tuple[str, str, str]] = {
@@ -212,6 +221,7 @@ ONCE_CODES = {
     "V02",
     "L07", "L08",
     "W06", "W08", "W14", "W16", "W18", "W19", "W20", "W21", "W22", "W24",
+    "Y01", "Y02", "Y03", "Y04", "Y05", "Y06", "Y07", "Y08",
 }
 
 PLACEHOLDERS = re.compile(
@@ -235,6 +245,18 @@ LEAKS = re.compile(
 URL_RE = re.compile(r"https?://[^\s)>\]]+")
 MD_LINK_RE = re.compile(r"(!?)\[([^\]]*)\]\(([^)]+)\)")
 INLINE_CODE_RE = re.compile(r"`[^`\n]+`")
+ITALIC_CAPTION_RE = re.compile(r"^\*(?!\*)(.+?)\*$")
+BOLD_CAPTION_RE = re.compile(r"^\*\*(.+?)\*\*$")
+BOLD_LABEL_RE = re.compile(
+    r"^\s*[-*+]\s+(?:\*\*[^*]+?\*\*\s*[:—-]|\*\*[^*]+?[:—-]\*\*)",
+)
+QUOTE_SPAN_RE = re.compile(r"«[^»]*»|\"[^\"]*\"|" + r"'[^']*'")
+CAPTION_TRIPLE_RE = re.compile(
+    r"\b(семь|трое|двое|четыре|пять|шесть|восемь|девять|десять|\d+)\b"
+    r"(?:[^.\n]{0,80}\b\1\b){2}",
+    re.I,
+)
+SPAWN_SCENE_RE = re.compile(r"спавнит\s+.+\bдет", re.I)
 SENTENCE_RE = re.compile(r"(?<=[.!?…])\s+(?=[А-ЯA-ZЁ])")
 WORD_RE = re.compile(r"[A-Za-zА-Яа-яЁё0-9-]+")
 GENERIC_HEADINGS = {
@@ -268,6 +290,39 @@ NESTED_WHICH_RE = re.compile(
     r"\bкотор(?:ый|ая|ое|ые|ого|ому|ым|ом|ой|ую|ых|ыми)\b.{1,120}\bкотор(?:ый|ая|ое|ые|ого|ому|ым|ом|ой|ую|ых|ыми)\b",
     re.I,
 )
+SUBORD_RE = re.compile(
+    r"\b(?:котор(?:ый|ая|ое|ые|ого|ому|ым|ом|ой|ую|ых|ыми)|чтобы|хотя|"
+    r"если|поскольку|потому что|когда)\b",
+    re.I,
+)
+TWO_THOUGHTS_RE = re.compile(
+    r"\b(?:причем|при этом|в то время как|и одновременно)\b",
+    re.I,
+)
+DECODE_RE = re.compile(
+    r"\b(?:то есть|проще говоря|иными словами|другими словами)\b",
+    re.I,
+)
+PURPOSE_RE = re.compile(
+    r"\b(?:в целях|посредством|с целью обеспечения|в ходе осуществления|для целей)\b",
+    re.I,
+)
+DELAYED_CLAIM_RE = re.compile(
+    r"^(?:Прежде чем(?: перейти)?|Для начала стоит|Перед тем как|"
+    r"Для того чтобы понять|Рассматривая вопрос)\b",
+    re.I,
+)
+SETUP_LEAD_RE = re.compile(
+    r"^(?:Важно(?: отметить)?|Стоит отметить|Необходимо понимать|"
+    r"Следует учитывать|Давайте|Ниже (?:мы )?(?:рассмотрим|разбер)|"
+    r"В этой статье|Прежде чем|Для того чтобы понять)\b",
+    re.I,
+)
+PARTICIPLE_PAIR_RE = re.compile(
+    r"\b[а-яё]*ющ[а-яё]+\b.{0,90}\b[а-яё]*ющ[а-яё]+\b",
+    re.I,
+)
+LONG_SENT_WORDS = 32
 
 
 def mask_fences(lines: list[str]) -> tuple[list[str], set[int]]:
@@ -312,8 +367,12 @@ def evidence(text: str, limit: int = 140) -> str:
 
 
 def add(findings: list[Finding], code: str, severity: str, category: str,
-        line: int, message: str, text: str) -> None:
-    findings.append(Finding(code, severity, category, line, message, evidence(text)))
+        line: int, message: str, text: str, start: int = 0, end: int = 0,
+        observation: str = "", confidence: str = "medium") -> None:
+    findings.append(Finding(
+        code, severity, category, line, message, evidence(text),
+        start, end, observation or message, confidence,
+    ))
 
 
 def content_tokens(text: str) -> set[str]:
@@ -330,7 +389,7 @@ def scan_markdown(lines: list[str], findings: list[Finding]) -> None:
     def flush_list() -> None:
         nonlocal list_run
         if len(list_run) == 3:
-            labels = [bool(re.match(r"^\s*[-*+]\s+\*\*[^*]+\*\*\s*[:—-]", x[1])) for x in list_run]
+            labels = [bool(BOLD_LABEL_RE.match(x[1])) for x in list_run]
             if all(labels):
                 add(findings, "F11", "low", "list", list_run[0][0],
                     "Exactly three bold-label bullets; inspect for a generated card pattern",
@@ -340,11 +399,16 @@ def scan_markdown(lines: list[str], findings: list[Finding]) -> None:
     def flush_table() -> None:
         nonlocal table_rows
         if len(table_rows) >= 2:
-            counts = [row.count("|") for _, row in table_rows]
-            if len(set(counts)) > 1:
+            counts = [
+                len(split_table_row(row))
+                for _, row in table_rows
+                if not re.match(r"^\s*\|?\s*:?-+:?\s*(\|\s*:?-+:?\s*)+\|?\s*$", row)
+            ]
+            if counts and len(set(counts)) > 1:
                 add(findings, "F21", "high", "table", table_rows[0][0],
                     "Markdown table rows have inconsistent column counts",
-                    " | ".join(row.strip() for _, row in table_rows[:3]))
+                    " | ".join(row.strip() for _, row in table_rows[:3]),
+                    confidence="high")
             seen = Counter(re.sub(r"\s+", " ", row.strip().lower()) for _, row in table_rows)
             for normalized, count in seen.items():
                 if count > 1 and not re.fullmatch(r"\|?\s*:?-+:?\s*(\|\s*:?-+:?\s*)+\|?", normalized):
@@ -386,9 +450,25 @@ def scan_markdown(lines: list[str], findings: list[Finding]) -> None:
             if image and label.strip().lower() in {"", "image", "изображение", "картинка", "схема"}:
                 add(findings, "F41", "medium", "image", line_no,
                     "Generic image alt text", line)
+            if image and (CAPTION_TRIPLE_RE.search(label) or SPAWN_SCENE_RE.search(label)):
+                add(findings, "F42", "medium", "image", line_no,
+                    "Catalog-voice alt: numeral anaphora or spawn-scene", line)
             if re.search(r"utm_source=(?:openai|chatgpt|copilot|claude)", target, re.I):
                 add(findings, "F33", "medium", "link", line_no,
                     "Assistant-identifying tracking parameter", line)
+        caption_text = None
+        italic_caption = ITALIC_CAPTION_RE.match(stripped)
+        bold_caption = BOLD_CAPTION_RE.match(stripped)
+        if italic_caption:
+            caption_text = italic_caption.group(1)
+        elif bold_caption:
+            caption_text = bold_caption.group(1)
+        if caption_text and (
+            CAPTION_TRIPLE_RE.search(caption_text)
+            or SPAWN_SCENE_RE.search(caption_text)
+        ):
+            add(findings, "F42", "medium", "image", line_no,
+                "Catalog-voice caption: numeral anaphora or spawn-scene", line)
 
         if stripped.startswith("```") and stripped.count("```") > 1:
             add(findings, "F51", "high", "code", line_no,
@@ -431,28 +511,42 @@ def scan_prose(lines: list[str], mode: str) -> list[Finding]:
             continue
         prose_lines.append((line_no, text, bool(re.match(r"^\s{0,3}#{1,6}\s+", raw))))
 
+        prose_for_phrases = text
+        if raw.lstrip().startswith(">"):
+            prose_for_phrases = ""
+        else:
+            prose_for_phrases = QUOTE_SPAN_RE.sub(" ", text)
         for pattern, (code, category, message) in PHRASES.items():
-            matches = list(re.finditer(pattern, text, re.I | re.S))
+            matches = list(re.finditer(pattern, prose_for_phrases, re.I | re.S))
             if matches:
                 phrase_hits[code] += len(matches)
                 phrase_first_line.setdefault(code, line_no)
                 if category in {"evidence", "voice"} or code in ONCE_CODES:
-                    add(findings, code, "medium", category, line_no, message, raw)
+                    inspect = code in {"Y04", "Y05", "W23", "P01", "P02", "E01", "E02"}
+                    add(
+                        findings, code,
+                        "low" if inspect else "medium",
+                        category, line_no,
+                        message if not inspect else f"Inspect whether this is needed: {message}",
+                        raw,
+                        confidence="low" if inspect else "medium",
+                    )
 
         placeholder = PLACEHOLDERS.search(raw)
         if placeholder:
-            add(findings, "A01", "critical", "artifact", line_no,
-                "Unresolved placeholder", raw)
+            add(findings, "X01", "critical", "artifact", line_no,
+                "Unresolved placeholder", raw, confidence="high")
         leak = LEAKS.search(raw)
         if leak:
-            add(findings, "A02", "critical", "artifact", line_no,
-                "Leaked chatbot or citation artifact", raw)
+            add(findings, "X02", "critical", "artifact", line_no,
+                "Leaked chatbot or citation artifact", raw, confidence="high")
         mixed = MIXED_SCRIPT_RE.findall(text)
         for token in mixed:
             # Common technical hybrids are allowed when separated by punctuation;
             # this catches only one contiguous alphabetic token.
-            add(findings, "A03", "high", "artifact", line_no,
-                "Mixed Latin and Cyrillic letters inside one word", token)
+            add(findings, "X03", "high", "artifact", line_no,
+                "Mixed Latin and Cyrillic letters inside one word", token,
+                confidence="high")
         if re.search(r"\b(?:всегда|никогда|единственн\w*|все без исключения)\b", text, re.I):
             add(findings, "L11", "medium", "logic", line_no,
                 "Absolute claim; verify scope and evidence", raw)
@@ -481,9 +575,9 @@ def scan_prose(lines: list[str], mode: str) -> list[Finding]:
                 raw)
         triv_def = TRIVIAL_DEF_RE.search(text)
         if triv_def:
-            add(findings, "W23", "medium", "water", line_no,
-                "Trivial definition padding: unsolicited tutorial definition of a standard tool (§51)",
-                raw)
+            add(findings, "W23", "low", "water", line_no,
+                "Inspect: unsolicited tutorial definition of a standard tool (§51); keep if the audience needs it",
+                raw, confidence="low")
         nested_rel = NESTED_WHICH_RE.search(text)
         if nested_rel:
             add(findings, "R09", "low", "structure", line_no,
@@ -612,14 +706,73 @@ def scan_prose(lines: list[str], mode: str) -> list[Finding]:
             f"{guillemets} «» pairs")
 
     bold_labels = sum(
-        1 for _, raw in enumerate(masked, start=1)
-        if re.match(r"^\s*[-*+]\s+\*\*[^*]+\*\*\s*[:—-]", raw)
+        1 for raw in masked
+        if BOLD_LABEL_RE.match(raw)
     )
     if bold_labels >= 5:
         add(findings, "F12", "medium", "list", 1,
             "Repeated bold-label list pattern", f"{bold_labels} items")
 
+    scan_simple_language(sentences, paragraphs, findings)
+
     return sorted(findings, key=lambda f: (f.line, f.code, f.evidence))
+
+
+def scan_simple_language(
+    sentences: list[str],
+    paragraphs: list[list[str]],
+    findings: list[Finding],
+) -> None:
+    """Plain-language craft hits. Inspect in context; do not strip terms."""
+    seen: Counter[str] = Counter()
+
+    def hit(code: str, severity: str, message: str, evidence_text: str) -> None:
+        if seen[code] >= 2:
+            return
+        seen[code] += 1
+        add(findings, code, severity, "plain", 1, message, evidence_text)
+
+    for sentence in sentences:
+        words = WORD_RE.findall(sentence)
+        if len(words) >= LONG_SENT_WORDS:
+            hit("Y01", "medium",
+                "Long running-prose sentence (≥32 words); split at the second thought",
+                sentence)
+        if len(SUBORD_RE.findall(sentence)) >= 3:
+            hit("Y02", "medium",
+                "Three or more subordinate markers in one sentence; flatten",
+                sentence)
+        if DELAYED_CLAIM_RE.match(sentence):
+            hit("Y03", "medium",
+                "Delayed claim: setup before the payload",
+                sentence)
+        if TWO_THOUGHTS_RE.search(sentence) and len(WORD_RE.findall(sentence)) >= 24:
+            hit("Y04", "low",
+                "Inspect: two thoughts may be glued (причем / при этом); keep if the link is earned",
+                sentence)
+        if DECODE_RE.search(sentence):
+            hit("Y05", "low",
+                "Inspect: self-decode (то есть / проще говоря); keep if it actually clarifies",
+                sentence)
+        if PURPOSE_RE.search(sentence):
+            hit("Y06", "medium",
+                "Purpose bureaucracy (в целях / посредством); say the action",
+                sentence)
+        if PARTICIPLE_PAIR_RE.search(sentence) or sentence.count("(") >= 3:
+            hit("Y08", "low",
+                "Participle pair or 3+ parentheticals in one sentence",
+                sentence)
+
+    for para in paragraphs:
+        para_text = " ".join(para)
+        first = next(
+            (s.strip() for s in SENTENCE_RE.split(para_text) if WORD_RE.findall(s)),
+            "",
+        )
+        if first and SETUP_LEAD_RE.match(first):
+            hit("Y07", "medium",
+                "Paragraph opens with setup, not the claim",
+                first)
 
 
 def render_text(findings: list[Finding]) -> str:
@@ -658,7 +811,7 @@ print("важно отметить")
     assert "W01" in codes, codes
     assert "F11" in codes, codes
     assert "F32" in codes, codes
-    assert "A02" in codes, codes
+    assert "X02" in codes, codes
     assert "S10" in codes, codes
     assert all("print" not in item.evidence for item in findings)
     assert all("==" not in item.evidence and "=>" not in item.evidence for item in findings)
@@ -690,7 +843,7 @@ print("важно отметить")
 """
     cluster_codes = {item.code for item in scan_prose(cluster.splitlines(), "generic")}
     assert "W14" in cluster_codes, cluster_codes
-    assert "A02" in cluster_codes, cluster_codes
+    assert "X02" in cluster_codes, cluster_codes
     ds = """Село имеет богатую историю. Исследование оказывает существенное влияние.
 Село имеет богатую историю и оказывает существенное влияние.
 """
@@ -804,6 +957,48 @@ print("важно отметить")
     knizh_codes = {item.code for item in scan_prose(rus_knizhnost.splitlines(), "article")}
     assert "L08" in knizh_codes, knizh_codes
     assert "R09" in knizh_codes, knizh_codes
+    plain = (
+        "Прежде чем перейти к практике, важно отметить, что сабагент, который "
+        "гидратирует родителя и который держит слот, причем без вызова close_agent, "
+        "жрет квоту посредством повторной загрузки истории, то есть делает сессию "
+        "дороже, в то время как изолированный прогон остается дешевым, если процесс "
+        "закрыт и если кэш жив и если лимиты не сброшены.\n\n"
+        "Важно отметить, что worktree помогает.\n\n"
+        "В целях обеспечения изоляции осуществляется запуск отдельного дерева, "
+        "являющегося копией репозитория и обеспечивающего чистый индекс."
+    )
+    plain_codes = {item.code for item in scan_prose(plain.splitlines(), "article")}
+    assert "Y01" in plain_codes, plain_codes
+    assert "Y02" in plain_codes, plain_codes
+    assert "Y03" in plain_codes, plain_codes
+    assert "Y04" in plain_codes, plain_codes
+    assert "Y05" in plain_codes, plain_codes
+    assert "Y06" in plain_codes, plain_codes
+    assert "Y07" in plain_codes, plain_codes
+    assert "Y08" in plain_codes, plain_codes
+    caption = (
+        "![Классические сабагенты: родитель спавнит семь холодных детей]"
+        "(images/01.png)\n"
+        "*Семь системных промптов, семь списков тулов, семь повторных вычиток.*"
+    )
+    caption_codes = {item.code for item in scan_prose(caption.splitlines(), "article")}
+    assert "F42" in caption_codes, caption_codes
+    bold_caption = "*нет*\n**Семь системных промптов, семь списков тулов, семь повторных вычиток.**\n"
+    bold_codes = {item.code for item in scan_prose(bold_caption.splitlines(), "article")}
+    assert "F42" in bold_codes, bold_codes
+    escaped_table = "| a \\| b | c |\n|---|---|\n| 1 | 2 |\n"
+    table_codes = {item.code for item in scan_prose(escaped_table.splitlines(), "generic")}
+    assert "F21" not in table_codes, table_codes
+    profit_inside = "- **Профит:** быстрее\n- **Как устроено:** один процесс\n- **Когда:** сейчас\n"
+    profit_outside = "- **Профит**: быстрее\n- **Как устроено**: один процесс\n- **Когда**: сейчас\n"
+    assert "F11" in {item.code for item in scan_prose(profit_inside.splitlines(), "generic")}
+    assert "F11" in {item.code for item in scan_prose(profit_outside.splitlines(), "generic")}
+    fine_glue = "Сборка прошла, при этом кэш остался на месте.\n"
+    glue_codes = {item.code for item in scan_prose(fine_glue.splitlines(), "article")}
+    assert "Y04" not in glue_codes, glue_codes
+    quoted = "> Исследования показывают, что кэш виноват.\n"
+    quoted_codes = {item.code for item in scan_prose(quoted.splitlines(), "generic")}
+    assert "E01" not in quoted_codes, quoted_codes
     print("self-test: ok")
 
 

@@ -7,6 +7,13 @@ each artifact by its function. When iterating the skill, this file owns
 Markdown, tables, lists, links, citations, images, and code — not `§N`
 prose-marker classes.
 
+Keeping the format must not block a confirmed fact fix. A wrong URL,
+value, or command may be replaced when the source warrants it; record
+the change. Do not strip backslashes globally: some belong to code and
+markup. Recognize the input format first (`\#`, `<u>`, `**###…**`,
+double emphasis) and check how it renders. If the parse is incomplete,
+say so.
+
 ## 1. Headings
 
 Check:
@@ -77,6 +84,10 @@ Common AI artifacts:
 
 Do not remove useful list parallelism merely to create irregularity. Do not
 add a missing item or complete a tidy outline just to look finished.
+N comparable scenarios with repeated field labels (`Как устроено` /
+`Профит` / command) are a comparison scan-path. KEEP them. §61 is the
+empty brochure copy, not four working cases a reader can run with their
+eyes.
 
 ## 3. Tables
 
@@ -199,8 +210,9 @@ Check:
 - image path or URL remains unchanged;
 - alt text describes the image's information, not `image` or marketing copy;
 - alt text does not rewrite technical notation to appease lint;
-- caption adds interpretation, provenance, or caveat rather than repeating alt;
-- caption-body synchronization: captions must not introduce uncontextualized deprecation claims or orphan facts (e.g. `старый сервер устарел`) that receive zero explanation in the surrounding body prose; every substantive claim in a caption must align with the article's text;
+- alt describes the information in the image; the caption may add interpretation, provenance, or a source. They are not the same sentence. "One spoken thesis" does not fit every figure;
+- a unique caption note need not be repeated in the body. Check that it is warranted and that it matches the image. FLAG orphaned deprecations or facts that contradict the body;
+- caption voice: catalog triple `Семь …, семь …, семь …` and cinematic `родитель спавнит семь холодных детей` are not KEEP-image. Rewrite the alt and the italic/bold line; do not touch the path. A rewrite must keep the named technical property: isolation of parent context is not observability;
 - figure numbering remains consistent;
 - body references the correct figure;
 - claims derived from a chart state what is actually visible;
@@ -214,6 +226,8 @@ Common AI artifacts:
 
 - generic `Схема процесса` alt text;
 - overlong captions that restate the section;
+- catalog-voice captions: triple anaphora (`Семь X, семь Y, семь Z`), dangling numeral (`семь холодных детей` with no local seven), cinematic spawn-scene alt (`родитель спавнит`);
+- treating alt/italic caption as frozen because the image path is protected;
 - orphaned claims in captions (introducing technical deprecations, caveats, or tools in italics under an image without mentioning or explaining them in the text);
 - invented interpretation of an uninspected image;
 - renaming image files or paths during prose cleanup;
@@ -375,8 +389,14 @@ clean lint report.
 Before delivery ask:
 
 1. Does each artifact do a job prose cannot do as well?
-2. Is its content preserved and supported?
-3. Does surrounding prose interpret rather than duplicate it?
-4. Does it render on the target platform?
-5. Did polishing alter data, destinations, notation, code, or attribution?
+2. Is its content preserved and supported? A confirmed fact fix is allowed
+   and must be recorded.
+3. Does surrounding prose interpret rather than duplicate it? A unique
+   caption note may stay unique.
+4. Does it render on the target platform? Check real Markdown: escaped
+   headings, `<u>`, `**###**`, nested parens in URLs, pipes in table cells.
+5. Did polishing alter data, destinations, notation, code, or attribution
+   without a fact-check warrant?
 6. Did the lint tool inspect only prose and ignore protected content?
+7. If the parse was incomplete (HTML, odd fences, escaped markup), was
+   that disclosed rather than silently "fixed" by stripping backslashes?

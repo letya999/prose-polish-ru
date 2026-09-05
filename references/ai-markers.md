@@ -11,6 +11,31 @@ write a free-text bucket instead of `§N`. Do not write an authorship verdict,
 a probability table, or "how I detected this". Claim strength →
 [Editorial procedure](editorial-procedure.md) Pass 4.
 
+Each class uses the same contract:
+
+- **Observation** — what is on the page;
+- **Harm** — what the reader loses;
+- **When OK** — genre, author, or function that makes it fine;
+- **Fix** — the allowed repair.
+
+Absence of particles, linear order, literate grammar, or a useful
+symmetric grid is not automatically harm. In article/post, Pass H still
+adds stance, roughness, and 1–3 slips — that is the product, not a
+claim that "neutral literate speech is AI".
+
+**Origin.** Research claims need: source, language, genre, models/data,
+what was measured, what does *not* follow. Editorial observations are
+marked **heuristic** — not a statistically established tell. Do not
+turn a paper into a universal rule.
+
+**Overlaps** (cite the strongest `§N` once per span):
+
+- connectives: §5 / §44 / §58;
+- contrast: §6 / §57;
+- repeated structure: §8 / §61;
+- neutrality / hedges / stance: §12 / §40 / §46 / §56 / §62;
+- sources: §14 / §38.
+
 Cite `§N`: 1 artifacts · 2 inertia · 3 empty significance · 4 fog ·
 5 transitions · 6 contrast · 7 rule-of-three · 8 over-regularity · 9 rhythm ·
 10 lexical · 11 fake personality · 12 neutrality · 13 over-explanation ·
@@ -60,7 +85,8 @@ archetypes, prestige micro-jargon, hyper-cohesion, therapeutic tone,
 compulsive hedging, purple tech). 48–52 target Russian-specific structural
 and syntax distortions (genitive chains, paragraph echo, particle deficit,
 trivial definitions, call-and-response). 53–58 target academic stylometric
-and discourse anomalies (RuATD, AINL-Eval, arXiv:2606.04177 284-feature analysis):
+and discourse anomalies (RuATD, AINL-Eval; stylometry papers including
+arXiv:2606.04177, English, mixed TTR direction — see §54):
 theme-rheme dislocation, flat surprisal, agent deletion, epistemic cowardice,
 negative parallelism, and discourse connective inflation. 59–60 target
 Russian bookish syntax and clause nesting. 61–63 target structural uncanny
@@ -362,8 +388,8 @@ Keep in article/post register:
 - a personal reaction to material already in the draft;
 - irritation, doubt, preference attached to the actual claim;
 - an aside, a return, an uneven section;
-- one or two informal slips: spoken syntax, a slightly crooked agreement,
-  a sentence that trails.
+- 1–3 informal slips: spoken syntax, a slightly crooked agreement,
+  a slightly awkward collocation, a sentence that trails.
 
 Treatment: remove unsupported texture. Do not comb the remaining voice into
 neutrality, and do not replace it with a humanizer template.
@@ -709,6 +735,14 @@ Russian twins:
 Treatment: delete the first sentence. The piece usually starts on the
 second. House greeting is KEEP; this section is the *interior* opener.
 
+**False slop:** a time-stamped opener that already names the product and
+the claim (`С последними апдейтами Claude Code и Codex CLI классические
+сабагенты потеряли смысл`). House `Ниже => разбор того, почему…` that
+states the thesis, not empty `ниже рассмотрим`. The skill must not
+*install* a generic `После последних…`; it also must not TRIM a source
+line that already has the payload. Do not replace that opener with a
+later crash scene.
+
 ## 29. Closing formulas
 
 Endings fail more reliably than openings (PromptIndex; ru-wiki
@@ -751,6 +785,11 @@ Soft as a single hedge. Strong when it carries the claim.
 
 Treatment: name the source or FLAG. Do not upgrade weasel into a
 bare fact.
+
+**False slop:** `В сообществе` / `всё чаще` already followed by a named
+URL/thread and an actual flag or command (`Hacker News` +
+`deny: [Agent(Explore)]` / `--disallowedTools Task`). KEEP the payload.
+Unnamed `эксперты считают` remains Strong.
 
 ## 31. Faux-insight, drumroll, colon-reveal
 
@@ -815,24 +854,17 @@ the outlet list. Do not invent what the article said.
 
 ## 34. Inanimate subject and significance tails
 
-AISIGNS / Reinhart / ru-wiki ВП:ПАИИ / humanizer-ru #55.
+**Origin:** heuristic (AISIGNS / Reinhart / ru-wiki ВП:ПАИИ / humanizer-ru #55).
+Not a ban on inanimate subjects.
 
-A person can emphasize. A fact, a festival, or a platform cannot.
-
-- `Исследование подчёркивает важность`;
-- `Платформа обеспечивает удобство`;
-- `Фестиваль, подчёркивая важность культурного обмена`;
-- `The update adds offline mode, showcasing the company's
-  user-first philosophy`;
-- English `-ing` tails already in §19: `highlighting`,
-  `underscoring`, `ensuring`, `reflecting`, `fostering`;
-- Russian деепричастие already in §20: `, подчёркивая важность`,
-  `, тем самым способствуя`, `, что свидетельствует о`;
-- copula avoidance already in §19: `serves as`, `stands as`,
-  `acts as a catalyst`, `functions as a bridge` = `is`.
-
-Treatment: restore the actor, or end on the fact. Do not replace
-`подчёркивает` with `акцентирует`.
+- **Observation:** a fact, festival, or platform performs a human
+  judgment (`Исследование подчёркивает важность`, `, тем самым способствуя`);
+- **Harm:** the actor disappears; significance tails pad a void;
+- **When OK:** system behavior (`сервер возвращает 500`, `процесс
+  держит слот`). English `-ing` tails and Russian деепричастие of
+  *emphasis* (`подчёркивая важность`) are the tell, not `сервер упал`;
+- **Fix:** restore the actor, or end on the fact. Do not replace
+  `подчёркивает` with `акцентирует`.
 
 ## 35. English-centric leak (translationese)
 
@@ -917,11 +949,13 @@ Extends §14. The harm is epistemic, not stylistic.
 
 Treatment: attach each source to *this* claim. FLAG unsourced
 precision. Do not KEEP a sharp numeral as an "expensive fact".
-Distinguish external claim vs author telemetry: if a precise figure
-represents the author's own terminal run or benchmark, do not delete or
-flag as fabrication—prompt the author to claim agency directly (`«в моем
-тесте я зафиксировал...»`). If it asserts an external industry fact
-without a source, FLAG or remove.
+A real number with a dropped denominator, sample, version, or comparison
+subject is still FLAG: restore the condition, do not compress it into a
+stronger slogan (`96% на эпизодах TTL` ≠ `кэш почти не живет`; `~4×
+агент vs чат` ≠ surcharge of a team). Do not rewrite `в зафиксированном
+кейсе` into `в моем прогоне` unless the draft already says the author
+ran it. If it asserts an external industry fact without a source, FLAG
+or remove.
 
 ## 39. Dataset-observed fills (tune, not detect)
 
@@ -1082,7 +1116,10 @@ sentence. FLAG a quote that lost its opener after a join.
   empty benefits list (`1. Повышение мотивации`) remains DELETE;
 - author outline heading that introduces a payload (`О формате`,
   `Чего я хочу достичь в 2025?`); drumroll `А теперь о главном`
-  remains TRIM.
+  remains TRIM;
+- practice comparison grid: N scenarios sharing the same fields so the
+  reader can scan, each card a distinct payload; empty `Как устроено /
+  Профит` copies remain §61.
 
 Treatment: same hierarchy — delete, else a source fact, else simpler
 Russian. Mixed drafts: KEEP the fact, not the authorship label. Do not
@@ -1115,14 +1152,16 @@ Treatment: Delete the meta-scaffolding. Start immediately with the observation, 
 
 ## 42. Sterile archetypes and generic specificity (суррогатная псевдоконкретика)
 
-Modern models have learned that abstract advice is penalized, so they synthesize frictionless, archetypal "examples" that lack real-world dirt:
+**Origin:** heuristic. A marked conditional example can explain a
+mechanism well.
 
-- hypothetical persona intros: `Представьте разработчика, который в пятницу вечером открывает PR…`;
-- generic startup/team staging: `Типичный сценарий: команда созванивается на дейли и обнаруживает…`, `В условном финтех-стартапе на 50 человек…`;
-- clean-room architecture examples: `Возьмем классический микросервис авторизации с базой на 100 тысяч пользователей…`;
-- synthetic dialogue snippets with zero voice: `«У нас всё работает локально», — говорит тимлид, но CI падает`.
-
-Treatment: If the archetype illustrates an abstraction, compress it into one sentence of plain mechanism. If the draft has a real fact or number, use that; never preserve synthetic storytelling.
+- **Observation:** frictionless persona staging (`Представьте разработчика,
+  который в пятницу вечером…`, unnamed `тимлид` dialogue);
+- **Harm:** the reader cannot tell illustration from evidence;
+- **When OK:** an explicitly marked toy example (`допустим, сервис с
+  одним редисом`) that names the mechanism. Dirt is not required;
+- **Fix:** if it illustrates, compress to one sentence of mechanism.
+  If the draft has a real fact, use that. Do not invent dirt.
 
 ## 43. Prestige vocabulary inflation and cognitive micro-jargon (интеллектуальный слоп)
 
@@ -1175,13 +1214,16 @@ Treatment: Delete the synthetic melodrama. Replace with specific technical reali
 
 ## 48. Genitive chains and verbal-noun stacks (нанизывание родительного падежа)
 
-A defining Russian translationese and bureaucratic model tell. Generative models copy English prepositional chains (`of the X of the Y`) or Soviet канцелярит, stringing 4+ nouns in the genitive case:
+**Origin:** heuristic (канцелярит / translationese). There is no
+statistical cap at two genitives.
 
-- nominal genitive train: `в целях обеспечения реализации оптимизации процессов управления качеством разработки`;
-- stacked abstract nouns: `оценка уровня готовности инфраструктуры развертывания сервиса`;
-- avoidance of direct action: using verbal nouns (`осуществление контроля`, `проведение анализа`, `достижение повышения`) instead of active verbs (`контролировать`, `анализировать`, `повышать`).
-
-Treatment: Unpack the chain. Find the true actor and the active verb. Limit consecutive genitive nouns to at most two.
+- **Observation:** verbal-noun stacks that hide the actor
+  (`в целях обеспечения реализации оптимизации процессов…`);
+- **Harm:** the reader cannot recover who does what;
+- **When OK:** two or even three genitives in a term of art
+  (`протокол передачи данных`, `система контроля версий`);
+- **Fix:** unpack until the actor and verb are visible. Do not
+  flatten a working term to hit a noun count.
 
 ## 49. Paragraph-level micro-summary and hourglass echo (абзацный микро-сэндвич)
 
@@ -1194,13 +1236,15 @@ Treatment: Cut the last sentence of the paragraph if it merely echoes the first.
 
 ## 50. Russian modal particle deficit (дефицит модальных частиц / «перевод ООН»)
 
-Natural Russian prose relies heavily on modal, limiting, and expressive particles (`же`, `ведь`, `то`, `-таки`, `уж`, `мол`, `как раз`, `хоть`). AI models generate "UN interpreter Russian" — grammatically pristine, syntactically smooth, but intonationally dead and antiseptic:
+**Origin:** heuristic. Missing particles are not a detector.
 
-- absence of conversational glue: long arguments without a single expressive particle;
-- monotonous declarative rhythm with zero oral cadence;
-- hyper-formal sentence connectors (`в связи с этим`, `на основании вышеизложенного`) where a particle (`ведь`, `же`) would naturally do the job.
-
-Treatment: In article/post/opinion register, introduce natural particles during Pass H to restore human vocal cadence and nuance. Never force particles into formal documentation or legal text.
+- **Observation:** long article/post with no `же` / `ведь` / `-то` and
+  with UN-interpreter connectors instead;
+- **Harm:** the voice is antiseptic; the stance is hard to hear;
+- **When OK:** tutorials, legal, academic, tech-breakdown. A literate
+  explanation without particles is not slop;
+- **Fix:** in article/post, Pass H may restore particles where the
+  line is dead. Do not sprinkle them into a working technical sentence.
 
 ## 51. Trivial definition padding (суррогатная эрудиция и словарный ликбез)
 
@@ -1234,13 +1278,18 @@ Treatment: Restore natural Russian topic-comment (Тема-Рема) order. Stri
 
 ## 54. Flat surprisal and vocabulary compression (низкая вариативность неожиданности / компрессия словаря)
 
-Empirically proven in arXiv:2606.04177 (284 linguistic features across 27 LLMs) and Information-Theoretic Stylometry. LLM decoding samples high-probability tokens, leading to an artificially flat surprisal landscape and depressed Type-Token Ratio (TTR):
+**Origin:** stylometry literature, not a universal law. arXiv:2606.04177
+is English, reports mixed TTR (including *higher* TTR on some AI
+continuations, tied to shorter text), states language limits, and does
+not cover current models. Do not read it as "LLMs use 300–500 safe
+words — add jargon".
 
-- vocabulary compression: recycling the same safe 300–500 words across an entire essay while human prose introduces bursts of unexpected, domain-specific, concrete terminology;
-- absence of local idioms, concrete tool names, or professional slang;
-- "average-of-the-web" blandness: replacing sharp technical specifics with smooth generalizations (`различные программные компоненты` instead of `демон, сайдкар и редис`).
-
-Treatment: Inject domain-exact terminology, specific tool/library names, and sharp concrete nouns. Do not smooth away accurate technical jargon.
+- **Observation:** generic umbrellas (`различные программные компоненты`)
+  where the source already had exact names;
+- **Harm:** the mechanism is harder to recover;
+- **When OK:** a tight explainer that repeats a term on purpose;
+- **Fix:** keep or restore exact domain names already in the source.
+  Do not inject rare words to raise TTR.
 
 ## 55. Agent deletion and reflexive passivization (агентивная редукция и пассивизация)
 
@@ -1280,7 +1329,9 @@ Documented in stylometric benchmarks (RuATD / CoAT / DeBERTa-Sentinel). Human wr
 - connective overload: `Вместе с тем, …`, `Кроме того, …`, `Тем не менее, …`, `Следовательно, …`, `В свою очередь, …`, `Более того, …`, `В этой связи, …`;
 - connective density exceeding 20–25% of all sentence openers in a text.
 
-Treatment: Cut the introductory connector. In 80% of cases, the sentence reads faster, punches harder, and maintains better flow without the connective crutch.
+Treatment: Cut the introductory connector when it does no work.
+**Heuristic, not a measured rate.** A needed contrast (`Тем не менее`
+after a real objection) stays.
 
 ## 59. Knizhnost' overload and participle cascades (книжный стиль и каскады причастий/деепричастий)
 
@@ -1303,40 +1354,49 @@ Treatment: Flatten the syntactic tree. Break relative clauses into independent s
 
 ## 61. Hyper-symmetry and template card grids (шаблонная симметрия и карточная сетка)
 
-Models frequently force varied engineering concepts, scenarios, or tips into artificially symmetric taxonomic card grids:
+**Origin:** heuristic. Repeated fields are not automatically slop.
 
-- identical internal sub-blocks across 3+ items: repeated `### N. Название` → `* **Как устроено:**` → `* **Профит:**`, or `**Проблема** / **Решение** / **Плюсы**`, or matching bold-label bullets across all subsections;
-- volumetric symmetry: sections, scenarios, or paragraphs artificially matching in sentence count (3–4 sentences) and word count ($\pm 10\%$);
-- unnatural taxonomy: forcing uneven real-world cases into equal containers (e.g. treating a 2-minute git command and an entire architectural paradigm with identical 2-field formatting cards);
-- uniform list parallelism: identical clause structures and rhythmic cadence across all items in an inventory.
-
-Human technical thought is naturally asymmetrical and centered around gravity points: a messy, battle-tested edge case gets three paragraphs of dirty nuance and scars, while an obvious case gets two punchy sentences.
-
-Treatment: Break the card grid. Strip repetitive bureaucratic sub-headers (`Как устроено`, `Профит`, `Плюсы`). Let the prose flow unevenly: expand the core difficult scenario with real trade-offs and edge-cases; compress trivial scenarios into one or two sentences or merge them.
+- **Observation:** empty or restated sub-blocks (`Как устроено` /
+  `Профит` copying the heading), or unequal objects forced into equal
+  containers;
+- **Harm:** the reader cannot tell the cases apart, or cannot scan
+  payloads that should be comparable;
+- **When OK:** N comparable scenarios sharing fields so the reader can
+  compare (`Как устроено` / `Профит` / `когда` / command), each card a
+  distinct payload. Three similar blocks are fine if the answers differ.
+  Linear structure is fine if it helps the argument;
+- **Fix:** break brochure copies. Keep a working comparison grid. Do
+  not mash four working cases into a monologue to lower P.
 
 ## 62. Antiseptic sterility and scrubbed conviction (вылизанность и стерилизованная бесконфликтность)
 
-RLHF alignment and safety tuning sanitize prose, scrubbing away all friction, frustration, professional bias, and sharp subjective conviction:
+**Origin:** heuristic. Missing irritation is not a detector. In
+article/post this skill still requires audible stance — that is the
+register, not a proof of authorship.
 
-- uncanny over-polishing (*вылизанность*): every sentence is grammatically pristine, emotionally neutral, and diplomatically balanced, producing a synthetic "consulting memo" tone;
-- absence of categorical subjectivity: the text avoids taking a hard stand, calling bad solutions bad, or expressing strong engineer opinions;
-- compulsive moderation: everything is presented as "an interesting alternative", "has its nuances", "requires a balanced trade-off analysis", avoiding blunt verdicts (`«это архитектурный костыль»`, `«так делать — себе дороже»`);
-- missing developer scars and pet peeves: real practitioners have passionate biases (hating polling, swearing by worktrees, dismissing enterprise cargo-cults). When a text reads as though no human ever suffered debugging it, it is sterile slop.
-
-Treatment: Restore the author's categorical judgment, subjective bias, and emotional presence. Let the text sound like an opinionated practitioner who has a nerve about the topic. Call an anti-pattern an anti-pattern. Do not mistake diplomatic neutrality for technical rigor.
+- **Observation:** consulting-memo balance, no verdict, `интересная
+  альтернатива` where the theses had a position;
+- **Harm:** the reader cannot tell what to do; the author's position
+  was laundered away;
+- **When OK:** news wire, tutorial, academic abstract, tech-breakdown
+  that was already tight. Neutral literate speech there is not slop;
+- **Fix:** restore the author's categorical judgment from theses or
+  draft. Do not invent a pet peeve. Do not drop `нередко` on a
+  measurement to sound blunt.
 
 ## 63. Spontaneity deficit and conveyor-belt linearity (дефицит спонтанности и конвейерная линейность)
 
-LLMs generate text like a conveyor belt or textbook syllabus: a frictionless, predictable, linear progression from point A to point B:
+**Origin:** heuristic. Linearity that helps the argument is KEEP.
 
-- syllabus progression: every paragraph mechanically steps into the next with no surprises, no sudden realizations, and no change of direction;
-- complete absence of spontaneous asides (*organic asides*): no rhetorical pauses (`«кстати, оговорка»`, `«ладно, об этом чуть позже»`, `«хотя кого я обманываю»`), no self-interruptions with concrete caveats;
-- flat emotional tempo: no dynamic shift between dense technical disassembly, dry developer sarcasm, and relaxed conceptual reflection;
-- escorted connections: ideas are never juxtaposed sharply; they are always accompanied by polite connective scaffolding.
-
-Human speech and thought are non-linear: a human pauses, makes an ironic aside, remembers an exception, or delivers a blunt one-line reaction after a dense paragraph.
-
-Treatment: Inject spontaneous human cadence. Add organic asides, rhetorical breathers, and unexpected perspective shifts. Let sentences collide by juxtaposition without explanatory hand-holding. Vary the pacing: follow a dense technical teardown with a short, blunt subjective reaction.
+- **Observation:** syllabus progression with no jump, no return, no
+  change of tempo; every paragraph glued to the last;
+- **Harm:** the reader cannot feel where the thought actually turns;
+  a working non-linear path was combed flat;
+- **When OK:** a procedure, a changelog, a comparison grid, a tutorial
+  click-path. Linear is the job there;
+- **Fix:** keep useful asides. In article/post, Pass H may add one
+  light aside or a blunt reaction. Do not insert fake digressions.
+  Do not break a scan-path to look spontaneous.
 
 ## 64. Metric conflation and heterogeneous table mashup (смешение разнородных метрик в таблицах)
 
@@ -1357,7 +1417,11 @@ Marketing copy and generative summaries gravitate toward vocabulary prestige, re
 - semantic dissonance: claiming architectural decentralization or zero single-points-of-failure while describing a central background process or broker through which all traffic flows;
 - buzzword elevation: substituting trendy distributed computing labels for ordinary local IPC, client-server, or procedural coordination.
 
-Treatment: Align the label with the physical mechanism. If the architecture relies on a background daemon, broker queue, or IPC socket, call it an IPC message bus or daemon broker. Reserve "peering", "zero-copy", "mesh", or "actor model" strictly for designs that genuinely implement those distributed protocols.
+Treatment: Align the label with the physical mechanism. A socket is a
+transport, not proof of centralization — look at topology and roles.
+If the design is a daemon broker, say so. Reserve "peering", "mesh",
+or "actor model" for designs that implement those protocols. Do not
+rename a working socket description to sound less prestigious.
 
 ## 66. Phantom configuration and orphaned runtime flags (фантомная конфигурация и параметры без контекста)
 

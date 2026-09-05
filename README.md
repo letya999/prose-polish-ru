@@ -1,20 +1,23 @@
 # prose-polish-ru
 
-Редакционный скилл и хуманизатор для русского текста. Первый запуск
-в сессии — `score`: вероятность нейрослопа, доля нейрослопа, доля
-воды, перечень маркеров без адресов и меню режимов — без правки
-файла. По запросу режет воду, кальки
-и нейрослоп в *наполнении*, делает текст ёмким, проводит Pass H (ё, опечатки
-в прозе, сленг, схлоп списков, детекторная поверхность) и всегда называет
-маркеры AI / воду / плохие признаки. Сохраняет факты, Markdown, код и
-авторский каркас. Не выдумывает процент GPTZero без скана. P(нейрослоп)
-из маркеров — оценка наполнения, не P(написала модель).
+Редакционный скилл и жёсткий хуманизатор для русского текста. Вход —
+тезисы, сгенерированный черновик или готовый авторский текст. Процесс:
+авторские тезисы → проверенные утверждения → связный текст → проверка
+результата.
+
+По просьбе написать или отредактировать — делает работу. По просьбе
+оценить — аудит. Без глагола — карточка `score`. Режет воду, кальки и
+нейрослоп в *наполнении*. На статье/посте обязателен Pass H: авторский
+стиль, лёгкие опечатки и шероховатость, косноязычие, эмоциональность и
+категоричность. Сохраняет защищённые спаны (имена, код, URL). Число из
+черновика — не факт, пока его не проверили. Не выдумывает процент
+GPTZero без скана. P(нейрослоп) — оценка наполнения, не P(написала модель).
 
 Контракт: [`SKILL.md`](SKILL.md). Каталог маркеров:
 [`references/ai-markers.md`](references/ai-markers.md). Процедура:
 [`references/editorial-procedure.md`](references/editorial-procedure.md).
 
-Установка: `npx skills add . -g -y --skill prose-polish-ru --copy -a grok`
+Установка: `npx skills add . -g -y --skill prose-polish-ru --copy -a "*"`
 
 ## Датасеты
 
@@ -27,7 +30,7 @@
 | Корпус | Что внутри | Зачем скиллу |
 |---|---|---|
 | [iitolstykh/LLMTrace_classification](https://huggingface.co/datasets/iitolstykh/LLMTrace_classification) | ~340k RU + ~249k EN, human/AI, 8–9 доменов, GPT-4o, GigaChat, YaGPT, Qwen, Gemini | Живой RU-слоп: wiki-continue, expand-news, отзывы. Бумага: [arXiv:2509.21269](https://arxiv.org/abs/2509.21269) |
-| [iitolstykh/LLMTrace_detection](https://huggingface.co/datasets/iitolstykh/LLMTrace_detection) | human / ai / mixed + `ai_char_intervals` (символьные спаны) | Смешанный черновик: KEEP человеческий интервал, REWRITE только слоп-спан |
+| [iitolstykh/LLMTrace_detection](https://huggingface.co/datasets/iitolstykh/LLMTrace_detection) | human / ai / mixed + `ai_char_intervals` (символьные спаны) | Смешанный черновик: KEEP полезный факт, не «человеческий интервал». Авторство ≠ качество |
 | [iis-research-team/AINL-Eval-2025](https://huggingface.co/datasets/iis-research-team/AINL-Eval-2025) · [GitHub](https://github.com/iis-research-team/AINL-Eval-2025) | 52k русских научных тезисов, human vs GPT-4-Turbo / Gemma2 / Llama3.3 / DeepSeek-V3 / GigaChat-Lite | Шаблон аннотации: `оказывает существенное влияние`, `перспективный подход`, мало цифр. [arXiv:2508.09622](https://arxiv.org/abs/2508.09622) |
 | [RussianNLP/coat](https://huggingface.co/datasets/RussianNLP/coat) · [GitHub](https://github.com/RussianNLP/CoAT) | 246k RU, 13 генераторов, 6 доменов (RuATD → CoAT) | Жанровый сдвиг: парафраз / суммаризация / упрощение vs человек |
 | [CoffeBank/Ru-hard-detection-dataset](https://github.com/CoffeBank/Ru-hard-detection-dataset) | Новости, эссе, наука; human / ai / ai+rew (Gemini, GPT-4o-mini, DeepSeek) | Парафраз-слой: слоп после «перепиши» |
@@ -78,25 +81,51 @@ python scripts/corpus_eval.py run --pack audit
 | Куда | Когда |
 |---|---|
 | `SKILL.md` | сломались depth / invocation / output contract / progressive disclosure |
-| `references/editorial-procedure.md` | KEEP/TRIM treatment, таблица Pass 3 |
+| `references/editorial-procedure.md` | KEEP/TRIM treatment, таблица Pass 3, точность выше голоса |
 | `references/ai-markers.md` | новый *класс* или False slop; не запрещённое слово |
 | `references/heuristics.md` | аргумент, ритм, дикция, голос |
 | `references/formats-and-artifacts.md` | Markdown, таблицы, списки, ссылки, код |
-| `scripts/lint_text.py` | regex-стабильный fill, который глаз уже назвал |
+| `scripts/lint_text.py` | regex-стабильный fill + простой язык `Y01`–`Y08` + подписи `F42` |
+| `scripts/check_readability.py` | before/after скан: карточки, заголовки, таблицы, рубленые удары, длинные фразы. Не Флеш |
+| `assets/simple-language.md` | ремесло простого языка: одна мысль, первое предложение работает. Не «ясный язык» |
 
-5. Если линт уже видит класс, а модель KEEP — это miss *узнавания*
-   (пакет не доехал / Category без `§N`), а не дыра в каталоге.
-6. Тот же срез после патча, потом held-out с новым seed.
-   Recall/precision — диагностика, не цель. Не оптимизировать под detector.
+5. Если линт уже видит класс, а модель KEEP — сначала смотреть, не
+   ложный ли это вызов линтера. Иначе miss узнавания (пакет не доехал /
+   Category без `§N`), а не дыра в каталоге.
+6. Тот же срез после патча. Held-out — отдельный замороженный срез, не
+   «тот же sample с новым seed»: новый seed сам по себе не гарантирует
+   непересечение. Recall/precision по `ai_char_intervals` — диагностика
+   авторского перекрытия, не оценка качества правки.
 
-Линтер отдельно: `python scripts/lint_text.py --self-test`. То, что линтер
-не видит, а глаз видит — новый класс в `ai-markers.md`.
+Линтер отдельно: `python scripts/lint_text.py --self-test`. Отсутствие
+`§N` в ответе — проблема формата отчёта, не доказательство, что правило
+не применили. «Линтер видит, модель KEEP» не значит, что ошиблась модель:
+линтер тоже ошибается.
 
 ## Прогон скилла по датасету
 
-Модель — Gemini через cliproxy (`ai-stp-cliproxy-1`). Золото —
-`ai_char_intervals` из LLMTrace_detection: это *авторство*, не слоп.
-Смотрим, совпали ли слоп-спаны, и назвала ли модель класс каталога.
+Модель и прокси задаются переменными `PROSE_POLISH_MODEL`,
+`PROSE_POLISH_LITELLM_CONTAINER`, `PROSE_POLISH_CLIPROXY_URL`
+(по умолчанию Gemini через cliproxy в контейнере `ai-stp-litellm-1`).
+Золото `ai_char_intervals` — *авторство*, не слоп и не качество правки.
+Хороший ИИ-фрагмент, оставленный KEEP, не обязан быть FN. Плохой
+человеческий фрагмент, правильно срезанный, не обязан быть FP.
+
+Три группы проверки (авторство — только диагностика):
+
+1. **Контрольные искажения** — `check_preservation.py --self-test`,
+   `check_readability.py --self-test`, `lint_text.py --self-test`:
+   убрана оговорка, переставлены числа, сломан URL, карточки vs таблица.
+2. **Полный редакторский прогон** — `corpus_eval.py run --mode polish`
+   (тезисы или черновик → текст). Нужна отдельная редакторская разметка
+   (`editorial_spans`: проблема, тип, что менять, что сохранить).
+3. **Слепое сравнение** — исходник / обычная генерация / скилл; люди из
+   аудитории. «Неотличим от человека» так и проверяется, не одним процентом.
+
+Рабочие критерии приёмки: существенные факты проверены или ограничены;
+не добавлены новые неподтверждённые обещания; читатель понимает тезис и
+находит действие; голос узнаваем, на статье/посте есть шероховатость и
+позиция, без выдуманного опыта.
 
 ```powershell
 python scripts/corpus_eval.py sample
@@ -130,4 +159,9 @@ formats, если в черновике Markdown).
 - **Catalog usage** — доля ответов с `§N`. Ноль при `--pack audit` значит, что цитирование классов не работает.
 - Не поднимать precision, сваливая KEEP-примеры в `SKILL.md`.
 
-Нужен docker-контейнер `ai-stp-litellm-1` (он ходит на `http://cliproxy:8317`). Модель по умолчанию `gemini-3.6-flash-high`.
+Контейнер, URL и модель — через `PROSE_POLISH_*` (см. выше). Пропуск
+готового `spans.json` срабатывает только если совпал fingerprint текста,
+пакета, промпта и модели. `run` возвращает 0 только если все кейсы ок;
+частичный прогон — код 1.
+
+`assets/simple-language.md` и `agents/openai.yaml` входят в пакет.

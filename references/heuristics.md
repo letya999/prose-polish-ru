@@ -51,7 +51,11 @@ diction, and voice questions — not KEEP examples and not `§N` marker classes.
 32. Is a missing premise factual, definitional, or merely rhetorical?
 33. Does the example instantiate the same concept as the claim?
 34. Is an analogy used to clarify rather than prove?
-35. Has a local case been generalized to a class?
+35. Has a local case been generalized to a class? A GitHub issue with a
+    version is a bug report, not a product generation change. Remaining
+    work after a failed run is not an independent solve of the same task.
+35b. Did a rewrite invent раньше/теперь for a mechanism the source still
+     describes as current?
 36. Has correlation been rewritten as causation?
 37. Has sequence been mistaken for consequence?
 38. Has a term changed meaning between sections?
@@ -78,6 +82,10 @@ diction, and voice questions — not KEEP examples and not `§N` marker classes.
 ## D. Information architecture
 
 51. Give every section one dominant purpose.
+51b. If the source already marks a versioned change, keep that change
+     distinct from still-current mechanisms. Do not past-tense a current
+     API to complete a then/now outline. Token tables and crash scenes
+     support a comparison; they do not prove a class died.
 52. Keep evidence near its claim.
 53. Keep caveats near the claim they constrain.
 54. Introduce terminology at first necessary use.
@@ -91,24 +99,28 @@ diction, and voice questions — not KEEP examples and not `§N` marker classes.
 61. Avoid a prose table of contents after visible headings already provide one.
 62. Avoid background history that does not change interpretation.
 63. Avoid a definition section for terms the target reader knows.
-64. Avoid identical internal templates and card grids across sections (e.g.
-    repeated "Как устроено" / "Профит", "Проблема" / "Решение", identical
-    bold-label bullets). Break hyper-symmetry; let cases vary in volume and
-    dirty detail.
+64. Avoid identical *empty* internal templates and brochure card grids
+    (restated "Как устроено" / "Профит", "Проблема" / "Решение" with no
+    distinct payload). Break that hyper-symmetry. KEEP N comparable
+    practice scenarios that share fields so the reader can scan; each
+    card a distinct command or when. Collapsing them into a monologue
+    is a skill failure, not a win against §61.
 65. Allow unequal section lengths according to importance.
 66. Make the center of gravity visible through evidence and space.
 67. Use transitions when direction changes, not between every paragraph.
 68. Let adjacent paragraphs connect implicitly when the relation is obvious.
-69. Keep asides, jumps, returns, and spontaneous rhetorical breathers;
-    conveyor-belt syllabus progression with zero organic diversions is an AI tell.
+69. Keep useful asides, jumps, and returns that already carry the argument.
+    Conveyor-belt syllabus with zero diversion is a tell in article/post —
+    Pass H may add one light aside or a blunt reaction, not a fake
+    digression that hides the claim.
 70. End when the argument lands; do not append a universal moral or a stock
     closer such as `Я бы оставил такую схему`.
 70c. Maintain platform scope consistency: if framed as CLI/terminal automation,
      do not jump into consumer Desktop GUI clients unannouncedly; frame UI equivalents
      explicitly as analogs.
-70d. Check hands-on reproducibility: in sections labeled "Практика", "Сценарии",
-     or "How-to", require actionable CLI command lines, configuration snippets,
-     or execution sequences, not just abstract API names.
+70d. In how-to / Практика / recipes, require an executable command or
+     config snippet. A conceptual comparison of scenarios may name APIs
+     without a CLI if it is not a run-book.
 
 ## E. Paragraph function
 
@@ -131,6 +143,10 @@ diction, and voice questions — not KEEP examples and not `§N` marker classes.
 85b. Figure caption synchronization: figure and diagram captions must not
      introduce orphan facts, technical deprecations, or tools that receive
      zero explanation in the body text.
+85c. Caption anaphora: `семь` / `эти` in alt or italic caption must resolve
+     locally, not only in a lede two screens up. Triple parallelism and
+     cinematic spawn-scene alt are catalog voice: rewrite the caption,
+     keep the path.
 
 ## F. Water and redundancy
 
@@ -155,9 +171,10 @@ diction, and voice questions — not KEEP examples and not `§N` marker classes.
 
 ## G. Sentence-level clarity
 
-101. Prefer a visible actor when agency matters. Inanimate nouns should not
-     perform human verbs: a complaint does not become a fix, data does not
-     tell, a decision does not emerge.
+101. Prefer a visible actor when agency matters. Inanimate subjects are
+     fine for system behavior (`сервер возвращает 500`). Name a person
+     when an inanimate noun is doing a human judgment: a complaint does
+     not become a fix, data does not tell, a decision does not emerge.
 102. Use passive voice when actor is unknown, irrelevant, or intentionally
      backgrounded.
 103. Replace stacked verbal nouns with verbs where possible.
@@ -199,8 +216,8 @@ diction, and voice questions — not KEEP examples and not `§N` marker classes.
      volumetric balance across paragraphs or scenario cards signals machine generation.
 134. Keep symmetry where comparison or instructions benefit from it.
 135. Read aloud mentally: fix places where grammar is correct but breath and
-     emphasis fight the thought. Insert spontaneous breathers and cadence shifts
-     between dense teardowns and blunt reactions.
+     emphasis fight the thought. Keep useful cadence shifts. Do not insert
+     breathers only to look spontaneous.
 
 ## I. Diction and register
 
@@ -238,9 +255,10 @@ diction, and voice questions — not KEEP examples and not `§N` marker classes.
 155. Match relationship to examples: personal, operational, hypothetical, or
      sourced.
 156. Do not copy an exemplar's exact hook, metaphor, cadence, or ending.
-157. Pass H: 1–3 informal slips in ordinary running prose (spoken syntax,
-     crooked agreement, a missing letter). Never in names, numbers, code,
-     or links.
+157. Pass H on article/post: 1–3 informal slips in ordinary running prose
+     (spoken syntax, crooked agreement, a missing letter, a slightly
+     awkward collocation). Required in that register. Never in names,
+     numbers, code, or links. Not a typo every sentence.
 158. Do not invent biography-informed anecdotes.
 159. Do not force greetings, jokes, questions, CTA, or `P.S.` because they occur
      in other publications.
@@ -251,10 +269,10 @@ diction, and voice questions — not KEEP examples and not `§N` marker classes.
      position silently.
 164. Distinguish voice from structure: samples do not override requested form.
 165. Preserve meaningful roughness; remove only roughness that hides the claim.
-165b. Distinguish author telemetry from synthetic precision: when raw terminal
-      logs or benchmark counters appear, prompt the author to claim first-person
-      agency (`«я замерил на стенде»`, `«в моем логе»`) instead of deleting them
-      or leaving them in passive bureaucracy (`«в зафиксированном кейсе»`).
+165b. Distinguish author telemetry from synthetic precision. First establish
+      origin. If the draft already says the author ran it, first-person
+      attribution is fine. If origin is unknown, FLAG or keep with
+      conditions — do not invent `я замерил`. Do not delete a real counter.
 
 ## K. Introductions and endings
 
@@ -298,3 +316,8 @@ diction, and voice questions — not KEEP examples and not `§N` marker classes.
      wiki-card? House frame and genre formality are not that flag.
 197. Did the `Маркеры` table name AI / вода / признак with `§N` or a Pass 3
      span? Did Pass H run without touching protected spans?
+198. Deletion check: if this sentence is removed, what does the reader
+     stop understanding or become unable to do?
+199. Restoration check: can the target reader retell the mechanism,
+     conditions, and takeaway of the section in their own words without
+     filling in missing links?

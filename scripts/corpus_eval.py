@@ -26,14 +26,21 @@ Packs:
     full   whole pack, including heuristics and formats
     auto   audit pack + formats when the draft has Markdown structure
 
-This is not a detector score. Disagreements are catalog gaps, recognition
-misses, false slop, or gold errors. Patch the owning file, not the map.
+Authorship gold (`ai_char_intervals`) is not editorial quality. A good
+AI span left KEEP is not a miss; a bad human span correctly TRIM-ed is
+not a false positive. When a row has `editorial_spans`, grade those.
+Otherwise report authorship-overlap as a diagnostic, not as skill quality.
+
+Control distortions (hedge drop, number swap, URL change) belong to
+scripts/check_preservation.py --self-test, not to this authorship overlap.
 """
 
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
+import os
 import random
 import re
 import subprocess
@@ -102,17 +109,19 @@ HF_SPLIT = "test"
 MIX_PER_SOURCE = 100
 DATA_TYPES = POST_TYPES
 MIN_CHARS = 400
-MAX_CHARS = 2500
+MAX_CHARS = int(os.environ.get("PROSE_POLISH_MAX_CHARS", "12000"))
 QUOTA_DET = {"mixed": 24, "ai": 8, "human": 8}
 QUOTA_CLF = {"ai": 24, "human": 8}
 QUOTA_HOUSE = 8
 QUOTA_AINL = {"human": 8, "ai": 8}
 TYPE_QUOTA_DET = {"article": 12, "short_form": 8, "story": 10, "factual": 10}
 TYPE_QUOTA_CLF = {"article": 12, "short_form": 6, "story": 8, "factual": 6}
-CLIPROXY_MODEL = "gemini-3.6-flash-high"
-LITELLM_CONTAINER = "ai-stp-litellm-1"
-CLIPROXY_URL = "http://cliproxy:8317/v1/chat/completions"
-CLIPROXY_KEY = "sk-none"
+CLIPROXY_MODEL = os.environ.get("PROSE_POLISH_MODEL", "gemini-3.6-flash-high")
+LITELLM_CONTAINER = os.environ.get("PROSE_POLISH_LITELLM_CONTAINER", "ai-stp-litellm-1")
+CLIPROXY_URL = os.environ.get(
+    "PROSE_POLISH_CLIPROXY_URL", "http://cliproxy:8317/v1/chat/completions"
+)
+CLIPROXY_KEY = os.environ.get("PROSE_POLISH_CLIPROXY_KEY", "sk-none")
 UA = "prose-polish-ru-corpus-eval"
 
 DOCKER_POST = r"""
@@ -155,8 +164,9 @@ SPAN_SCHEMA = """\
 - start/end — смещения в Unicode-символах исходного черновика, полуинтервал [start, end).
 - Спаны не пересекаются, идут по возрастанию start, в сумме покрывают весь черновик.
 - action: KEEP | TRIM | REWRITE | DELETE | FLAG.
-- KEEP = полезный факт или живой кусок: числа, даты, имена, суммы, URL; отзыв; цитата; UI-клики; благодарность; определение; сленг; суд/полиция; спорт play-by-play; тикет с `>`; синдром+мутация. Не «человеческий интервал датасета».
-- TRIM/REWRITE/DELETE/FLAG = слоп, вода, заикание, n+заглавная, пустая значимость, review-sandwich, AINL-молд без результата — даже если датасет пометил спан human.
+- KEEP = полезный факт или живой кусок: числа, даты, имена, суммы, URL; отзыв; цитата; UI-клики; благодарность; определение; сленг; суд/полиция; спорт play-by-play; тикет с `>`; синдром+мутация. Не «человеческий интервал датасета» и не непроверенное утверждение.
+- TRIM/REWRITE/DELETE = слоп, вода, заикание, n+заглавная, пустая значимость, review-sandwich, AINL-молд без результата — даже если датасет пометил спан human.
+- FLAG = нужна проверка, не слоп сам по себе.
 - Не ставь P(AI). Не пиши «Вердикт». Не оценивай авторство.
 - quote — дословный кусок черновика, не длиннее 80 символов.
 - why — `§N class; treatment`. Для слопа treatment = delete | source-fact | simpler
@@ -653,29 +663,49 @@ def read_pack(files: list[str]) -> str:
     return "\n---\n".join(parts)
 
 
-def skill_system_prompt(pack: str = "audit", text: str = "") -> tuple[str, list[str]]:
+def skill_system_prompt(
+    pack: str = "audit",
+    text: str = "",
+    mode: str = "audit",
+) -> tuple[str, list[str]]:
     files = resolve_pack_files(pack, text)
-    prompt = (
-        read_pack(files)
-        + "\n\n---\nТы выполняешь $prose-polish-ru в режиме audit.\n"
-        + "Не переписывай черновик. Сначала таблица аудита, затем JSON спанов.\n"
-        + "В колонке Category цитируй класс каталога как `§N` "
-        "(номер секции ai-markers) или имя спана из procedure Pass 3.\n"
-        + "Не изобретай свободный ярлык вместо §N.\n"
-        + "Recommended action: delete, иначе факт из черновика, иначе проще. "
-        "Синоним не лечение.\n"
-    )
-    return prompt, files
+    if mode == "polish":
+        extra = (
+            "\n\n---\nТы выполняешь $prose-polish-ru в режиме standard.\n"
+            "Проверь утверждения, затем отредактируй. Верни текст, затем "
+            "JSON спанов. Не выдумывай факты.\n"
+        )
+    else:
+        extra = (
+            "\n\n---\nТы выполняешь $prose-polish-ru в режиме audit.\n"
+            "Не переписывай черновик. Сначала таблица аудита, затем JSON спанов.\n"
+            "В колонке Category цитируй класс каталога как `§N` "
+            "(номер секции ai-markers) или имя спана из procedure Pass 3.\n"
+            "Не изобретай свободный ярлык вместо §N.\n"
+            "Recommended action: delete, иначе факт из черновика, иначе проще. "
+            "Синоним не лечение. FLAG — непроверенное утверждение, не слоп.\n"
+        )
+    return read_pack(files) + extra, files
 
 
-def user_prompt(text: str) -> str:
+def user_prompt(text: str, mode: str = "audit") -> str:
+    if mode == "polish":
+        lead = (
+            "Use $prose-polish-ru in standard mode. Check claims, then edit.\n"
+            "Return the polished text, then Skill gaps, then the JSON spans.\n"
+        )
+    else:
+        lead = (
+            "Use $prose-polish-ru in audit mode. Do not rewrite.\n"
+            "This run iterates the skill pack (SKILL.md + catalogs) on a post/article. "
+            "After the table add Skill gaps: each missed class as `§N` plus one rule. "
+            "If nothing missed, write `Skill gaps: none`.\n"
+            "For each slop row the recommended action is delete, a fact already "
+            "in the draft, or a simpler rewrite — not a synonym. FLAG is not slop.\n"
+        )
     return (
-        "Use $prose-polish-ru in audit mode. Do not rewrite.\n"
-        "This run iterates the skill pack (SKILL.md + catalogs) on a post/article. "
-        "After the table add Skill gaps: each missed class as `§N` plus one rule. "
-        "If nothing missed, write `Skill gaps: none`.\n"
-        "For each slop row the recommended action is delete, a fact already "
-        "in the draft, or a simpler rewrite — not a synonym.\n\n"
+        lead
+        + "\n"
         + SPAN_SCHEMA
         + "\nЧерновик:\n<<<\n"
         + text
@@ -684,14 +714,35 @@ def user_prompt(text: str) -> str:
 
 
 def pack_manifest(pack: str, files: list[str], model: str) -> dict:
-    sizes = {rel: (ROOT / rel).stat().st_size for rel in files}
+    bytes_map = {rel: (ROOT / rel).stat().st_size for rel in files}
+    chars_map = {
+        rel: len((ROOT / rel).read_text(encoding="utf-8")) for rel in files
+    }
+    hashes = {
+        rel: hashlib.sha256((ROOT / rel).read_bytes()).hexdigest()[:16]
+        for rel in files
+    }
     return {
         "pack": pack,
         "files": files,
-        "chars": sum(sizes.values()),
-        "bytes": sizes,
+        "chars": sum(chars_map.values()),
+        "bytes_total": sum(bytes_map.values()),
+        "bytes": bytes_map,
+        "chars_by_file": chars_map,
+        "sha256_16": hashes,
         "model": model,
     }
+
+
+def run_fingerprint(text: str, files: list[str], model: str, prompt: str) -> str:
+    h = hashlib.sha256()
+    h.update(text.encode("utf-8"))
+    h.update(model.encode("utf-8"))
+    h.update(prompt.encode("utf-8"))
+    for rel in files:
+        h.update(rel.encode("utf-8"))
+        h.update((ROOT / rel).read_bytes())
+    return h.hexdigest()[:16]
 
 
 def cliproxy_chat(messages: list[dict], model: str) -> str:
@@ -728,7 +779,10 @@ def parse_spans_json(blob: str) -> dict:
         return json.loads(fixed)
 
 
-def extract_spans(raw: str) -> list[dict]:
+VALID_ACTIONS = {"KEEP", "TRIM", "REWRITE", "DELETE", "FLAG", "MERGE", "MOVE"}
+
+
+def extract_spans(raw: str, text: str = "") -> list[dict]:
     blob = None
     marker = re.search(r"```json\s*", raw)
     if marker:
@@ -753,14 +807,34 @@ def extract_spans(raw: str) -> list[dict]:
     spans = data.get("spans")
     if not isinstance(spans, list) or not spans:
         raise ValueError("empty spans")
+    n = len(text) if text else None
     cleaned = []
+    prev_end = 0
     for item in spans:
+        start = int(item["start"])
+        end = int(item["end"])
+        action = str(item.get("action") or "").upper()
+        quote = str(item.get("quote") or "")
+        if action not in VALID_ACTIONS:
+            raise ValueError(f"unknown action {action!r}")
+        if start < 0 or end < start:
+            raise ValueError(f"bad span bounds {start}:{end}")
+        if n is not None:
+            if end > n:
+                raise ValueError(f"span end {end} past text length {n}")
+            if start < prev_end:
+                raise ValueError(f"overlapping or unsorted span {start}:{end}")
+            if quote:
+                fragment = text[start:end]
+                if quote not in fragment and fragment[:80] not in quote:
+                    raise ValueError(f"quote does not match span {start}:{end}")
+        prev_end = end
         cleaned.append(
             {
-                "start": int(item["start"]),
-                "end": int(item["end"]),
-                "action": str(item.get("action") or "").upper(),
-                "quote": str(item.get("quote") or ""),
+                "start": start,
+                "end": end,
+                "action": action,
+                "quote": quote,
                 "why": str(item.get("why") or ""),
             }
         )
@@ -785,8 +859,9 @@ def cmd_run(args: argparse.Namespace) -> int:
     pack = args.pack
     shared_system = None
     shared_files: list[str] = []
+    mode = getattr(args, "mode", "audit")
     if pack != "auto":
-        shared_system, shared_files = skill_system_prompt(pack)
+        shared_system, shared_files = skill_system_prompt(pack, mode=mode)
         manifest = pack_manifest(pack, shared_files, args.model)
         (dest / "pack-manifest.json").write_text(
             json.dumps(manifest, ensure_ascii=False, indent=2), encoding="utf-8"
@@ -797,31 +872,40 @@ def cmd_run(args: argparse.Namespace) -> int:
             flush=True,
         )
     ok = 0
-    auto_seen: set[tuple[str, ...]] = set()
+    failed = 0
+    skipped = 0
     for i, row in enumerate(rows, 1):
         run_dir = dest / "runs" / row["id"]
         run_dir.mkdir(parents=True, exist_ok=True)
         out_path = run_dir / "audit.md"
         spans_path = run_dir / "spans.json"
-        if spans_path.exists() and not args.force:
-            print(f"[{i}/{len(rows)}] skip {row['id']}")
-            ok += 1
-            continue
+        fp_path = run_dir / "fingerprint.json"
         if pack == "auto":
-            system, files = skill_system_prompt(pack, row["text"])
-            key = tuple(files)
-            if key not in auto_seen:
-                auto_seen.add(key)
-                (dest / "pack-manifest.json").write_text(
-                    json.dumps(
-                        pack_manifest(pack, files, args.model),
-                        ensure_ascii=False,
-                        indent=2,
-                    ),
-                    encoding="utf-8",
-                )
+            system, files = skill_system_prompt(pack, row["text"], mode)
+            (run_dir / "pack-manifest.json").write_text(
+                json.dumps(
+                    pack_manifest(pack, files, args.model),
+                    ensure_ascii=False,
+                    indent=2,
+                ),
+                encoding="utf-8",
+            )
         else:
             system, files = shared_system, shared_files
+        prompt = user_prompt(row["text"], mode)
+        fp = run_fingerprint(row["text"], files, args.model, prompt)
+        if spans_path.exists() and not args.force:
+            prev = {}
+            if fp_path.exists():
+                try:
+                    prev = json.loads(fp_path.read_text(encoding="utf-8"))
+                except json.JSONDecodeError:
+                    prev = {}
+            if prev.get("fingerprint") == fp:
+                print(f"[{i}/{len(rows)}] skip {row['id']}")
+                skipped += 1
+                ok += 1
+                continue
         print(
             f"[{i}/{len(rows)}] {row['id']} {row['label']} {row['n_chars']}c "
             f"pack={pack} ({len(files)} files) …",
@@ -831,25 +915,45 @@ def cmd_run(args: argparse.Namespace) -> int:
             raw = cliproxy_chat(
                 [
                     {"role": "system", "content": system},
-                    {"role": "user", "content": user_prompt(row["text"])},
+                    {"role": "user", "content": prompt},
                 ],
                 args.model,
             )
             out_path.write_text(raw, encoding="utf-8")
-            spans = extract_spans(raw)
+            spans = extract_spans(raw, row["text"])
             spans_path.write_text(
                 json.dumps(spans, ensure_ascii=False, indent=2), encoding="utf-8"
             )
+            fp_path.write_text(
+                json.dumps(
+                    {
+                        "fingerprint": fp,
+                        "model": args.model,
+                        "pack": pack,
+                        "mode": mode,
+                        "n_chars": len(row["text"]),
+                    },
+                    indent=2,
+                ),
+                encoding="utf-8",
+            )
             ok += 1
         except Exception as exc:  # noqa: BLE001 — keep going across the slice
+            failed += 1
             (run_dir / "error.txt").write_text(str(exc), encoding="utf-8")
             print(f"  FAIL {row['id']}: {exc}", file=sys.stderr)
         time.sleep(args.sleep)
-    print(f"done {ok}/{len(rows)} → {dest / 'runs'}")
-    return 0 if ok else 1
+    print(f"done ok={ok} failed={failed} skipped={skipped} / {len(rows)} → {dest / 'runs'}")
+    if failed and ok:
+        return 1
+    if failed:
+        return 2
+    return 0
 
 
-SLOP_ACTIONS = {"TRIM", "REWRITE", "DELETE", "FLAG"}
+PROBLEM_ACTIONS = {"TRIM", "REWRITE", "DELETE"}
+FLAG_ACTIONS = {"FLAG"}
+SLOP_ACTIONS = PROBLEM_ACTIONS  # FLAG is verification, not slop
 CITE_RE = re.compile(r"§\s*(\d+)")
 SECTION_RE = re.compile(r"^## (\d+)\.\s+(.+)$", re.M)
 SKILL_GAPS_RE = re.compile(
@@ -898,21 +1002,28 @@ def load_lint():
 
 def parse_audit_categories(raw: str) -> list[str]:
     cats: list[str] = []
+    cat_idx = None
     for line in raw.splitlines():
         if not line.startswith("|"):
             continue
         cells = [c.strip() for c in line.strip().strip("|").split("|")]
-        if len(cells) < 3:
+        if not cells:
             continue
         if re.match(r":?-{2,}", cells[0]):
             continue
-        head = cells[0].lower()
-        if "location" in head or "локац" in head or "категор" in head:
+        lowered = [c.lower() for c in cells]
+        if cat_idx is None:
+            for i, name in enumerate(lowered):
+                if "category" in name or "категор" in name:
+                    cat_idx = i
+                    break
+            if cat_idx is not None:
+                continue
             continue
-        # Category is 3rd col in the skill contract; some tables swap 1–2.
-        cat = cells[2] if len(cells) >= 3 else cells[-1]
-        if cat and cat.lower() not in {"category", "категория", "severity", "серьёзность"}:
-            cats.append(cat)
+        if cat_idx < len(cells):
+            cat = cells[cat_idx]
+            if cat and cat.lower() not in {"category", "категория"}:
+                cats.append(cat)
     return cats
 
 
@@ -947,9 +1058,19 @@ def route_disagreement(kind: str, quote: str, lint_codes: list[str]) -> str:
 def pred_tags(n: int, spans: list[dict]) -> list[str]:
     tags = ["?"] * n
     for span in spans:
-        mark = "S" if span["action"] in SLOP_ACTIONS else "K"
-        start = max(0, min(n, span["start"]))
-        end = max(start, min(n, span["end"]))
+        action = str(span.get("action") or "").upper()
+        if action not in VALID_ACTIONS:
+            raise ValueError(f"unknown action {action!r}")
+        if action in PROBLEM_ACTIONS:
+            mark = "S"
+        elif action in FLAG_ACTIONS:
+            mark = "F"
+        else:
+            mark = "K"
+        start = int(span["start"])
+        end = int(span["end"])
+        if start < 0 or end > n or end < start:
+            raise ValueError(f"span out of range {start}:{end} n={n}")
         for i in range(start, end):
             tags[i] = mark
     return tags
@@ -1081,13 +1202,27 @@ def cmd_grade(args: argparse.Namespace) -> int:
             for hit in frame_hits:
                 house_frame_hits.append(f"- {row['id']} TRIM house {hit}")
             continue
-        pred = pred_tags(n, spans)
-        tp = fp = fn = tn = unc = 0
+        try:
+            pred = pred_tags(n, spans)
+        except ValueError as exc:
+            totals["failed"] += 1
+            report_rows.append(
+                {
+                    "id": row["id"],
+                    "label": row["label"],
+                    "status": f"invalid-spans:{exc}",
+                }
+            )
+            continue
+        tp = fp = fn = tn = unc = flag_n = 0
         kinds: list[str] = []
         for g, p in zip(gold, pred):
             if p == "?":
                 unc += 1
                 kinds.append("U")
+            elif p == "F":
+                flag_n += 1
+                kinds.append("FLAG")
             elif g == "A" and p == "S":
                 tp += 1
                 kinds.append("TP")
@@ -1100,6 +1235,20 @@ def cmd_grade(args: argparse.Namespace) -> int:
             else:
                 tn += 1
                 kinds.append("TN")
+        coverage = (n - unc) / n if n else 1.0
+        if coverage < 0.95:
+            totals["failed"] += 1
+            report_rows.append(
+                {
+                    "id": row["id"],
+                    "label": row["label"],
+                    "status": "incomplete-coverage",
+                    "coverage": round(coverage, 3),
+                    "uncovered": unc,
+                    "n_chars": n,
+                }
+            )
+            continue
         run_kind = None
         run_start = 0
         for i, kind in enumerate(kinds + ["END"]):
@@ -1137,6 +1286,8 @@ def cmd_grade(args: argparse.Namespace) -> int:
                 "fn": fn,
                 "tn": tn,
                 "uncovered": unc,
+                "coverage": round((n - unc) / n if n else 1.0, 3),
+                "flag_chars": flag_n,
                 "recall_ai": rec,
                 "precision_slop": prec,
                 "cited_sections": cites,
@@ -1159,9 +1310,10 @@ def cmd_grade(args: argparse.Namespace) -> int:
         "recall_ai_spans": round(rec, 3),
         "precision_slop_calls": round(prec, 3),
         "note": (
-            "recall = доля золотых AI-символов, которые скилл пометил как слоп; "
-            "precision = доля слоп-пометок, попавших в золотой AI-интервал. "
-            "Не detector accuracy. FP на human — подозрение на ложный слоп-вызов; "
+            "Authorship overlap, not quality. recall = доля золотых AI-символов, "
+            "которые скилл пометил TRIM/REWRITE/DELETE; FLAG не считается слопом. "
+            "Incomplete coverage (<95%) excluded from totals. "
+            "FP на human — подозрение на ложный слоп-вызов; "
             "FN на AI — дыра в каталоге либо золото разметило не-слоп как AI."
         ),
         "catalog": {
@@ -1256,7 +1408,7 @@ def cmd_grade(args: argparse.Namespace) -> int:
     print(f"wrote {dest / 'span-agreement.json'}")
     print(f"wrote {dest / 'catalog-usage.json'}")
     print(f"wrote {dest / 'disagreements.md'}")
-    return 0
+    return 1 if totals["failed"] else 0
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -1314,6 +1466,12 @@ def build_parser() -> argparse.ArgumentParser:
     run.add_argument("--ids", default="", help="comma-separated row ids")
     run.add_argument("--sleep", type=float, default=0.4)
     run.add_argument("--force", action="store_true")
+    run.add_argument(
+        "--mode",
+        choices=("audit", "polish"),
+        default="audit",
+        help="audit = table only; polish = full editorial pass (not authorship gold)",
+    )
     run.set_defaults(func=cmd_run)
     grade = sub.add_parser("grade", help="compare predicted spans to gold intervals")
     grade.add_argument("--out", type=Path, default=DEFAULT_OUT)

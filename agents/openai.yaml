@@ -1,6 +1,6 @@
 interface:
   display_name: "Prose Polish RU"
-  short_description: "Сначала оценка нейрослопа, потом правка по формату"
-  default_prompt: "Use $prose-polish-ru. First score the draft: нейрослоп probability, slop share, water share, a list of нейрослоп markers, then ask the user to pick a mode. Do not rewrite unless a format is named. Preserve facts, links, and code."
+  short_description: "Редактор и жёсткий хуманизатор русского текста"
+  default_prompt: "Use $prose-polish-ru. Route the request: write/edit/humanize → do the work; evaluate → audit; unnamed → score card. Preserve protected spans. On article/post apply Pass H (slips, roughness, stance)."
 policy:
   allow_implicit_invocation: false
