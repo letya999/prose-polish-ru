@@ -1,5 +1,9 @@
 ---
 name: prose-polish-ru
+license: MIT
+metadata:
+  author: letya999
+  version: "0.1.0"
 description: >
   Use only when the user explicitly invokes $prose-polish-ru or explicitly
   names prose-polish-ru. Russian editor and hard humanizer: theses or a
@@ -201,7 +205,7 @@ that did not ask for it.
 ## Output
 
 `score`: Score card → procedure Score. No rewrite, no file edit, no
-locations. Print `Вероятность нейрослопа` — do not refuse it as "P(AI)".
+locations. Print `Вероятность нейрослопа`. Do not relabel it as "P(AI)".
 
 `audit`: percents, then the table. No rewrite. Contract → procedure Audit.
 

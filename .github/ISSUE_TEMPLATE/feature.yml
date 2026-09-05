@@ -1,0 +1,34 @@
+name: Feature
+description: A new marker class, KEEP/TRIM miss, or lint
+title: "[feat] "
+labels: ["enhancement"]
+body:
+  - type: textarea
+    id: what
+    attributes:
+      label: What to add
+      description: A new class of Russian neuroslop, a KEEP/TRIM miss, or a regex-stable lint. Not a banned word list.
+    validations:
+      required: true
+  - type: textarea
+    id: examples
+    attributes:
+      label: Examples
+      description: Short before/after or a false-slop boundary. Strip secrets and private URLs.
+    validations:
+      required: false
+  - type: dropdown
+    id: file
+    attributes:
+      label: Likely owning file
+      options:
+        - SKILL.md
+        - references/editorial-procedure.md
+        - references/ai-markers.md
+        - references/heuristics.md
+        - references/formats-and-artifacts.md
+        - scripts/lint_text.py
+        - assets/simple-language.md
+        - not sure
+    validations:
+      required: false

@@ -1,0 +1,26 @@
+name: Bug
+description: Something the skill or scripts did wrong
+title: "[bug] "
+labels: ["bug"]
+body:
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened
+      description: What you asked, what you got, what you expected.
+    validations:
+      required: true
+  - type: textarea
+    id: input
+    attributes:
+      label: Input excerpt
+      description: Paste a short fragment. Strip secrets, names you cannot share, and private URLs.
+    validations:
+      required: false
+  - type: input
+    id: agent
+    attributes:
+      label: Agent
+      placeholder: Grok Build, Claude Code, Codex, …
+    validations:
+      required: false

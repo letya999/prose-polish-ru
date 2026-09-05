@@ -1,9 +1,3 @@
-prose-polish-ru-workspace/
-scripts/__pycache__/
-*.pyc
-evals/
-fixes.txt
-
 # secrets and credentials
 .env
 .env.*
@@ -50,6 +44,3 @@ logs/
 tmp/
 temp/
 .cache/
-.venv/
-.ruff_cache/
-.repo-safety/logs/

@@ -124,6 +124,15 @@ CLIPROXY_URL = os.environ.get(
 CLIPROXY_KEY = os.environ.get("PROSE_POLISH_CLIPROXY_KEY", "sk-none")
 UA = "prose-polish-ru-corpus-eval"
 
+
+def _http_read(req: urllib.request.Request, timeout: int) -> bytes:
+    url = req.full_url
+    if not url.startswith(("https://", "http://")):
+        raise ValueError(f"refusing non-http URL: {url}")
+    with urllib.request.urlopen(req, timeout=timeout) as resp:  # nosec B310
+        return resp.read()
+
+
 DOCKER_POST = r"""
 import json, sys, urllib.request, urllib.error
 payload = sys.stdin.buffer.read()
@@ -194,8 +203,7 @@ def hf_get(dataset: str, offset: int, length: int = 100, split: str = HF_SPLIT) 
         f"{HF_ROWS}?{query}",
         headers={"User-Agent": UA},
     )
-    with urllib.request.urlopen(req, timeout=45) as resp:
-        return json.loads(resp.read().decode("utf-8"))
+    return json.loads(_http_read(req, 45).decode("utf-8"))
 
 
 def usable_trace(row: dict, labels: set[str], min_chars: int = MIN_CHARS) -> bool:
@@ -264,7 +272,7 @@ def trace_jsonl(dataset: str, split: str = HF_SPLIT) -> Path:
     from huggingface_hub import hf_hub_download
 
     HF_CACHE.mkdir(parents=True, exist_ok=True)
-    path = hf_hub_download(
+    path = hf_hub_download(  # nosec B615 — optional eval, public named datasets
         repo_id=dataset,
         filename=f"{split}.jsonl",
         repo_type="dataset",
@@ -391,7 +399,7 @@ def sample_ainl(
         return []
     filename = "train.csv" if max(quota.values()) > 16 else "dev_full.csv"
     path = Path(
-        hf_hub_download(
+        hf_hub_download(  # nosec B615 — optional eval, public named datasets
             repo_id=AINL,
             filename=filename,
             repo_type="dataset",
@@ -457,7 +465,7 @@ def sample_coat(rng: random.Random, n: int = MIX_PER_SOURCE) -> list[dict]:
         print(f"coat deps missing: {exc}", file=sys.stderr)
         return []
     path = Path(
-        hf_hub_download(
+        hf_hub_download(  # nosec B615 — optional eval, public named datasets
             repo_id=COAT,
             filename="authorship/validation-00000-of-00001.parquet",
             repo_type="dataset",
@@ -504,8 +512,7 @@ def _download_ruhard(rel: str) -> Path:
         return dest
     url = RUHARD_RAW + rel
     req = urllib.request.Request(url, headers={"User-Agent": UA})
-    with urllib.request.urlopen(req, timeout=60) as resp:
-        dest.write_bytes(resp.read())
+    dest.write_bytes(_http_read(req, 60))
     return dest
 
 

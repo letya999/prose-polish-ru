@@ -1,0 +1,15 @@
+title = "prose-polish-ru"
+
+[extend]
+useDefault = true
+
+[allowlist]
+description = "Local eval workspace and placeholder proxy key"
+paths = [
+  '''prose-polish-ru-workspace/''',
+  '''evals/''',
+  '''hf-cache/''',
+]
+regexes = [
+  '''sk-none''',
+]

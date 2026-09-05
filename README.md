@@ -3,9 +3,15 @@
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/skill-prose--polish--ru-black" alt="skill">
+  <a href="LICENSE"><img src="https://img.shields.io/github/license/letya999/prose-polish-ru" alt="License: MIT"></a>
+  <a href="https://github.com/letya999/prose-polish-ru/releases/tag/v0.1.0"><img src="https://img.shields.io/github/v/tag/letya999/prose-polish-ru?label=version" alt="version"></a>
+  <a href="https://github.com/letya999/prose-polish-ru/stargazers"><img src="https://img.shields.io/github/stars/letya999/prose-polish-ru?style=flat" alt="stars"></a>
+  <a href="https://github.com/letya999/prose-polish-ru/commits/main"><img src="https://img.shields.io/github/last-commit/letya999/prose-polish-ru" alt="last commit"></a>
+  <a href="https://github.com/letya999/prose-polish-ru/actions/workflows/check.yml"><img src="https://github.com/letya999/prose-polish-ru/actions/workflows/check.yml/badge.svg?branch=main" alt="check"></a>
+  <img src="https://img.shields.io/badge/python-3.12-3776ab" alt="Python 3.12">
   <img src="https://img.shields.io/badge/lang-RU-0a66c2" alt="Russian">
-  <img src="https://img.shields.io/badge/install-npx%20skills%20add-fb631b" alt="npx skills add">
+  <img src="https://img.shields.io/badge/skill-prose--polish--ru-black" alt="skill">
+  <a href="https://skills.sh/letya999/prose-polish-ru/prose-polish-ru"><img src="https://skills.sh/letya999/prose-polish-ru/prose-polish-ru/badge.svg" alt="skills.sh"></a>
 </p>
 
 Редакционный скилл и жёсткий хуманизатор для русского текста. Вход —
@@ -18,6 +24,32 @@ Pass H: авторский стиль, лёгкие опечатки, шерох
 [`references/editorial-procedure.md`](references/editorial-procedure.md).
 Каталог маркеров:
 [`references/ai-markers.md`](references/ai-markers.md).
+
+## Quick start
+
+```bash
+npx skills add letya999/prose-polish-ru -g -y --skill prose-polish-ru --copy -a "*"
+```
+
+В агенте вызови скилл по имени и вставь тезисы или черновик:
+
+```text
+$prose-polish-ru отполируй этот пост:
+
+[текст]
+```
+
+Без глагола скилл отдаст карточку `score` и меню, правку не начнёт.
+Обычное «перепиши» без имени скилла его не включает.
+
+Локальная копия из клона:
+
+```bash
+git clone https://github.com/letya999/prose-polish-ru.git
+cd prose-polish-ru
+npx skills add . -g -y --skill prose-polish-ru --copy -a "*"
+python scripts/lint_text.py --self-test
+```
 
 ## Один конвейер, четыре шага
 
@@ -39,21 +71,6 @@ Pass H: авторский стиль, лёгкие опечатки, шерох
 Глубина (`light` · `standard` · `deep`) и формат выдачи (`clean` · таблица ·
 `audit` · `score`) — разные оси. `clean` — формат без таблицы маркеров, не
 отключение фактчека.
-
-## Поставьте скилл, дальше ведёт агент
-
-```bash
-npx skills add . -g -y --skill prose-polish-ru --copy -a "*"
-```
-
-Из GitHub, когда репозиторий доступен агенту:
-
-```bash
-npx skills add letya999/prose-polish-ru -g -y --skill prose-polish-ru --copy -a "*"
-```
-
-Явный вызов: `$prose-polish-ru` или по имени. Обычное «перепиши» скилл сам
-не хватает.
 
 ## Русские хуманизаторы
 
@@ -253,3 +270,23 @@ default) · `full` (ещё heuristics и formats) · `auto` (audit + formats, е
 `assets/simple-language.md` и `agents/openai.yaml` входят в пакет.
 
 </details>
+
+<details>
+<summary>Документация</summary>
+
+- [SKILL.md](SKILL.md) — контракт скилла
+- [CONTRIBUTING.md](CONTRIBUTING.md) — куда патчить и какие проверки гонять
+- [SECURITY.md](SECURITY.md) — как сообщить об уязвимости
+- [AGENTS.md](AGENTS.md) — правила для агентов
+- [CHANGELOG.md](CHANGELOG.md) — релизы
+- [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md)
+
+</details>
+
+<details>
+<summary>License</summary>
+
+MIT. Copyright (c) 2026 Artem Letyushev. See [LICENSE](LICENSE).
+
+</details>
+
