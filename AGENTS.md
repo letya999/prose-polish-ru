@@ -39,4 +39,5 @@ Before push: `ai-repo-safety prepush --target .`
 `SKILL.md` for routing. Procedure for KEEP/TRIM and Pass H. `ai-markers.md`
 for a class. Lint for a regex-stable fill. One file per change.
 
-Work on a feature branch. `main` rejects direct commits.
+Work on a feature branch. Merge to `dev`. `main` rejects
+direct commits and accepts pull requests only from `dev`.

@@ -6,8 +6,8 @@
   <a href="LICENSE"><img src="https://img.shields.io/github/license/letya999/prose-polish-ru" alt="License: MIT"></a>
   <a href="https://github.com/letya999/prose-polish-ru/releases/tag/v0.1.0"><img src="https://img.shields.io/github/v/tag/letya999/prose-polish-ru?label=version" alt="version"></a>
   <a href="https://github.com/letya999/prose-polish-ru/stargazers"><img src="https://img.shields.io/github/stars/letya999/prose-polish-ru?style=flat" alt="stars"></a>
-  <a href="https://github.com/letya999/prose-polish-ru/commits/main"><img src="https://img.shields.io/github/last-commit/letya999/prose-polish-ru" alt="last commit"></a>
-  <a href="https://github.com/letya999/prose-polish-ru/actions/workflows/check.yml"><img src="https://github.com/letya999/prose-polish-ru/actions/workflows/check.yml/badge.svg?branch=main" alt="check"></a>
+  <a href="https://github.com/letya999/prose-polish-ru/commits/dev"><img src="https://img.shields.io/github/last-commit/letya999/prose-polish-ru/dev" alt="last commit"></a>
+  <a href="https://github.com/letya999/prose-polish-ru/actions/workflows/check.yml"><img src="https://github.com/letya999/prose-polish-ru/actions/workflows/check.yml/badge.svg?branch=dev" alt="check"></a>
   <img src="https://img.shields.io/badge/python-3.12-3776ab" alt="Python 3.12">
   <img src="https://img.shields.io/badge/lang-RU-0a66c2" alt="Russian">
   <img src="https://img.shields.io/badge/skill-prose--polish--ru-black" alt="skill">

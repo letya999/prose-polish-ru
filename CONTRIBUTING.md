@@ -51,4 +51,5 @@ raise precision.
   Do not "fix" that away.
 - Do not invent facts in before/after examples.
 - Do not commit `evals/`, `prose-polish-ru-workspace/`, `.env`, or `fixes.txt`.
-- `main` is protected. Work on a feature branch.
+- Default branch is `dev`. Work on a feature branch, then merge to `dev`.
+- `main` is protected: only pull requests from `dev`.

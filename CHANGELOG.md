@@ -1,5 +1,10 @@
 # Changelog
 
+## Unreleased
+
+- `skills.sh.json` for the skills.sh repo page.
+- Default branch `dev`; `main` accepts pull requests only from `dev`.
+
 ## 0.1.0 — 2026-09-05
 
 First tagged release.

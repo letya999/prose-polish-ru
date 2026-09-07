@@ -1,0 +1,21 @@
+name: main-from-dev-only
+
+on:
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  main-from-dev-only:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Allow PRs to main only from dev
+        env:
+          HEAD_REF: ${{ github.head_ref }}
+        run: |
+          if [ "$HEAD_REF" != "dev" ]; then
+            echo "PRs to main must come from dev (got '$HEAD_REF')."
+            exit 1
+          fi

@@ -1,0 +1,11 @@
+{
+  "$schema": "https://skills.sh/schemas/skills.sh.schema.json",
+  "notGrouped": "bottom",
+  "groupings": [
+    {
+      "title": "Writing",
+      "description": "Russian editor and hard humanizer: denser prose, claim check, Pass H.",
+      "skills": ["prose-polish-ru"]
+    }
+  ]
+}
