@@ -1,5 +1,5 @@
 <p align="center">
-  <a href="README.md">Русский</a> · <strong>English</strong>
+  <a href="README.ru.md">Русский</a> · <strong>English</strong>
 </p>
 
 # prose-polish-ru
