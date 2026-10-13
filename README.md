@@ -1,4 +1,8 @@
 <p align="center">
+  <strong>Русский</strong> · <a href="README.en.md">English</a>
+</p>
+
+<p align="center">
   <img src="assets/readme/hero.svg" width="640" alt="prose-polish-ru: тезисы → проверенный текст, чуть небрежный">
 </p>
 
@@ -11,7 +15,7 @@
   <img src="https://img.shields.io/badge/python-3.12-3776ab" alt="Python 3.12">
   <img src="https://img.shields.io/badge/lang-RU-0a66c2" alt="Russian">
   <img src="https://img.shields.io/badge/skill-prose--polish--ru-black" alt="skill">
-  <a href="https://skills.sh/letya999/prose-polish-ru/prose-polish-ru"><img src="https://skills.sh/letya999/prose-polish-ru/prose-polish-ru/badge.svg" alt="skills.sh"></a>
+  <a href="https://skills.sh/letya999/prose-polish-ru"><img src="https://skills.sh/b/letya999/prose-polish-ru" alt="skills.sh"></a>
 </p>
 
 Редакционный скилл и жёсткий хуманизатор для русского текста. Вход —
